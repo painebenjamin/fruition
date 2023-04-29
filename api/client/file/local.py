@@ -22,7 +22,7 @@ from pibble.api.client.file.base import (
 from pibble.api.exceptions import (
     NotFoundError,
     BadRequestError,
-    PermissionError as GoodyLibPermissionError,
+    PermissionError as PibbleLibPermissionError,
 )
 from pibble.util.strings import encode
 from pibble.util.log import logger
@@ -64,7 +64,7 @@ def UserContext(fn) -> Callable:
                     result = [r for r in result]
             except Exception as ex:
                 if isinstance(ex, PermissionError):
-                    ex = GoodyLibPermissionError(str(ex))
+                    ex = PibbleLibPermissionError(str(ex))
                 setattr(ex, "tb", traceback.format_exc())
                 result = ex
 

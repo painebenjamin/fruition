@@ -37,7 +37,7 @@ def debug_mode() -> bool:
     """
     Checks if the debug environment variable is set.
     """
-    debug_str = os.environ.get("GOODYDEBUG", None)
+    debug_str = os.environ.get("PIBBLEDEBUG", None)
     return isinstance(debug_str, str) and debug_str.lower()[0] in ["t", "y", "1"]
 
 
@@ -65,7 +65,7 @@ def try_load_service() -> None:
     and instantiate the metaservice.
     """
     global service
-    config_file = os.environ.get("GOODYCONFIG", None)
+    config_file = os.environ.get("PIBBLECONFIG", None)
     if config_file is None:
         raise OSError("No configuration available.")
 

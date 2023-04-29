@@ -1,5 +1,5 @@
 Exceptions
 ==========
 
-.. automodule:: goodylib.api.exceptions
+.. automodule:: pibble.api.exceptions
   :members:

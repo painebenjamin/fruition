@@ -57,7 +57,7 @@ def main() -> None:
             dump_json(json_config_path, JSONRPC_API_CONFIG)
             dump_yaml(yml_config_path, JSONRPC_API_CONFIG)
             for config_path in [json_config_path, yml_config_path]:
-                os.environ["GOODYCONFIG"] = config_path
+                os.environ["PIBBLECONFIG"] = config_path
 
                 expected_json_rpc = {
                     "jsonrpc": "2.0",

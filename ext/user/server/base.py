@@ -580,7 +580,7 @@ class UserExtensionTemplateServer(UserExtensionServerBase, TemplateServer):
         """
         On configure, grab the cookie name from config.
         """
-        self.cookie = self.configuration.get("user.cookie", "goodydata_token")
+        self.cookie = self.configuration.get("user.cookie", "pibbledata_token")
 
     def logout(self, request: Request, response: Response) -> None:
         """

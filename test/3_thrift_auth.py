@@ -13,7 +13,7 @@ from pibble.util.log import DebugUnifiedLoggingContext
 from pibble.util.helpers import Assertion, find_executable
 
 TEST_SERVICE = """
-namespace py GoodyThiftTest
+namespace py PibbleThiftTest
 
 service Calculator {
   i32 add(1:i32 num1, 2:i32 num2)
@@ -48,7 +48,7 @@ def main():
         _, tmp = tempfile.mkstemp()
         try:
             open(tmp, "w").write(TEST_SERVICE)
-            GoodyApacheThriftTest = ApacheThriftCompiler(tmp).compile()
+            PibbleApacheThriftTest = ApacheThriftCompiler(tmp).compile()
             server = ApacheThriftScreeningServer()
             server.configure(
                 **{
@@ -60,8 +60,8 @@ def main():
                         "offlist": "reject",
                     },
                     "thrift": {
-                        "service": GoodyApacheThriftTest.Calculator,
-                        "types": GoodyApacheThriftTest.ttypes,
+                        "service": PibbleApacheThriftTest.Calculator,
+                        "types": PibbleApacheThriftTest.ttypes,
                         "handler": CalculatorHandler,
                     },
                 }
@@ -72,8 +72,8 @@ def main():
                 **{
                     "client": {"host": "127.0.0.1", "port": PORT},
                     "thrift": {
-                        "types": GoodyApacheThriftTest.ttypes,
-                        "service": GoodyApacheThriftTest.Calculator,
+                        "types": PibbleApacheThriftTest.ttypes,
+                        "service": PibbleApacheThriftTest.Calculator,
                     },
                 }
             )

@@ -1,14 +1,14 @@
 Web Service API Client
 ======================
 
-.. autoclass:: goodylib.api.client.webservice.base.WebServiceAPIClientBase
+.. autoclass:: pibble.api.client.webservice.base.WebServiceAPIClientBase
   :members:
 
 Once again, we define a **webservice** as any client that communicates over TCP/IP.
 
 The simplest client possible is one that simply communicates with a webserver, and doesn't need to parse the response in any meaningful way. Unlike with servers, the base webservice API client is instantiable. ::
 
-  from goodylib.api.client.webservice.base import WebServiceAPIClientBase
+  from pibble.api.client.webservice.base import WebServiceAPIClientBase
   
   base = WebServiceAPIClientBase("google.com")
   print(base.get().text)

@@ -5,7 +5,7 @@ from pibble.ext.user.database.user import User
 
 
 class AuthenticationToken(UserExtensionObjectBase):
-    __tablename__ = "goody_user_token"
+    __tablename__ = "pibble_user_token"
 
     user_id = Column(
         User.ForeignKey("id", ondelete="CASCADE", onupdate="CASCADE"), nullable=False

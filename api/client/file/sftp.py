@@ -16,7 +16,7 @@ from pibble.api.exceptions import (
     BadRequestError,
     ConfigurationError,
     AuthenticationError,
-    PermissionError as GoodyCakePermissionError,
+    PermissionError as PibbleCakePermissionError,
 )
 from pibble.api.client.file.base import (
     FileTransferAPIClientBase,
@@ -535,7 +535,7 @@ class SFTPClient(FileTransferAPIClientBase):
         try:
             self.sftp.chmod(node.path, r8d2o(permission))
         except PermissionError:
-            raise GoodyCakePermissionError()
+            raise PibbleCakePermissionError()
 
         return self.getPath(path)
 
@@ -577,6 +577,6 @@ class SFTPClient(FileTransferAPIClientBase):
         try:
             self.sftp.chown(node.path, owner_id, group_id)
         except PermissionError:
-            raise GoodyCakePermissionError()
+            raise PibbleCakePermissionError()
 
         return self.getPath(path)

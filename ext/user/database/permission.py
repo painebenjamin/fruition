@@ -56,7 +56,7 @@ class Permission(UserExtensionObjectBase):
         # to just have this handler modify the object.
     """
 
-    __tablename__ = "goody_user_permission"
+    __tablename__ = "pibble_user_permission"
 
     id = Column(Integer, autoincrement=True, primary_key=True)
     object_name = Column(String, nullable=False)

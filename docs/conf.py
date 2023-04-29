@@ -116,7 +116,7 @@ html_static_path = ["_static"]
 # -- Options for HTMLHelp output ---------------------------------------------
 
 # Output file base name for HTML help builder.
-htmlhelp_basename = "GoodyLibrariesdoc"
+htmlhelp_basename = "PibbleFrameworkdoc"
 
 
 # -- Options for LaTeX output ------------------------------------------------
@@ -142,8 +142,8 @@ latex_elements = {
 latex_documents = [
     (
         master_doc,
-        "GoodyLibraries.tex",
-        "Goody Analytics Platform Documentation",
+        "PibbleFramework.tex",
+        "Pibble Framework Documentation",
         "Benjamin Paine",
         "manual",
     ),
@@ -158,7 +158,7 @@ man_pages = [
     (
         master_doc,
         "pibbleraries",
-        "Goody Analytics Platform Documentation",
+        "Pibble Framework Documentation",
         [author],
         1,
     )
@@ -173,10 +173,10 @@ man_pages = [
 texinfo_documents = [
     (
         master_doc,
-        "GoodyLibraries",
-        "Goody Analytics Platform Documentation",
+        "PibbleFramework",
+        "Pibble Framework Documentation",
         author,
-        "GoodyLibraries",
+        "PibbleFramework",
         "One line description of project.",
         "Miscellaneous",
     ),

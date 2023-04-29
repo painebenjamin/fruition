@@ -9,7 +9,7 @@ from pibble.util.log import DebugUnifiedLoggingContext
 from pibble.util.helpers import Assertion
 
 TEST_SERVICE = """
-namespace py GoodyThiftTest
+namespace py PibbleThiftTest
 
 service Calculator {
   i32 add(1:i32 num1, 2:i32 num2)
@@ -33,13 +33,13 @@ def main():
         server = ApacheThriftWebServer()
         try:
             open(tmp, "w").write(TEST_SERVICE)
-            GoodyApacheThriftTest = ApacheThriftCompiler(tmp).compile()
+            PibbleApacheThriftTest = ApacheThriftCompiler(tmp).compile()
             server.configure(
                 **{
                     "server": {"host": "0.0.0.0", "port": PORT, "driver": "werkzeug"},
                     "thrift": {
-                        "service": GoodyApacheThriftTest.Calculator,
-                        "types": GoodyApacheThriftTest.ttypes,
+                        "service": PibbleApacheThriftTest.Calculator,
+                        "types": PibbleApacheThriftTest.ttypes,
                         "handler": CalculatorHandler,
                     },
                 }
@@ -52,8 +52,8 @@ def main():
                         "client": {"host": "127.0.0.1", "port": PORT},
                         "server": {"instance": server},
                         "thrift": {
-                            "types": GoodyApacheThriftTest.ttypes,
-                            "service": GoodyApacheThriftTest.Calculator,
+                            "types": PibbleApacheThriftTest.ttypes,
+                            "service": PibbleApacheThriftTest.Calculator,
                         },
                     }
                 )

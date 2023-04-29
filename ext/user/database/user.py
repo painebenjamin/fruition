@@ -4,7 +4,7 @@ from pibble.ext.user.database.base import UserExtensionObjectBase
 
 
 class User(UserExtensionObjectBase):
-    __tablename__ = "goody_user"
+    __tablename__ = "pibble_user"
 
     id = Column(Integer, autoincrement=True, primary_key=True)
 

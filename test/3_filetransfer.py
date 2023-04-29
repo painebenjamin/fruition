@@ -65,7 +65,7 @@ def main():
                     "client": {
                         "host": "127.0.0.1",
                         "port": 9091,
-                        "ftp": {"username": "goodydata-test", "password": "password"},
+                        "ftp": {"username": "pibbledata-test", "password": "password"},
                     }
                 },
                 "/",
@@ -78,10 +78,10 @@ def main():
                     "client": {
                         "host": "127.0.0.1",
                         "port": 9092,
-                        "sftp": {"username": "goodydata-test", "password": "password"},
+                        "sftp": {"username": "pibbledata-test", "password": "password"},
                     }
                 },
-                "/home/goodydata-test",
+                "/home/pibbledata-test",
                 False,
             ),
         ]
@@ -108,7 +108,7 @@ def main():
                 },
             )
             sftp_server.start()
-            os.chown(tempdir, pwd.getpwnam("goodydata-user-1").pw_uid, -1)
+            os.chown(tempdir, pwd.getpwnam("pibbledata-user-1").pw_uid, -1)
             os.chmod(tempdir, 0o777)
 
         try:
@@ -116,17 +116,17 @@ def main():
                 api = cls()
                 api.configure(**configuration)
 
-                # Make /user/goodytest
+                # Make /user/pibbletest
                 try:
                     ROOT_DIR = root
-                    TEST_DIR = "goodytest"
+                    TEST_DIR = "pibbletest"
                     FILE_1 = "test.txt"
                     FILE_2 = "test2.txt"
                     CONTENTS = "testcontents"
                     APPEND = "_appended"
-                    MAIN_USER = "goodydata-user-1"
-                    SECOND_USER = "goodydata-user-2"
-                    THIRD_USER = "goodydata-user-3"
+                    MAIN_USER = "pibbledata-user-1"
+                    SECOND_USER = "pibbledata-user-2"
+                    THIRD_USER = "pibbledata-user-3"
 
                     if cls is SFTPClient:
                         MAIN_USER = pwd.getpwnam(MAIN_USER).pw_uid
@@ -169,7 +169,7 @@ def main():
                         pass
                     assert_in_directory(TEST_DIR, ROOT_DIR)
 
-                    # Write /user/goodytest/test.txt
+                    # Write /user/pibbletest/test.txt
                     logger.warning("Writing first file.")
                     try:
                         api.writeFile(
@@ -188,27 +188,27 @@ def main():
                         pass
                     assert_in_directory(FILE_1, FILE_DIR)
 
-                    # Read /user/goodytest/test.txt
+                    # Read /user/pibbletest/test.txt
                     logger.warning("Reading first file.")
                     Assertion(Assertion.EQ)(
                         CONTENTS,
                         decode(api.readEntireFile(FILE_PATH_1, user=MAIN_USER)),
                     )
 
-                    # Move /user/goodytest/test.txt to /user/goodytest/test2.txt
+                    # Move /user/pibbletest/test.txt to /user/pibbletest/test2.txt
                     logger.warning("Moving file.")
                     api.movePath(FILE_PATH_1, FILE_PATH_2, user=MAIN_USER)
                     assert_in_directory(FILE_2, FILE_DIR)
                     assert_not_in_directory(FILE_1, FILE_DIR)
 
-                    # Read /user/goodytest/test2.txt
+                    # Read /user/pibbletest/test2.txt
                     logger.warning("Reading moved file.")
                     Assertion(Assertion.EQ)(
                         CONTENTS,
                         decode(api.readEntireFile(FILE_PATH_2, user=MAIN_USER)),
                     )
 
-                    # Append to /user/goodytest/test2.txt
+                    # Append to /user/pibbletest/test2.txt
                     logger.warning("Appending to file.")
                     api.appendFile(FILE_PATH_2, APPEND, user=MAIN_USER)
                     Assertion(Assertion.EQ)(
@@ -218,7 +218,7 @@ def main():
 
                     if scoped:
                         logger.warning("Chaning permissions.")
-                        # Change permissions of /user/goodytest/test2.txt
+                        # Change permissions of /user/pibbletest/test2.txt
                         Assertion(Assertion.EQ)(
                             CONTENTS + APPEND,
                             decode(api.readEntireFile(FILE_PATH_2, user=SECOND_USER)),
@@ -244,7 +244,7 @@ def main():
                         )
 
                         logger.warning("Changing ownership.")
-                        # Change owner of /user/goodytest/test2.txt
+                        # Change owner of /user/pibbletest/test2.txt
                         Assertion(Assertion.T)(
                             api.setPathOwner(
                                 FILE_PATH_2, owner=SECOND_USER, user=MAIN_USER
@@ -258,7 +258,7 @@ def main():
                             api.readEntireFile, FILE_PATH_2, user=THIRD_USER
                         )
 
-                    # Delete /user/goodytest/test2.txt
+                    # Delete /user/pibbletest/test2.txt
                     logger.warning("Deleting file.")
                     Assertion(Assertion.T)(api.deletePath(FILE_PATH_2, user=MAIN_USER))
                     assert_not_in_directory(FILE_2, FILE_DIR)
@@ -291,7 +291,7 @@ def main():
 
                 finally:
                     logger.warning("Removing test data.")
-                    # Delete /user/goodytest
+                    # Delete /user/pibbletest
                     Assertion(Assertion.T)(
                         api.deletePath(FILE_DIR, user=MAIN_USER, recursive=True)
                     )

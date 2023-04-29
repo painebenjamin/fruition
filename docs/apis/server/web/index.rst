@@ -1,17 +1,17 @@
 Web Service API Server
 ======================
 
-.. autoclass:: goodylib.api.server.webservice.base.WebServiceAPIServerBase
+.. autoclass:: pibble.api.server.webservice.base.WebServiceAPIServerBase
    :members:
 
 We defined a **Web Service** as one that communicates over TCP/IP.
 
-All web server APIs should be extended from :class:`goodylib.api.server.webservice.base.WebServiceAPIServerBase`. For the most part, each implementation must only register some ``handlers`` using the :class:`goodylib.api.server.webservice.base.WebServiceAPIHandlerRegistry`, which will handle all requests using a method and path. A class is **not** recommended to use the parent ``handler`` function, as this will provider handlers for **all** classes in this module that extend from :class:`goodylib.api.webservice.base.WebServiceAPIServerBase`, instead defining their own. For example, if we simply wanted to serve files from a directory over HTTP, we could use something like this::
+All web server APIs should be extended from :class:`pibble.api.server.webservice.base.WebServiceAPIServerBase`. For the most part, each implementation must only register some ``handlers`` using the :class:`pibble.api.server.webservice.base.WebServiceAPIHandlerRegistry`, which will handle all requests using a method and path. A class is **not** recommended to use the parent ``handler`` function, as this will provider handlers for **all** classes in this module that extend from :class:`pibble.api.webservice.base.WebServiceAPIServerBase`, instead defining their own. For example, if we simply wanted to serve files from a directory over HTTP, we could use something like this::
 
   import os
-  from goodylib.api.exceptions import NotFoundError
-  from goodylib.api.server.webservice.base import WebServiceAPIServerBase
-  from goodylib.api.server.webservice.base import WebServiceAPIHandlerRegistry
+  from pibble.api.exceptions import NotFoundError
+  from pibble.api.server.webservice.base import WebServiceAPIServerBase
+  from pibble.api.server.webservice.base import WebServiceAPIHandlerRegistry
 
   class SimpleFileServer(WebServiceAPIServerBase):
     base_directory = "/var/www/html"
@@ -26,7 +26,7 @@ All web server APIs should be extended from :class:`goodylib.api.server.webservi
       :param request webob.Request: The request object.
       :param response webob.Response: The response object.
       :param file_path str: The file path, captured from the URI.
-      :throws: :class:`goodylib.api.exceptions.NotFoundError`
+      :throws: :class:`pibble.api.exceptions.NotFoundError`
       """
 
       file_path = os.path.join(self.base_directory, file_path)

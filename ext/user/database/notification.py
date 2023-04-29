@@ -6,7 +6,7 @@ from pibble.ext.user.database.user import User
 
 
 class Notification(UserExtensionObjectBase):
-    __tablename__ = "goody_user_notification"
+    __tablename__ = "pibble_user_notification"
 
     id = Column(Integer, autoincrement=True, primary_key=True)
     user_id = Column(

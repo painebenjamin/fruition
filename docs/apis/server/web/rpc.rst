@@ -6,7 +6,7 @@ Example Usage
 
 Using one of the RPC servers is as simple as defining functions and registering them to the server::
 
-  from goodylib.api.server.webservice.rpc.xml.server import XMLRPCServer
+  from pibble.api.server.webservice.rpc.xml.server import XMLRPCServer
 
   server = XMLRPCServer()
 
@@ -43,11 +43,11 @@ Base
 
 The base server defines methods for registration and dispatching of requests. The two implementations (XML and JSON) are responsible for parsing and formatting of requests and responses.
 
-.. autoclass:: goodylib.api.server.webservice.rpc.base.RPCServerBase
+.. autoclass:: pibble.api.server.webservice.rpc.base.RPCServerBase
    :members:
 
 XML
 ---
 
-.. autoclass:: goodylib.api.server.webservice.rpc.xml.server.XMLRPCServer
+.. autoclass:: pibble.api.server.webservice.rpc.xml.server.XMLRPCServer
    :members:

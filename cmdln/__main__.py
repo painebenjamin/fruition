@@ -34,7 +34,7 @@ class MetaServerProcess(multiprocessing.Process):
 @click.group(name="pibble")
 def main() -> None:
     """
-    Goody library command-line tools.
+    Pibble Framework command-line tools.
     """
     pass
 

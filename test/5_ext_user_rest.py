@@ -68,7 +68,7 @@ ChildTestObject.Relate(GrandchildTestObject, name="children", backref="parent")
 USER_1 = {
     "email": "user@test.com",
     "password": random_string(),
-    "groups": ["Goody Creators"],
+    "groups": ["Pibble Creators"],
 }
 
 USER_2 = {"email": "user2@test.com", "password": random_string()}
@@ -94,7 +94,7 @@ CONFIGURATION = {
                 "object_name": TestObject.__name__,
                 "scope_type": "explicit",
                 "action": "create",
-                "group": "Goody Creators",
+                "group": "Pibble Creators",
             },
         ]
         + [
@@ -102,7 +102,7 @@ CONFIGURATION = {
                 "object_name": ChildTestObject.__name__,
                 "scope_type": "inherited",
                 "action": action,
-                "group": "Goody Creators",
+                "group": "Pibble Creators",
                 "inherited_scope_object_name": TestObject.__name__,
                 "inherited_scope_source_attribute": "parent_name",
                 "inherited_scope_target_attribute": "name",
@@ -115,7 +115,7 @@ CONFIGURATION = {
                 "object_name": GrandchildTestObject.__name__,
                 "scope_type": "inherited",
                 "action": action,
-                "group": "Goody Creators",
+                "group": "Pibble Creators",
                 "inherited_scope_object_name": TestObject.__name__,
                 "inherited_scope_source_attribute": "parent_parent_name",
                 "inherited_scope_target_attribute": "name",

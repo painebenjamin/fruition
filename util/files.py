@@ -50,8 +50,8 @@ class IncludeLoader(yaml.SafeLoader):
     For example::
       # vars.yml
       ---
-      username: goodyuser
-      first_name: Goody
+      username: pibbleuser
+      first_name: Pibble
 
       # base.yml
       ---
@@ -62,8 +62,8 @@ class IncludeLoader(yaml.SafeLoader):
       ---
       context:
         vars:
-          username: goodyuser
-          first_name: Goody
+          username: pibbleuser
+          first_name: Pibble
     """
 
     def __init__(self, stream: TextIOWrapper) -> None:
@@ -107,9 +107,9 @@ def load_yaml(path: str) -> Any:
     >>> context.start()
     >>> main_file, include_file = next(context), next(context)
     >>> _ = open(include_file, "w").write("{role: admin}")
-    >>> _ = open(main_file, "w").write("{{username: goody, meta: !include {0}}}".format(include_file))
+    >>> _ = open(main_file, "w").write("{{username: pibble, meta: !include {0}}}".format(include_file))
     >>> load_yaml(main_file)
-    {'username': 'goody', 'meta': {'role': 'admin'}}
+    {'username': 'pibble', 'meta': {'role': 'admin'}}
     >>> context.stop()
     """
     with open(path, "r") as fp:
