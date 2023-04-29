@@ -74,10 +74,6 @@ $(PYTHON_DIST_SRC):
 	mkdir -p $(shell dirname $@)
 	cp $(patsubst $(PYTHON_DIST_DIR)/%,$(SRC_DIR)/%,$@) $@
 
-.PHONY: output
-output:
-	@echo $(PYTHON_DIST_SRC)
-
 ## Uploads to PyPI
 .PHONY: pypi
 pypi: $(PYTHON_PACKAGE)
@@ -86,10 +82,9 @@ pypi: $(PYTHON_PACKAGE)
 
 ## Formats with black
 .PHONY: format
-format: $($(PYTHON_SRC)
+format: $(PYTHON_SRC)
 	$(VENV_PYTHON) -m pip install black
 	$(VENV_PYTHON) -m black $?
-	git add $?
 
 ## Deletes build directory
 .PHONY: clean

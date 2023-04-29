@@ -81,9 +81,7 @@ setup(
     ).read(),
     long_description_content_type="text/markdown",
     entry_points={
-        "console_scripts": [
-            "pibble = pibble.__main__:main"
-        ],
+        "console_scripts": ["pibble = pibble.__main__:main"],
     },
     install_requires=install_requires,
     extras_require=extras_require,
