@@ -4,7 +4,7 @@ from setuptools import setup, find_packages
 package_name = "pibble"
 version_major = "0"
 version_minor = "4"
-version_patch = "2"
+version_patch = "4"
 
 install_requires = [
     "bcrypt>=4.0,<4.1",
@@ -46,20 +46,22 @@ extras_require = {
     "browser": ["selenium>=4.8,<5.0"],
     "imaging": ["pdf2image>=1.16,<2.0", "pillow>=9.5,<10.0", "psd-tools>=1.9,<2.0"],
     "build": [
-        "sphinx",
-        "sphinx_rtd_theme",
-        "types-PyYAML",
-        "types-chardet",
-        "types-requests",
-        "types-termcolor",
-        "types-pytz",
-        "types-python-dateutil",
-        "types-protobuf",
-        "types-paramiko",
-        "types-oauthlib",
+        "sphinx>=6.2,<6.3",
+        "sphinx-rtd-theme>=1.2,<1.3",
+        "types-PyYAML>=6.0.12,<6.1",
+        "types-chardet>=5.0.4,<6.0",
+        "types-requests>=2.29,<3.0",
+        "types-termcolor>=1.1.6,<1.2",
+        "types-pytz>=2023.3",
+        "types-python-dateutil>=2.8.19,<3.0",
+        "types-protobuf>=4.22,<5.0",
+        "types-paramiko>=3.0,<4.0",
+        "types-oauthlib>=3.2,<4.0",
         "types-openpyxl==3.0.0",
         "types-urllib3<1.27",
-        "importchecker",
+        "importchecker>=2.0,<3.0",
+        "black>=23.3,<24.0",
+        "twine>=4.0,<5.0"
     ],
 }
 

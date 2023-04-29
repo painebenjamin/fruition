@@ -1,16 +1,10 @@
 from typing import Optional, Type
-
 from pibble.util.helpers import qualify
-from pibble.util.log import logger
 
 try:
     from thrift.Thrift import TApplicationException
 except ImportError:
-    logger.warning(
-        "Cannot import thrift. Make sure to install with the [thrift] option selected if you need thrift functionality."
-    )
     TApplicationException: Type = Exception  # type: ignore[no-redef]
-
 
 class ApacheThriftError(TApplicationException):
     """

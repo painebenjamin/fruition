@@ -6,6 +6,7 @@ PYTHON=python3
 BUILD_DIR=build
 TEST_DIR=test
 DOCS_DIR=docs
+PACKAGE_DIR=package
 README=README.md
 
 SCRIPT_DIR=scripts
@@ -20,7 +21,7 @@ SCRIPT_TEMPLATE=template-files.py
 SRC_DIR=$(shell pwd)
 BUILD=$(SRC_DIR)/$(BUILD_DIR)
 SCRIPTS=$(SRC_DIR)/$(SCRIPT_DIR)
-DIST=$(SRC_DIR)/dist
+PACKAGE=$(SRC_DIR)/$(PACKAGE_DIR)
 
 # Virtualenv for building
 VENV=$(BUILD)/venv
@@ -33,7 +34,7 @@ TEMPLATE=$(SCRIPTS)/$(SCRIPT_TEMPLATE)
 
 # Python paths and directories
 PYTHON_SETUP=$(SRC_DIR)/setup.py
-PYTHON_SRC=$(shell find $(SRC_DIR) -type f -name "*.py" -not -path '*/.*' -not -path '*/$(TEST_DIR)*' -not -path '*/$(BUILD_DIR)*' -not -path '*/$(DOCS_DIR)*')
+PYTHON_SRC=$(shell find $(SRC_DIR) -type f -name "*.py" -not -path '*/.*' -not -path '*/$(TEST_DIR)*' -not -path '*/$(BUILD_DIR)*' -not -path '*/$(DOCS_DIR)*' -not -path '*/package*')
 PYTHON_PATH=$(abspath $(SRC_DIR)/..)
 
 # Python variables from setup
@@ -43,8 +44,8 @@ PYTHON_PACKAGE_VERSION_MINOR=$(shell cat $(PYTHON_SETUP) | grep 'version_minor =
 PYTHON_PACKAGE_VERSION_PATCH=$(shell cat $(PYTHON_SETUP) | grep 'version_patch =' | awk -F= '{print $$2}' | sed 's/[ "]//g' | sed "s/[ ']//g")
 
 # Python distribution
-PYTHON_DIST_DIR=$(DIST)/$(PYTHON_PACKAGE_NAME)
-PYTHON_DIST_SRC=$(patsubst $(SRC_DIR)/%,$(PYTHON_DIST_DIR)/%,$(PYTHON_SRC))
+PYTHON_PACKAGE_DIR=$(PACKAGE)/$(PYTHON_PACKAGE_NAME)
+PYTHON_PACKAGE_SRC=$(patsubst $(SRC_DIR)/%,$(PYTHON_PACKAGE_DIR)/%,$(PYTHON_SRC))
 PYTHON_PACKAGE_FILENAME=$(PYTHON_PACKAGE_NAME)-$(PYTHON_PACKAGE_VERSION_MAJOR).$(PYTHON_PACKAGE_VERSION_MINOR).$(PYTHON_PACKAGE_VERSION_PATCH).tar.gz
 PYTHON_PACKAGE=$(BUILD)/$(PYTHON_PACKAGE_FILENAME)
 
@@ -62,27 +63,26 @@ PYTHON_TEST_INTEGRATION=$(BUILD)/.test
 ## Builds source distribution
 .PHONY: sdist
 sdist: $(PYTHON_PACKAGE)
-$(PYTHON_PACKAGE): $(PYTHON_SETUP) $(PYTHON_DIST_SOURCE) $(PYTHON_TEST_TYPE) $(PYTHON_TEST_IMPORT) $(PYTHON_TEST_UNIT) $(PYTHON_TEST_INTEGRATION)
-	@cp $(PYTHON_SETUP) $(DIST)/
-	@cp $(SRC_DIR)/$(README) $(DIST)/
-	cd $(DIST) && $(VENV_PYTHON) setup.py sdist
-	mv $(DIST)/dist/$(PYTHON_PACKAGE_FILENAME) $@
-	@rm -rf $(DIST)
+$(PYTHON_PACKAGE): $(PYTHON_SETUP) $(PYTHON_TEST_TYPE) $(PYTHON_TEST_IMPORT) $(PYTHON_TEST_UNIT) $(PYTHON_TEST_INTEGRATION) $(PYTHON_PACKAGE_SRC)
+	@cp $(PYTHON_SETUP) $(PACKAGE)/
+	@cp $(SRC_DIR)/$(README) $(PACKAGE)/
+	cd $(PACKAGE) && $(VENV_PYTHON) setup.py sdist
+	mv $(PACKAGE)/dist/$(PYTHON_PACKAGE_FILENAME) $@
+	@rm -rf $(PACKAGE)
 
-$(PYTHON_DIST_SRC):
+## Copy source distribution to package directory
+$(PYTHON_PACKAGE_SRC):
 	mkdir -p $(shell dirname $@)
-	cp $(patsubst $(PYTHON_DIST_DIR)/%,$(SRC_DIR)/%,$@) $@
+	cp $(patsubst $(PYTHON_PACKAGE_DIR)/%,$(SRC_DIR)/%,$@) $@
 
 ## Uploads to PyPI
 .PHONY: pypi
 pypi: $(PYTHON_PACKAGE)
-	$(VENV_PYTHON) -m pip install twine
 	$(VENV_PYTHON) -m twine upload $(PYTHON_PACKAGE)
 
 ## Formats with black
 .PHONY: format
 format: $(PYTHON_SRC)
-	$(VENV_PYTHON) -m pip install black
 	$(VENV_PYTHON) -m black $?
 
 ## Deletes build directory
