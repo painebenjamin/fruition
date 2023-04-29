@@ -1,0 +1,8 @@
+exclude test
+exclude test/*
+exclude docs
+exclude docs/*
+exclude build
+exclude build/*
+exclude dist
+exclude dist/*
