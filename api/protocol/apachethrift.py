@@ -17,8 +17,13 @@
 # under the License.
 #
 
-from thrift.protocol.TProtocol import (TType, TProtocolBase, TProtocolException,
-                        TProtocolFactory, checkIntegerLimits)
+from thrift.protocol.TProtocol import (
+    TType,
+    TProtocolBase,
+    TProtocolException,
+    TProtocolFactory,
+    checkIntegerLimits,
+)
 import base64
 import math
 import sys
@@ -26,59 +31,61 @@ import sys
 from thrift.compat import str_to_binary
 
 
-__all__ = ['TJSONProtocol',
-           'TJSONProtocolFactory',
-           'TSimpleJSONProtocol',
-           'TSimpleJSONProtocolFactory']
+__all__ = [
+    "TJSONProtocol",
+    "TJSONProtocolFactory",
+    "TSimpleJSONProtocol",
+    "TSimpleJSONProtocolFactory",
+]
 
 VERSION = 1
 
-COMMA = b','
-COLON = b':'
-LBRACE = b'{'
-RBRACE = b'}'
-LBRACKET = b'['
-RBRACKET = b']'
+COMMA = b","
+COLON = b":"
+LBRACE = b"{"
+RBRACE = b"}"
+LBRACKET = b"["
+RBRACKET = b"]"
 QUOTE = b'"'
-BACKSLASH = b'\\'
-ZERO = b'0'
+BACKSLASH = b"\\"
+ZERO = b"0"
 
-ESCSEQ0 = ord('\\')
-ESCSEQ1 = ord('u')
+ESCSEQ0 = ord("\\")
+ESCSEQ1 = ord("u")
 ESCAPE_CHAR_VALS = {
     '"': '\\"',
-    '\\': '\\\\',
-    '\b': '\\b',
-    '\f': '\\f',
-    '\n': '\\n',
-    '\r': '\\r',
-    '\t': '\\t',
+    "\\": "\\\\",
+    "\b": "\\b",
+    "\f": "\\f",
+    "\n": "\\n",
+    "\r": "\\r",
+    "\t": "\\t",
     # '/': '\\/',
 }
 ESCAPE_CHARS = {
     b'"': '"',
-    b'\\': '\\',
-    b'b': '\b',
-    b'f': '\f',
-    b'n': '\n',
-    b'r': '\r',
-    b't': '\t',
-    b'/': '/',
+    b"\\": "\\",
+    b"b": "\b",
+    b"f": "\f",
+    b"n": "\n",
+    b"r": "\r",
+    b"t": "\t",
+    b"/": "/",
 }
-NUMERIC_CHAR = b'+-.0123456789Ee'
+NUMERIC_CHAR = b"+-.0123456789Ee"
 
 CTYPES = {
-    TType.BOOL: 'tf',
-    TType.BYTE: 'i8',
-    TType.I16: 'i16',
-    TType.I32: 'i32',
-    TType.I64: 'i64',
-    TType.DOUBLE: 'dbl',
-    TType.STRING: 'str',
-    TType.STRUCT: 'rec',
-    TType.LIST: 'lst',
-    TType.SET: 'set',
-    TType.MAP: 'map',
+    TType.BOOL: "tf",
+    TType.BYTE: "i8",
+    TType.I16: "i16",
+    TType.I32: "i32",
+    TType.I64: "i64",
+    TType.DOUBLE: "dbl",
+    TType.STRING: "str",
+    TType.STRUCT: "rec",
+    TType.LIST: "lst",
+    TType.SET: "set",
+    TType.MAP: "map",
 }
 
 JTYPES = {}
@@ -87,7 +94,6 @@ for key in CTYPES.keys():
 
 
 class JSONBaseContext(object):
-
     def __init__(self, protocol):
         self.protocol = protocol
         self.first = True
@@ -109,7 +115,6 @@ class JSONBaseContext(object):
 
 
 class JSONListContext(JSONBaseContext):
-
     def doIO(self, function):
         if self.first is True:
             self.first = False
@@ -124,7 +129,6 @@ class JSONListContext(JSONBaseContext):
 
 
 class JSONPairContext(JSONBaseContext):
-
     def __init__(self, protocol):
         super(JSONPairContext, self).__init__(protocol)
         self.colon = True
@@ -147,12 +151,12 @@ class JSONPairContext(JSONBaseContext):
         return self.colon
 
     def __str__(self):
-        return '%s, colon=%s' % (self.__class__.__name__, self.colon)
+        return "%s, colon=%s" % (self.__class__.__name__, self.colon)
 
 
-class LookaheadReader():
+class LookaheadReader:
     hasData = False
-    data = ''
+    data = ""
 
     def __init__(self, protocol):
         self.protocol = protocol
@@ -172,7 +176,6 @@ class LookaheadReader():
 
 
 class TJSONProtocolBase(TProtocolBase):
-
     def __init__(self, trans):
         TProtocolBase.__init__(self, trans)
         self.resetWriteContext()
@@ -213,11 +216,11 @@ class TJSONProtocolBase(TProtocolBase):
             escaped = ESCAPE_CHAR_VALS.get(s, s)
             json_str.append(escaped)
         json_str.append('"')
-        self.trans.write(str_to_binary(''.join(json_str)))
+        self.trans.write(str_to_binary("".join(json_str)))
 
-    def writeJSONNumber(self, number, formatter='{0}'):
+    def writeJSONNumber(self, number, formatter="{0}"):
         self.context.write()
-        jsNumber = str(formatter.format(number)).encode('ascii')
+        jsNumber = str(formatter.format(number)).encode("ascii")
         if self.context.escapeNum():
             self.trans.write(QUOTE)
             self.trans.write(jsNumber)
@@ -252,28 +255,28 @@ class TJSONProtocolBase(TProtocolBase):
     def readJSONSyntaxChar(self, character):
         current = self.reader.read()
         if character != current:
-            raise TProtocolException(TProtocolException.INVALID_DATA,
-                                     "Unexpected character: %s" % current)
+            raise TProtocolException(
+                TProtocolException.INVALID_DATA, "Unexpected character: %s" % current
+            )
 
     def _isHighSurrogate(self, codeunit):
-        return codeunit >= 0xd800 and codeunit <= 0xdbff
+        return codeunit >= 0xD800 and codeunit <= 0xDBFF
 
     def _isLowSurrogate(self, codeunit):
-        return codeunit >= 0xdc00 and codeunit <= 0xdfff
+        return codeunit >= 0xDC00 and codeunit <= 0xDFFF
 
     def _toChar(self, high, low=None):
         if not low:
             if sys.version_info[0] == 2:
-                return ("\\u%04x" % high).decode('unicode-escape') \
-                                         .encode('utf-8')
+                return ("\\u%04x" % high).decode("unicode-escape").encode("utf-8")
             else:
                 return chr(high)
         else:
-            codepoint = (1 << 16) + ((high & 0x3ff) << 10)
-            codepoint += low & 0x3ff
+            codepoint = (1 << 16) + ((high & 0x3FF) << 10)
+            codepoint += low & 0x3FF
             if sys.version_info[0] == 2:
                 s = "\\U%08x" % codepoint
-                return s.decode('unicode-escape').encode('utf-8')
+                return s.decode("unicode-escape").encode("utf-8")
             else:
                 return chr(codepoint)
 
@@ -290,20 +293,22 @@ class TJSONProtocolBase(TProtocolBase):
             if ord(character) == ESCSEQ0:
                 character = self.reader.read()
                 if ord(character) == ESCSEQ1:
-                    character = self.trans.read(4).decode('ascii')
+                    character = self.trans.read(4).decode("ascii")
                     codeunit = int(character, 16)
                     if self._isHighSurrogate(codeunit):
                         if highSurrogate:
                             raise TProtocolException(
                                 TProtocolException.INVALID_DATA,
-                                "Expected low surrogate char")
+                                "Expected low surrogate char",
+                            )
                         highSurrogate = codeunit
                         continue
                     elif self._isLowSurrogate(codeunit):
                         if not highSurrogate:
                             raise TProtocolException(
                                 TProtocolException.INVALID_DATA,
-                                "Expected high surrogate char")
+                                "Expected high surrogate char",
+                            )
                         character = self._toChar(highSurrogate, codeunit)
                         highSurrogate = None
                     else:
@@ -311,29 +316,31 @@ class TJSONProtocolBase(TProtocolBase):
                 else:
                     if character not in ESCAPE_CHARS:
                         raise TProtocolException(
-                            TProtocolException.INVALID_DATA,
-                            "Expected control char")
+                            TProtocolException.INVALID_DATA, "Expected control char"
+                        )
                     character = ESCAPE_CHARS[character]
             elif character in ESCAPE_CHAR_VALS:
-                raise TProtocolException(TProtocolException.INVALID_DATA,
-                                         "Unescaped control char")
+                raise TProtocolException(
+                    TProtocolException.INVALID_DATA, "Unescaped control char"
+                )
             elif sys.version_info[0] > 2:
                 utf8_bytes = bytearray([ord(character)])
                 while ord(self.reader.peek()) >= 0x80:
                     utf8_bytes.append(ord(self.reader.read()))
-                character = utf8_bytes.decode('utf8')
+                character = utf8_bytes.decode("utf8")
             string.append(character)
 
             if highSurrogate:
-                raise TProtocolException(TProtocolException.INVALID_DATA,
-                                         "Expected low surrogate char")
-        return ''.join(string)
+                raise TProtocolException(
+                    TProtocolException.INVALID_DATA, "Expected low surrogate char"
+                )
+        return "".join(string)
 
     def isJSONNumeric(self, character):
-        return (True if NUMERIC_CHAR.find(character) != - 1 else False)
+        return True if NUMERIC_CHAR.find(character) != -1 else False
 
     def readJSONQuotes(self):
-        if (self.context.escapeNum()):
+        if self.context.escapeNum():
             self.readJSONSyntaxChar(QUOTE)
 
     def readJSONNumericChars(self):
@@ -343,7 +350,7 @@ class TJSONProtocolBase(TProtocolBase):
             if self.isJSONNumeric(character) is False:
                 break
             numeric.append(self.reader.read())
-        return b''.join(numeric).decode('ascii')
+        return b"".join(numeric).decode("ascii")
 
     def readJSONInteger(self):
         self.context.read()
@@ -353,8 +360,9 @@ class TJSONProtocolBase(TProtocolBase):
         try:
             return int(numeric)
         except ValueError:
-            raise TProtocolException(TProtocolException.INVALID_DATA,
-                                     "Bad data encounted in numeric data")
+            raise TProtocolException(
+                TProtocolException.INVALID_DATA, "Bad data encounted in numeric data"
+            )
 
     def readJSONDouble(self):
         self.context.read()
@@ -362,24 +370,31 @@ class TJSONProtocolBase(TProtocolBase):
             string = self.readJSONString(True)
             try:
                 double = float(string)
-                if (self.context.escapeNum is False and
-                        not math.isinf(double) and
-                        not math.isnan(double)):
+                if (
+                    self.context.escapeNum is False
+                    and not math.isinf(double)
+                    and not math.isnan(double)
+                ):
                     raise TProtocolException(
                         TProtocolException.INVALID_DATA,
-                        "Numeric data unexpectedly quoted")
+                        "Numeric data unexpectedly quoted",
+                    )
                 return double
             except ValueError:
-                raise TProtocolException(TProtocolException.INVALID_DATA,
-                                         "Bad data encounted in numeric data")
+                raise TProtocolException(
+                    TProtocolException.INVALID_DATA,
+                    "Bad data encounted in numeric data",
+                )
         else:
             if self.context.escapeNum() is True:
                 self.readJSONSyntaxChar(QUOTE)
             try:
                 return float(self.readJSONNumericChars())
             except ValueError:
-                raise TProtocolException(TProtocolException.INVALID_DATA,
-                                         "Bad data encounted in numeric data")
+                raise TProtocolException(
+                    TProtocolException.INVALID_DATA,
+                    "Bad data encounted in numeric data",
+                )
 
     def readJSONBase64(self):
         string = self.readJSONString(False)
@@ -388,7 +403,7 @@ class TJSONProtocolBase(TProtocolBase):
         # Force padding since b64encode method does not allow it
         if m != 0:
             for i in range(4 - m):
-                string += '='
+                string += "="
         return base64.b64decode(string)
 
     def readJSONObjectStart(self):
@@ -411,13 +426,13 @@ class TJSONProtocolBase(TProtocolBase):
 
 
 class TJSONProtocol(TJSONProtocolBase):
-
     def readMessageBegin(self):
         self.resetReadContext()
         self.readJSONArrayStart()
         if self.readJSONInteger() != VERSION:
-            raise TProtocolException(TProtocolException.BAD_VERSION,
-                                     "Message contained bad version.")
+            raise TProtocolException(
+                TProtocolException.BAD_VERSION, "Message contained bad version."
+            )
         name = self.readJSONString(False)
         typen = self.readJSONInteger()
         seqid = self.readJSONInteger()
@@ -464,19 +479,22 @@ class TJSONProtocol(TJSONProtocolBase):
         elemType = JTYPES[self.readJSONString(False)]
         size = self.readJSONInteger()
         return (elemType, size)
+
     readListBegin = readCollectionBegin
     readSetBegin = readCollectionBegin
 
     def readCollectionEnd(self):
         self.readJSONArrayEnd()
+
     readSetEnd = readCollectionEnd
     readListEnd = readCollectionEnd
 
     def readBool(self):
-        return (False if self.readJSONInteger() == 0 else True)
+        return False if self.readJSONInteger() == 0 else True
 
     def readNumber(self):
         return self.readJSONInteger()
+
     readByte = readNumber
     readI16 = readNumber
     readI32 = readNumber
@@ -568,7 +586,7 @@ class TJSONProtocol(TJSONProtocolBase):
     def writeDouble(self, dbl):
         # 17 significant digits should be just enough for any double precision
         # value.
-        self.writeJSONNumber(dbl, '{0:.17g}')
+        self.writeJSONNumber(dbl, "{0:.17g}")
 
     def writeString(self, string):
         self.writeJSONString(string)
@@ -637,6 +655,7 @@ class TSimpleJSONProtocol(TJSONProtocolBase):
 
     def _writeCollectionEnd(self):
         self.writeJSONArrayEnd()
+
     writeListBegin = _writeCollectionBegin
     writeListEnd = _writeCollectionEnd
     writeSetBegin = _writeCollectionBegin
@@ -672,6 +691,5 @@ class TSimpleJSONProtocol(TJSONProtocolBase):
 
 
 class TSimpleJSONProtocolFactory(TProtocolFactory):
-
     def getProtocol(self, trans):
         return TSimpleJSONProtocol(trans)

@@ -1,5 +1,6 @@
 import os
 import sys
+
 try:
     import dedupe
 except ImportError:
@@ -16,6 +17,7 @@ from pibble.database.engine import EngineFactory
 from pibble.database.util import row_to_dict
 
 from sqlalchemy.sql.type_api import TypeEngine as SQLAlchemyType
+
 
 class DeDuplicator:
     """
@@ -70,7 +72,9 @@ class DeDuplicator:
             [
                 (
                     key,
-                    row_dict[key] if not (isinstance(row_dict[key], str) and len(row_dict[key]) == 0) else None,
+                    row_dict[key]
+                    if not (isinstance(row_dict[key], str) and len(row_dict[key]) == 0)
+                    else None,
                 )
                 for key in row_dict
             ]

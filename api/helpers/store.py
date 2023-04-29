@@ -206,7 +206,8 @@ class APISessionStoreDriver:
     Implemented classes ***must*** override the ``get(key)`` and ``set(key, value)`` functions.
     Implementing classes ***must*** set the DRIVERNAME class variable.
     """
-    DRIVERNAME=""
+
+    DRIVERNAME = ""
 
     def __init__(self, configuration_prefix: str, configuration: APIConfiguration):
         self.configuration_prefix = configuration_prefix

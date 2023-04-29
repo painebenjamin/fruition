@@ -10,8 +10,11 @@ try:
     from selenium.webdriver import Chrome
     from selenium.webdriver.chrome.options import Options
 except ImportError:
-    logger.warning("Cannot import selenium. Make sure to install with the [browser] requirement selected.")
+    logger.warning(
+        "Cannot import selenium. Make sure to install with the [browser] requirement selected."
+    )
     raise
+
 
 class WebScraper:
     """
@@ -25,8 +28,10 @@ class WebScraper:
 
     def __init__(self, width: int = 1920, height: int = 1080):
         self.arguments = ["--headless", "--window-size={0}x{1}".format(width, height)]
-        if os.name != "nt" and os.geteuid() == 0: # type: ignore
-            logger.warning("Running chromedriver with --no-sandbox as root. It is not recommended to do this.")
+        if os.name != "nt" and os.geteuid() == 0:  # type: ignore
+            logger.warning(
+                "Running chromedriver with --no-sandbox as root. It is not recommended to do this."
+            )
             self.arguments.append("--no-sandbox")
 
     def driver(self) -> Chrome:

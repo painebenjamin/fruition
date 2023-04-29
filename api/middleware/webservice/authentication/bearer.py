@@ -29,7 +29,9 @@ class TokenAuthenticationMiddleware(WebServiceAPIMiddlewareBase):
     def parse(
         self,
         request: Optional[Union[WebobRequest, RequestsRequest, RequestWrapper]] = None,
-        response: Optional[Union[WebobResponse, RequestsResponse, ResponseWrapper]] = None,
+        response: Optional[
+            Union[WebobResponse, RequestsResponse, ResponseWrapper]
+        ] = None,
     ) -> None:
         """
         Used to parse a request object for servers.
@@ -63,7 +65,9 @@ class TokenAuthenticationMiddleware(WebServiceAPIMiddlewareBase):
                         "Could not parse username and password from Authorization header."
                     )
             except AuthenticationError as ex:
-                if isinstance(response, WebobResponse) or isinstance(response, ResponseWrapper):
+                if isinstance(response, WebobResponse) or isinstance(
+                    response, ResponseWrapper
+                ):
                     response.headers["WWW-Authenticate"] = "Basic realm={0}".format(
                         self.configuration.get(
                             "authentication.basic.realm", "Authentication Required"
@@ -74,7 +78,9 @@ class TokenAuthenticationMiddleware(WebServiceAPIMiddlewareBase):
     def prepare(
         self,
         request: Optional[Union[WebobRequest, RequestsRequest, RequestWrapper]] = None,
-        response: Optional[Union[WebobResponse, RequestsResponse, ResponseWrapper]] = None,
+        response: Optional[
+            Union[WebobResponse, RequestsResponse, ResponseWrapper]
+        ] = None,
     ) -> None:
         """
         Used to prepare a request for clients.

@@ -18,7 +18,8 @@ class TestThread(multiprocessing.Process):
     def run(self):
         try:
             test_module = __import__(
-                "pibble.test.{0}".format(self.test_module_name), fromlist=["pibble.test"]
+                "pibble.test.{0}".format(self.test_module_name),
+                fromlist=["pibble.test"],
             )
             result = test_module.main()
         except Exception as ex:

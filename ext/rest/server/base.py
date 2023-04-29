@@ -27,6 +27,8 @@ DEFAULT_LIMIT = 100
 
 
 handlers = WebServiceAPIHandlerRegistry()
+
+
 class RESTExtensionServerBase(ORMWebServiceAPIServer):
     """
     Using the JSON web service and ORM extensions, provide a configurable

@@ -16,6 +16,7 @@ from pibble.api.server.file.ftp import FTPServer
 from pibble.api.server.file.sftp import SFTPServer
 
 from pibble.api.client.file.local import LocalFileTransferAPIClient
+
 # from pibble.api.client.file.hdfs import HDFSFileTransferAPIClient
 
 from pibble.util.log import logger, DebugUnifiedLoggingContext
@@ -82,7 +83,7 @@ def main():
                 },
                 "/home/goodydata-test",
                 False,
-            )
+            ),
         ]
 
         ftp_server = FTPServer()

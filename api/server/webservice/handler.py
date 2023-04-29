@@ -272,7 +272,6 @@ class WebServiceAPIHandlerRegistry:
         return wrap
 
     def download(self) -> Callable[[Callable], Callable]:
-
         """
         Indicates that the results of the request is a file path, and that file path should be iterated
         over for the response in a streaming fashion.
@@ -285,7 +284,6 @@ class WebServiceAPIHandlerRegistry:
         return wrap
 
     def compress(self) -> Callable[[Callable], Callable]:
-
         """
         Indicates that the results of the request should be compressed (using zlib.)
         """
@@ -299,7 +297,6 @@ class WebServiceAPIHandlerRegistry:
     def cache(
         self, cache_time: Optional[int] = 31536000
     ) -> Callable[[Callable], Callable]:
-
         """
         Indicates that the results of the request should be cacheed (using http headers.)
         """
@@ -311,7 +308,6 @@ class WebServiceAPIHandlerRegistry:
         return wrap
 
     def reverse(self, name: str, path: str = "/") -> Callable[[Callable], Callable]:
-
         """
         Registers a reverse() method for this URL.
 
@@ -365,7 +361,6 @@ class WebServiceAPIHandlerRegistry:
         return wrap
 
     def resolve(self, view_name: str, **kwargs: Any) -> str:
-
         """
         Resolves a URL name with URL arguments defined by **kwargs. See reverse() above
         for more details.
@@ -387,7 +382,6 @@ class WebServiceAPIHandlerRegistry:
         raise NotFoundError("No view with name {0}".format(view_name))
 
     def bypass(self, *classes: Union[str, Type]) -> Callable[[Callable], Callable]:
-
         """
         Marks a handler to pybass parsing or preparing requests/responses.
 

@@ -11,6 +11,7 @@ from pibble.api.exceptions import ConfigurationError
 from pibble.ext.session.database import SessionExtensionObjectBase
 from pibble.ext.session.database.session import SessionDatum
 
+
 class NoDefaultProvided:
     pass
 
@@ -19,12 +20,13 @@ class SessionHelper:
     """
     A single wrapper around the ORM to make accessing data easier.
     """
+
     def __init__(self, database: ORMSession, orm: ORM, cookie: str):
         self.database = database
         self.orm = orm
         self.cookie = cookie
 
-    def get(self, key: str, default: Any=NoDefaultProvided) -> Any:
+    def get(self, key: str, default: Any = NoDefaultProvided) -> Any:
         try:
             return self[key]
         except KeyError:
@@ -82,7 +84,7 @@ class SessionExtensionServerBase(ORMWebServiceAPIServer):
                     response.text = request.session["name"]
                 except KeyError:
                     raise NotFoundError("You haven't told me your name yet!")
-            
+
             @handlers.methods("GET")
             @handlers.path("^/(?P<name>[\w]+)$")
             def set_name(self, request: Request, response: Response, name: str) -> None:
@@ -91,7 +93,10 @@ class SessionExtensionServerBase(ORMWebServiceAPIServer):
                 response.location = "/"
 
     """
-    def parse(self, request: Optional[Request] = None, response: Optional[Response] = None):
+
+    def parse(
+        self, request: Optional[Request] = None, response: Optional[Response] = None
+    ):
         if request is not None and not hasattr(request, "session"):
             cookie = request.cookies.get(self.session_cookie_name, None)
 
@@ -129,7 +134,7 @@ class SessionExtensionServerBase(ORMWebServiceAPIServer):
         self.orm.extend_base(
             SessionExtensionObjectBase,
             force=self.configuration.get("orm.force", False),
-            create=self.configuration.get("orm.create", True)
+            create=self.configuration.get("orm.create", True),
         )
         self.session_cookie_name = self.configuration.get(
             "session.cookie", "goodydata_session"

@@ -9,15 +9,17 @@ import io
 from importchecker.importchecker import main
 from typing import Any, Union
 
+
 class OutputCatcher(io.TextIOWrapper):
     """
     This small class wrapper will intercept any print()
     or stdout/stderr.write calls to write to a memory
     buffer instead.
     """
+
     flushed: list[bytes]
     buf: bytes
-    
+
     def __init__(self) -> None:
         self.flushed = []
         self.buf = b""
@@ -32,10 +34,9 @@ class OutputCatcher(io.TextIOWrapper):
         return len(self.flushed) == 0 and len(self.buf) == 0
 
     def output(self) -> str:
-        return "\r\n".join([
-            string.decode(sys.getdefaultencoding())
-            for string in self.flushed
-        ])
+        return "\r\n".join(
+            [string.decode(sys.getdefaultencoding()) for string in self.flushed]
+        )
 
     def write(self, text: Union[str, bytes]):
         if isinstance(text, str):
@@ -52,6 +53,7 @@ class OutputCatcher(io.TextIOWrapper):
             self.flush()
         sys.stdout = self.stdout
         sys.stderr = self.stderr
+
 
 if __name__ == "__main__":
     """

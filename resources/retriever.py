@@ -94,6 +94,7 @@ class HTTPRetriever(Retriever):
     """
     This retriever gets data over HTTP/HTTPS using requests.
     """
+
     SCHEMES = ["http", "https"]
 
     def __init__(self, url: ParseResult, configuration: Optional[dict] = None):
@@ -161,8 +162,9 @@ class FileRetriever(Retriever):
     This retriever is used for files. It allows for explicit file:// URI's,
     but it also is the default handler when a scheme is not provided.
     """
+
     SCHEMES = ["file", "", None]
-    
+
     file_path: str
 
     def __init__(self, url: ParseResult, configuration: Optional[dict] = None):
@@ -264,16 +266,19 @@ class S3Retriever(Retriever):
     """
     Gets data from AWS S3 (Simple Storage Solution).
     """
+
     SCHEMES = ["s3"]
 
     def __init__(self, url: ParseResult, configuration: Optional[dict] = None):
         super(S3Retriever, self).__init__(url, configuration)
         self.s3 = boto3.client("s3")
-        
+
     def __iter__(self):
-        logger.debug(f"Getting data from S3 bucket {self.url.hostname},key {self.url.path[1:]}")
-        data = self.s3.get_object(Bucket = self.url.hostname, Key = self.url.path[1:])
-        for chunk in data["Body"].iter_chunks(chunk_size = self.CHUNK_SIZE):
+        logger.debug(
+            f"Getting data from S3 bucket {self.url.hostname},key {self.url.path[1:]}"
+        )
+        data = self.s3.get_object(Bucket=self.url.hostname, Key=self.url.path[1:])
+        for chunk in data["Body"].iter_chunks(chunk_size=self.CHUNK_SIZE):
             yield chunk
 
 

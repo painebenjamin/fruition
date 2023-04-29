@@ -105,7 +105,6 @@ class UserRESTExtensionServerBase(UserExtensionServer, RESTExtensionServerBase):
                                                 )
                                                 .one_or_none()
                                             ):
-
                                                 logger.debug(
                                                     f"REST handler adding permission to group {user_group.group.label} after action '{action}'. Permission permits '{grant_action}' on {handler_classname} for scope {handler_scope} = {scope_value}"
                                                 )

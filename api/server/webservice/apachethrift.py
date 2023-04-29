@@ -15,6 +15,7 @@ from pibble.api.helpers.apachethrift import (
 
 handlers = WebServiceAPIHandlerRegistry()
 
+
 class ApacheThriftWebServer(WebServiceAPIServerBase):
     """
     A webservice for handling thrift services.

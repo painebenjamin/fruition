@@ -3,7 +3,10 @@ import tempfile
 
 from pibble.api.server.apachethrift import ApacheThriftServer
 from pibble.api.client.apachethrift import ApacheThriftClient
-from pibble.api.client.apachethrift.wrapper import ApacheThriftHandlerWrapper, ApacheThriftClientWrapper
+from pibble.api.client.apachethrift.wrapper import (
+    ApacheThriftHandlerWrapper,
+    ApacheThriftClientWrapper,
+)
 from pibble.api.helpers.apachethrift import ApacheThriftHandler, ApacheThriftCompiler
 
 from pibble.util.log import DebugUnifiedLoggingContext
@@ -45,7 +48,11 @@ def main():
                     },
                 }
             )
-            for client_class in [ApacheThriftHandlerWrapper, ApacheThriftClientWrapper, ApacheThriftClient]:
+            for client_class in [
+                ApacheThriftHandlerWrapper,
+                ApacheThriftClientWrapper,
+                ApacheThriftClient,
+            ]:
                 if client_class is ApacheThriftClient:
                     server.start()
                     Pause.milliseconds(100)
@@ -57,7 +64,7 @@ def main():
                         "thrift": {
                             "service": GoodyThriftTest.Calculator,
                             "types": GoodyThriftTest.ttypes,
-                            "handler": CalculatorHandler
+                            "handler": CalculatorHandler,
                         },
                     }
                 )

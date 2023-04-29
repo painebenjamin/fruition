@@ -5,11 +5,13 @@ from pibble.api.client.webservice.wrapper import WebServiceAPIClientWrapper
 from pibble.util.log import DebugUnifiedLoggingContext
 from pibble.util.helpers import Assertion
 
+
 class JSONRPCClientWrapper(JSONRPCClient, WebServiceAPIClientWrapper):
     pass
 
 
 server = JSONRPCServer()
+
 
 @server.register
 @server.sign_request(int, int)
@@ -19,6 +21,7 @@ def add(a: int, b: int) -> int:
     Adds two numbers together.
     """
     return a + b
+
 
 @server.register
 @server.sign_named_request(base=int, exponent=2)
@@ -40,7 +43,12 @@ def main() -> None:
         try:
             for client_class in [JSONRPCClientWrapper, JSONRPCClient]:
                 client = client_class()
-                client.configure(**{"client": {"host": "127.0.0.1", "port": 8192}, "server": {"instance": server}})
+                client.configure(
+                    **{
+                        "client": {"host": "127.0.0.1", "port": 8192},
+                        "server": {"instance": server},
+                    }
+                )
                 Assertion(Assertion.EQ)(
                     client["system.listMethods"](),
                     [

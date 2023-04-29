@@ -19,7 +19,11 @@ from typing import Any, Iterable, Iterator, Optional, Literal, Union
 
 from pibble.util.log import logger
 from pibble.util.strings import get_uuid, safe_name
-from pibble.util.helpers import openpyxl_dataframe, FlexibleJSONDecoder, FlexibleJSONEncoder
+from pibble.util.helpers import (
+    openpyxl_dataframe,
+    FlexibleJSONDecoder,
+    FlexibleJSONEncoder,
+)
 
 default_missing = pd._libs.parsers.STR_NA_VALUES
 try:
@@ -39,7 +43,7 @@ __all__ = [
 
 class IncludeLoader(yaml.SafeLoader):
     """
-    This loader allows !include directives in yaml files. 
+    This loader allows !include directives in yaml files.
 
     The included files are relative to the directory of the main yaml file.
 
@@ -120,7 +124,7 @@ def dump_yaml(path: str, to_dump: Union[dict, list]) -> None:
     :param to_dump dict|list: The YAML to write.
     """
     with open(path, "w") as fp:
-        fp.write(yaml.dump(to_dump, default_flow_style = False))
+        fp.write(yaml.dump(to_dump, default_flow_style=False))
 
 
 def load_json(path: str) -> Union[dict, list, str, int, float, bool, None]:
@@ -141,13 +145,13 @@ def load_json(path: str) -> Union[dict, list, str, int, float, bool, None]:
 
     """
     with open(path, "r") as fp:
-        return json.loads(fp.read(), cls = FlexibleJSONDecoder)
+        return json.loads(fp.read(), cls=FlexibleJSONDecoder)
 
 
 def dump_json(path: str, to_dump: Union[dict, list]) -> None:
     """
     Dumps JSON to a file.
-    
+
     >>> from pibble.util.files import TempfileContext, dump_json
     >>> import datetime
     >>> context = TempfileContext()
@@ -159,7 +163,7 @@ def dump_json(path: str, to_dump: Union[dict, list]) -> None:
     >>> context.stop()
     """
     with open(path, "w") as fp:
-        fp.write(json.dumps(to_dump, cls = FlexibleJSONEncoder))
+        fp.write(json.dumps(to_dump, cls=FlexibleJSONEncoder))
 
 
 class TempfileContext:
@@ -219,10 +223,11 @@ class TempfileContext:
             try:
                 rmtree(self.directory)
             except Exception as ex:
-                logger.error("Couldn't clean tempfile context: {0}({1})".format(
-                    type(ex).__name__,
-                    ex
-                ))
+                logger.error(
+                    "Couldn't clean tempfile context: {0}({1})".format(
+                        type(ex).__name__, ex
+                    )
+                )
             del self.directory
 
     def __iter__(self) -> Iterator[str]:
@@ -435,7 +440,7 @@ class SpreadsheetParser:
 
     def chunkedListIterator(self, chunk_size: int = 100) -> Iterator[list]:
         """
-        Same as ``listIterator``, but chunks the reading. 
+        Same as ``listIterator``, but chunks the reading.
 
         Doesn't work for all file types - specifically XML-based types (XLSX)
         can't be read iteratively.
@@ -451,7 +456,7 @@ class SpreadsheetParser:
         self, chunk_size: int = 100, safe_names: Optional[bool] = False
     ) -> Iterator[dict]:
         """
-        Same as ``dictIterator``, but chunks the reading. 
+        Same as ``dictIterator``, but chunks the reading.
 
         Doesn't work for all file types - specifically XML-based types (XLSX)
         can't be read iteratively.
@@ -471,11 +476,12 @@ class SpreadsheetParser:
                 for row in chunk.values:
                     yield dict(zip(columns, row))
 
-def checksum(path: str, method: Literal['md5', 'sha1'] = 'md5') -> str:
+
+def checksum(path: str, method: Literal["md5", "sha1"] = "md5") -> str:
     """
-    Performs a checksum on a path. Uses the FileIterator so as not to 
+    Performs a checksum on a path. Uses the FileIterator so as not to
     overload memory.
-    
+
     >>> from pibble.util.files import TempfileContext, checksum
     >>> tempfiles = TempfileContext()
     >>> tempfiles.start()

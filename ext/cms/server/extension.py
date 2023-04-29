@@ -57,7 +57,9 @@ class CMSExtensionResolveStatementExtension(StatementExtensionBase):
             kwargs = {}
         server = self.getServer()
         if not hasattr(server, "resolve"):
-            raise ValueError("Server does not have resolve() method. Did you extend the right server base?")
+            raise ValueError(
+                "Server does not have resolve() method. Did you extend the right server base?"
+            )
         return url_join(
             self.getConfiguration()["server.cms.path.root"],
             server.resolve(view, **kwargs),
@@ -89,7 +91,9 @@ class CMSExtensionResolveFunctionExtension(FunctionExtensionBase):
             kwargs = {}
         server = self.getServer()
         if not hasattr(server, "resolve"):
-            raise ValueError("Server does not have resolve() method. Did you extend the right server base?")
+            raise ValueError(
+                "Server does not have resolve() method. Did you extend the right server base?"
+            )
         return url_join(
             self.getConfiguration()["server.cms.path.root"],
             server.resolve(str(view), **kwargs),

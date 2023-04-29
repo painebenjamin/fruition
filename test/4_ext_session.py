@@ -62,17 +62,16 @@ def main():
                 expect_exception(NotFoundError)(client.get)
                 Assertion(Assertion.EQ)(client.get("/Billy").text, "Hello, Billy!")
                 Assertion(Assertion.EQ)(client.get().text, "Hello, Billy!")
-                
+
                 client2 = WebServiceAPIClientBase()
                 client2.configure(client={"host": "127.0.0.1", "port": "9090"})
-                
+
                 expect_exception(NotFoundError)(client2.get)
-                
+
                 Assertion(Assertion.EQ)(client2.get("/Bobby").text, "Hello, Bobby!")
                 Assertion(Assertion.EQ)(client2.get().text, "Hello, Bobby!")
                 Assertion(Assertion.NEQ)(client.get().text, client2.get().text)
 
-                
             finally:
                 server.stop()
 

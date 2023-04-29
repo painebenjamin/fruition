@@ -44,7 +44,9 @@ class RateLimitedWebServiceAPIMiddleware(WebServiceAPIMiddlewareBase):
     def parse(
         self,
         request: Optional[Union[WebobRequest, RequestsRequest, RequestWrapper]] = None,
-        response: Optional[Union[WebobResponse, RequestsResponse, ResponseWrapper]] = None,
+        response: Optional[
+            Union[WebobResponse, RequestsResponse, ResponseWrapper]
+        ] = None,
     ) -> None:
         """
         If we're running a server, set our current quota and reset time.
@@ -54,10 +56,10 @@ class RateLimitedWebServiceAPIMiddleware(WebServiceAPIMiddlewareBase):
         """
         if isinstance(response, WebobResponse) or isinstance(response, ResponseWrapper):
             if self.rate_limit <= 0:
-                return # Unmetered
+                return  # Unmetered
             now = datetime.datetime.now()
             if not hasattr(self, "rate_reset") or self.rate_reset < now:
-                self.rate_reset = now + datetime.timedelta(seconds = self.rate_period)
+                self.rate_reset = now + datetime.timedelta(seconds=self.rate_period)
                 self.rate_quota = self.rate_limit
             self.rate_quota -= 1
             if self.rate_quota <= 0:
@@ -74,7 +76,9 @@ class RateLimitedWebServiceAPIMiddleware(WebServiceAPIMiddlewareBase):
     def prepare(
         self,
         request: Optional[Union[WebobRequest, RequestsRequest, RequestWrapper]] = None,
-        response: Optional[Union[WebobResponse, RequestsResponse, ResponseWrapper]] = None,
+        response: Optional[
+            Union[WebobResponse, RequestsResponse, ResponseWrapper]
+        ] = None,
     ) -> None:
         """
         If we're running a server, pass rate limit data in headers of all responses.

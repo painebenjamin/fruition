@@ -16,6 +16,8 @@ from pibble.util.helpers import Assertion, Pause, CompressedIterator
 random_contents = "a" * 128
 
 handlers = WebServiceAPIHandlerRegistry()
+
+
 class TestServer(WebServiceAPIServerBase):
     @classmethod
     def get_handlers(cls) -> WebServiceAPIHandlerRegistry:
@@ -51,12 +53,13 @@ def main() -> None:
                     server.start()
                     Pause.milliseconds(100)
                 client = client_class()
-                client.configure(client = {"host": "127.0.0.1", "port": 8192}, server = {"instance": server})
+                client.configure(
+                    client={"host": "127.0.0.1", "port": 8192},
+                    server={"instance": server},
+                )
                 Assertion(Assertion.EQ)(client.get("inline").text, random_contents)
                 path = client.download(
-                    "GET",
-                    "download",
-                    directory=os.path.dirname(__file__)
+                    "GET", "download", directory=os.path.dirname(__file__)
                 )
                 Assertion(Assertion.EQ)(open(path, "r").read(), random_contents)
                 os.remove(path)

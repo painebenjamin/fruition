@@ -15,13 +15,17 @@ from pibble.util.helpers import Assertion
 from pibble.util.log import DebugUnifiedLoggingContext
 
 from typing import Iterable, TYPE_CHECKING
+
 if TYPE_CHECKING:
     from _typeshed.wsgi import WSGIApplication, WSGIEnvironment, StartResponse
 
 # we don't use the platform API structure, we'll just make a quick
 # WSGI app and serve it with werkzeug.
 
-def application(environ: WSGIEnvironment, start_response: StartResponse) -> Iterable[bytes]:
+
+def application(
+    environ: WSGIEnvironment, start_response: StartResponse
+) -> Iterable[bytes]:
 
     request = Request(environ)
     response = Response()

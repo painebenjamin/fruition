@@ -26,7 +26,9 @@ class BasicAuthenticationXMLRPCServer(BasicAuthenticationMiddleware, XMLRPCServe
 class BasicAuthenticationXMLRPCClient(BasicAuthenticationMiddleware, XMLRPCClient):
     pass
 
+
 server = BasicAuthenticationXMLRPCServer()
+
 
 @server.register
 @server.sign_request(int, int)
@@ -36,6 +38,7 @@ def add(a, b):
     Adds two numbers together.
     """
     return a + b
+
 
 @server.register
 @server.sign_request(int)

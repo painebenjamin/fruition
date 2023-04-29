@@ -10,15 +10,16 @@ def main() -> None:
         out, err = echo.run("$HOME")
         Assertion(Assertion.EQ)(out, "$HOME")
         if os.geteuid() == 0:
-            out, err = echo.run("$HOME", shell = True)
+            out, err = echo.run("$HOME", shell=True)
             Assertion(Assertion.EQ)(out, "/root")
-            out, err = echo.run("$HOME", shell = True, user = "goodydata")
+            out, err = echo.run("$HOME", shell=True, user="goodydata")
             Assertion(Assertion.EQ)(out, "/home/goodydata")
-            out, err = echo.run("$HOME", shell = True, user = "testuser")
+            out, err = echo.run("$HOME", shell=True, user="testuser")
             Assertion(Assertion.EQ)(out, "/home/testuser")
         else:
-            out, err = echo.run("$HOME", shell = True)
+            out, err = echo.run("$HOME", shell=True)
             Assertion(Assertion.EQ)(out, "/home/goodydata")
+
 
 if __name__ == "__main__":
     main()

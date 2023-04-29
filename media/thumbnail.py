@@ -8,19 +8,25 @@ from pibble.util.log import logger
 try:
     from PIL import ImageChops, Image
 except ImportError:
-    logger.warning("Cannot import imaging libraries. Make sure to install with the [imaging] option selected if imaging functionality is required.")
+    logger.warning(
+        "Cannot import imaging libraries. Make sure to install with the [imaging] option selected if imaging functionality is required."
+    )
     raise
 
 try:
     from psd_tools import PSDImage
 except ImportError:
-    logger.warning("Cannot import PSDImage libray. Make sure to install with the [imaging] option selected if imaging functionality is required.")
+    logger.warning(
+        "Cannot import PSDImage libray. Make sure to install with the [imaging] option selected if imaging functionality is required."
+    )
     raise
 
 try:
     from pdf2image import convert_from_path
 except ImportError:
-    logger.warning("Cannot import pdf2image library. Make sure to install with the [imaging] option selected if imaging functionality is required.")
+    logger.warning(
+        "Cannot import pdf2image library. Make sure to install with the [imaging] option selected if imaging functionality is required."
+    )
     raise
 
 from pibble.util.helpers import find_executable

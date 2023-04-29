@@ -166,7 +166,7 @@ class APIAuthenticationSourceDriver:
         if self.encryption == "crypt":
             if os.name == "nt":
                 raise ConfigurationError("Crypt is not supported on Windows.")
-            return crypt.crypt(password, stored) # type: ignore
+            return crypt.crypt(password, stored)  # type: ignore
         else:
             return getattr(hashlib, self.encryption)(encode(password)).hexdigest()
 
@@ -321,9 +321,9 @@ class UnixAuthenticationSourceDriver(APIAuthenticationSourceDriver):
         if os.name == "nt":
             raise ConfigurationError("Cannot use Unix authentication on Windows")
         try:
-            passwd = pwd.getpwnam(username) # type: ignore
+            passwd = pwd.getpwnam(username)  # type: ignore
             if passwd[1] == "x" or passwd[1] == "*":
-                return spwd.getspnam(username)[1] # type: ignore
+                return spwd.getspnam(username)[1]  # type: ignore
             else:
                 return passwd[1]
         except KeyError:

@@ -36,14 +36,10 @@ def try_json_dict_parse(to_parse: str) -> Union[dict, str]:
     """
     try:
         loaded = loads(to_parse)
-        return dict(
-            [
-                (key, FlexibleStringer.parse(loaded[key]))
-                for key in loaded
-            ]
-        )
+        return dict([(key, FlexibleStringer.parse(loaded[key])) for key in loaded])
     except JSONDecodeError:
         return to_parse
+
 
 def try_json_list_parse(to_parse: str) -> Union[list, str]:
     """
@@ -52,12 +48,10 @@ def try_json_list_parse(to_parse: str) -> Union[list, str]:
     """
     try:
         loaded = loads(to_parse)
-        return [
-            FlexibleStringer.parse(i) 
-            for i in loaded
-        ]
+        return [FlexibleStringer.parse(i) for i in loaded]
     except JSONDecodeError:
         return to_parse
+
 
 class FlexibleStringer:
     """
@@ -143,7 +137,7 @@ class FlexibleStringer:
             r"^\d{4}-\d{1,2}-\d{1,2}\ \d{1,2}:\d{1,2}:\d{1,2}\.\d+$"
         ): lambda p: datetime.strptime(p, "%Y-%m-%d %H:%M:%S.%f"),
         compile(r"^\{.*\}$"): lambda p: try_json_dict_parse(p),
-        compile(r"^\[.*\]$"): lambda p: try_json_list_parse(p)
+        compile(r"^\[.*\]$"): lambda p: try_json_list_parse(p),
     }
 
     SERIALIZE_FORMATS = {
@@ -180,7 +174,9 @@ class FlexibleStringer:
                 )
                 pass
             else:
-                raise ValueError("Can't parse {0}: {1}({2})".format(parameter, type(ex).__name__, ex))
+                raise ValueError(
+                    "Can't parse {0}: {1}({2})".format(parameter, type(ex).__name__, ex)
+                )
         return parameter
 
     @classmethod
@@ -249,6 +245,7 @@ def get_random_word() -> str:
         word_generator = RandomWordGenerator()
     return next(word_generator)
 
+
 def get_random_name(length: int = 32) -> str:
     """
     Gets a random name, optionally targeting a certain length.
@@ -257,6 +254,7 @@ def get_random_name(length: int = 32) -> str:
     while len(name) < length:
         name += pascal_case(get_random_word())
     return name
+
 
 def get_unique_random_word() -> str:
     """
@@ -767,6 +765,7 @@ def pretty_print_sentence(*args: Any, **kwargs: Any) -> str:
     else:
         return "{0} and {1}".format(", ".join(lst[:-1]), lst[-1])
 
+
 def parse_url_encoded(encoded: str) -> Union[str, dict[str, Any]]:
     """
     Parses a urlencoded string and returns either the string, or a dictionary of parameters.
@@ -778,11 +777,12 @@ def parse_url_encoded(encoded: str) -> Union[str, dict[str, Any]]:
     """
     decoded = unquote(encoded)
     if "=" in decoded:
-        return dict([
-            cast(Tuple[str,str], tuple(part.split("=")[:2]))
-            for part in 
-            decoded.split("&")
-        ])
+        return dict(
+            [
+                cast(Tuple[str, str], tuple(part.split("=")[:2]))
+                for part in decoded.split("&")
+            ]
+        )
     return decoded
 
 
@@ -790,6 +790,7 @@ class MultipartFile:
     """
     Small wrapper to help reading a multipart file.
     """
+
     def __init__(self, filename: str, content: bytes):
         self.filename = filename
         self.content = content
@@ -798,6 +799,7 @@ class MultipartFile:
     @property
     def file(self) -> io.BytesIO:
         return io.BytesIO(self.content)
+
 
 def parse_multipart(encoded: Union[str, bytes]) -> dict[str, Union[str, MultipartFile]]:
     """

@@ -10,5 +10,5 @@ class DAMServerBase(WebServiceAPIServerBase, ORMMiddlewareBase):
         self.orm.extend_base(
             DAMObjectBase,
             force=self.configuration.get("orm.force", False),
-            create=self.configuration.get("orm.create", True)
+            create=self.configuration.get("orm.create", True),
         )

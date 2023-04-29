@@ -100,7 +100,9 @@ class Engine:
         self.engines[database_name] = sqlalchemy.create_engine(conn_string)
         if "pyodbc" in self.connection_params["drivername"]:
             if pyodbc is None:
-                raise OSError("Failed to import PyODBC. This server/container likely needs ODBC configuration.")
+                raise OSError(
+                    "Failed to import PyODBC. This server/container likely needs ODBC configuration."
+                )
 
             def decode_sketchy_utf16(raw_bytes):
                 s = raw_bytes.decode("utf-16le", "ignore")

@@ -67,7 +67,11 @@ class ApacheThriftRequest:
     """
 
     def __init__(
-        self, handler: Union[ApacheThriftServerHandler, APIClientBase], method: str, *args: Any, **kwargs: Any
+        self,
+        handler: Union[ApacheThriftServerHandler, APIClientBase],
+        method: str,
+        *args: Any,
+        **kwargs: Any,
     ):
         self.handler = handler
         self.method = method
@@ -406,7 +410,11 @@ class ApacheThriftService:
         try:
             self.interface = self.service.Iface
         except:
-            logger.error("Couldn't find auto-generated 'IFace' object in service {0}".format(self.service))
+            logger.error(
+                "Couldn't find auto-generated 'IFace' object in service {0}".format(
+                    self.service
+                )
+            )
             raise
 
         self.handler = self.configuration.get("thrift.handler", None)

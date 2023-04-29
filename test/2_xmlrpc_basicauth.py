@@ -19,7 +19,9 @@ class BasicAuthenticationXMLRPCServer(BasicAuthenticationMiddleware, XMLRPCServe
 class BasicAuthenticationXMLRPCClient(BasicAuthenticationMiddleware, XMLRPCClient):
     pass
 
+
 server = BasicAuthenticationXMLRPCServer()
+
 
 @server.register
 @server.sign_request(int, int)
@@ -30,6 +32,7 @@ def add(a, b):
     """
     return a + b
 
+
 @server.register
 @server.sign_request(int)
 @server.sign_request(int, int)
@@ -39,6 +42,7 @@ def pow(a, b=2):
     Raises a to the power of b.
     """
     return a**b
+
 
 def main():
     with DebugUnifiedLoggingContext():

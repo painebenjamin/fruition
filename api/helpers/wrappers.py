@@ -11,18 +11,24 @@ from http.cookies import SimpleCookie
 from pibble.api.client.base import APIClientBase
 from pibble.api.server.base import APIServerBase
 from pibble.util.strings import decode, encode, parse_url_encoded, parse_multipart
-from pibble.util.helpers import DecompressedIterator, CaseInsensitiveDict, FlexibleJSONDecoder
+from pibble.util.helpers import (
+    DecompressedIterator,
+    CaseInsensitiveDict,
+    FlexibleJSONDecoder,
+)
 
 __all__ = [
     "RequestWrapper",
     "ResponseWrapper",
     "SessionWrapper",
     "WSGIEnvironmentWrapper",
-    "StartResponseWrapper"
+    "StartResponseWrapper",
 ]
+
 
 class NoDefault:
     pass
+
 
 class POSTWrapper:
     """
@@ -69,7 +75,7 @@ class POSTWrapper:
             raise ValueError("No key-value pairs present.")
         return key in self.decoded
 
-    def get(self, key: str, default: Any=NoDefault) -> str:
+    def get(self, key: str, default: Any = NoDefault) -> str:
         """
         Allows a dict-list .get().
         """
@@ -80,6 +86,7 @@ class POSTWrapper:
                 raise
             return default
 
+
 class GETWrapper:
     """
     Used for the request.GET wrapper provided by webob.
@@ -87,6 +94,7 @@ class GETWrapper:
     This works almost exactly like a dictionary, with the excetion of the
     `getall` method, which returns a list for each key.
     """
+
     def __init__(self, params: dict):
         self.params = params
 
@@ -114,6 +122,7 @@ class GETWrapper:
         for key in self.params:
             yield key
 
+
 class RequestWrapper:
     """
     The RequestWrapper class lets us create a request that behaves like
@@ -137,13 +146,13 @@ class RequestWrapper:
         self.remote_addr = kwargs.get("remote_addr", "")
 
         self.headers = CaseInsensitiveDict()
-        
+
         headers = kwargs.get("headers", {})
         params = kwargs.get("params", {})
         body = kwargs.get("body", None)
         data = kwargs.get("data", None)
         files = kwargs.get("files", None)
-        
+
         self.user_agent = kwargs.get("user_agent", "pibble")
 
         if isinstance(headers, dict):
@@ -193,7 +202,9 @@ class RequestWrapper:
         """
         Turns the cookie header into a dict.
         """
-        cookie: SimpleCookie = SimpleCookie() # Why do I have to type annotate this, mypy?
+        cookie: SimpleCookie = (
+            SimpleCookie()
+        )  # Why do I have to type annotate this, mypy?
         cookie.load(self.headers.get("cookie", ""))
         return {k: v.value for k, v in cookie.items()}
 
@@ -239,7 +250,7 @@ class RequestWrapper:
         if getattr(self, "client", None) is not None:
             base = getattr(self.client, "base", "")
             if self.url.startswith(base):
-                return self.url[len(base):]
+                return self.url[len(base) :]
         return self.url
 
     @property
@@ -262,6 +273,7 @@ class RequestWrapper:
         """
         return f"{self.method.upper()} {self.path}?{urlencode(self.params)}, headers: {json.dumps(self.headers)}, body: {self.text}"
 
+
 class ResponseWrapper:
     """
     Similar to the RequestWrapper, this acts like a webob Response but is
@@ -273,7 +285,7 @@ class ResponseWrapper:
     status_code: int
     headers: CaseInsensitiveDict
     content_length: int
-    app_iter: Iterator[bytes] # server sending response
+    app_iter: Iterator[bytes]  # server sending response
     body: bytes
     content_cache: list[bytes]
 
@@ -299,19 +311,20 @@ class ResponseWrapper:
                     self.content_cache.append(chunk)
                     yield chunk
             else:
-                for chunk in self.app_iter: 
+                for chunk in self.app_iter:
                     self.content_cache.append(chunk)
                     yield chunk
 
-    def set_cookie(self, 
-        cookie_name: str, 
-        cookie_value: Any, 
-        secure: bool = False, 
+    def set_cookie(
+        self,
+        cookie_name: str,
+        cookie_value: Any,
+        secure: bool = False,
         max_age: Optional[Union[int, datetime.timedelta]] = None,
         path: str = "/",
         domain: Optional[str] = None,
         samesite: Optional[Literal["strict", "lax", "none"]] = None,
-        expires: Optional[Union[datetime.datetime, datetime.timedelta]] = None
+        expires: Optional[Union[datetime.datetime, datetime.timedelta]] = None,
     ) -> None:
         """
         Uses SimpleCookie to add a cookie to the cookie header.
@@ -331,10 +344,14 @@ class ResponseWrapper:
                 cookie[cookie_name]["max_age"] = max_age
         elif expires is not None:
             if isinstance(expires, datetime.datetime):
-                cookie[cookie_name]["expires"] = expires.strftime("%a, %d %b %Y %H:%M:%S GMT")
+                cookie[cookie_name]["expires"] = expires.strftime(
+                    "%a, %d %b %Y %H:%M:%S GMT"
+                )
             else:
-                cookie[cookie_name]["expires"] = (datetime.datetime.utcnow() + expires).strftime("%a, %d %b %Y %H:%M:%S GMT")
-        cookie_text = cookie.output(header='').strip()
+                cookie[cookie_name]["expires"] = (
+                    datetime.datetime.utcnow() + expires
+                ).strftime("%a, %d %b %Y %H:%M:%S GMT")
+        cookie_text = cookie.output(header="").strip()
         existing_cookies = self.headers.get("set-cookie", None)
         if existing_cookies is not None:
             if isinstance(existing_cookies, list):
@@ -343,7 +360,6 @@ class ResponseWrapper:
                 self.headers["set-cookie"] = [existing_cookies, cookie_text]
         else:
             self.headers["set-cookie"] = cookie_text
-
 
     @property
     def text(self) -> str:
@@ -381,7 +397,7 @@ class ResponseWrapper:
     @content_type.setter
     def content_type(self, new_content_type: str) -> None:
         self.headers["content-type"] = new_content_type
-    
+
     @property
     def content_encoding(self) -> Optional[str]:
         return self.headers.get("content-encoding", None)
@@ -406,7 +422,7 @@ class ResponseWrapper:
         return json.loads(self.text)
 
     def __str__(self) -> str:
-        stringified = f"ResponseWrapper<{self.status_code}>";
+        stringified = f"ResponseWrapper<{self.status_code}>"
         if self.status_code < 400:
             if self.status_code in [301, 302, 308]:
                 stringified += f" Location: {self.location}"
@@ -416,6 +432,7 @@ class ResponseWrapper:
                 except:
                     pass
         return stringified
+
 
 class SessionWrapper:
     def send(self, request: RequestWrapper, **kwargs: Any) -> ResponseWrapper:
@@ -430,10 +447,11 @@ class SessionWrapper:
         call the pibble prepare(), it is just a method required with requests.
         """
         return request
-        
+
 
 class WSGIEnvironmentWrapper:
     pass
+
 
 class StartResponseWrapper:
     pass

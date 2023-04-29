@@ -21,7 +21,7 @@ PYTHON_TEMPLATE_SCRIPT=$(SCRIPT_DIR)/template-files.py
 
 # Python paths and directories
 PYTHON_SETUP=$(SRC_DIR)/setup.py
-PYTHON_SRC=$(shell find $(SRC_DIR) -type f -name "*.py" -not -path '*/.*' -not -path '*/test*' -not -path '*/sphnx*')
+PYTHON_SRC=$(shell find $(SRC_DIR) -type f -name "*.py" -not -path '*/.*' -not -path '*/test*' -not -path '*/build*' -not -path '*/docs*')
 PYTHON_PATH=$(abspath $(SRC_DIR)/..)
 PYTHON_PACKAGE_NAME=$(shell cat $(PYTHON_SETUP) | grep 'package_name =' | awk -F= '{print $$2}' | sed 's/[ "]//g' | sed "s/[ ']//g")
 PYTHON_PACKAGE_VERSION_MAJOR=$(shell cat $(PYTHON_SETUP) | grep 'version_major =' | awk -F= '{print $$2}' | sed 's/[ "]//g' | sed "s/[ ']//g")
@@ -46,6 +46,13 @@ PYTHON_TEST_INTEGRATION=$(BUILD_DIR)/.test
 sdist: $(PYTHON_PACKAGE)
 $(PYTHON_PACKAGE): $(PYTHON_SETUP) $(PYTHON_TEST_TYPE) $(PYTHON_TEST_IMPORT) $(PYTHON_TEST_UNIT) $(PYTHON_TEST_INTEGRATION)
 	$(BUILD_VENV_PYTHON) $(PYTHON_SETUP) sdist
+
+## Formats with black
+.PHONY: format
+format: $(PYTHON_SRC)
+	$(BUILD_VENV_PYTHON) -m pip install black
+	$(BUILD_VENV_PYTHON) -m black $?
+	git add $?
 
 ## Deletes build directory
 .PHONY: clean

@@ -176,7 +176,7 @@ def test_oop(orm: ORM) -> None:
 
         Assertion(Assertion.EQ)(
             page_1.encrypted_field,
-            orm.cipher.decrypt(should_be_encrypted), # type: ignore
+            orm.cipher.decrypt(should_be_encrypted),  # type: ignore
         )
 
         expect_exception(PermissionError)(
@@ -191,10 +191,10 @@ def test_oop(orm: ORM) -> None:
         expect_exception(BadRequestError)(
             lambda: page_1.format(include=["a_bad_relationship"])
         )
-        
-        expected_format_response["see"] = [ # type: ignore
-            dict([(key, item[key]) for key in item if key != "include"]) # type: ignore
-            for item in expected_format_response["include"]["PageKeywords"] # type: ignore
+
+        expected_format_response["see"] = [  # type: ignore
+            dict([(key, item[key]) for key in item if key != "include"])  # type: ignore
+            for item in expected_format_response["include"]["PageKeywords"]  # type: ignore
         ]
         del expected_format_response["include"]
         page_1.see(pk_1, pk_2)

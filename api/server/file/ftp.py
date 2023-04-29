@@ -1,4 +1,5 @@
 import os
+
 try:
     from pyftpdlib.authorizers import UnixAuthorizer
 except ImportError:

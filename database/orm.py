@@ -53,7 +53,9 @@ class ORMSession:
     :param kwargs
     """
 
-    def __init__(self, session: Session, autocommit: Optional[bool] = False, **kwargs: Any):
+    def __init__(
+        self, session: Session, autocommit: Optional[bool] = False, **kwargs: Any
+    ):
         self.session = session
         self.autocommit = autocommit
 
@@ -537,7 +539,9 @@ class ORM:
         if migrate:
             self.migrate(force)
 
-    def session(self, test: bool = True, retry: bool = True, **kwargs: Any) -> ORMSession:
+    def session(
+        self, test: bool = True, retry: bool = True, **kwargs: Any
+    ) -> ORMSession:
         """
         Gets a SQLAlchemy session, and wraps it in an ORMSession.
         """
@@ -548,7 +552,7 @@ class ORM:
             except:
                 if retry:
                     self.sessionmaker = sessionmaker(self.engine)
-                    return self.session(test = True, retry = False, **kwargs)
+                    return self.session(test=True, retry=False, **kwargs)
                 else:
                     raise
         return ORMSession(session, **kwargs)
@@ -676,6 +680,7 @@ class ORM:
         """
         self.engine.dispose()
 
+
 class ORMBuilder(ORM):
     """
     A simple helper for building an ORM programmatically.
@@ -688,8 +693,8 @@ class ORMBuilder(ORM):
         self.engine_kwargs = engine_kwargs
         self.init_kwargs = kwargs
         super(ORMBuilder, self).__init__(
-            EngineFactory.singleton(self.engine_type, **self.engine_kwargs), 
-            **self.init_kwargs
+            EngineFactory.singleton(self.engine_type, **self.engine_kwargs),
+            **self.init_kwargs,
         )
 
     def duplicate(self) -> ORMBuilder:

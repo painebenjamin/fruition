@@ -95,7 +95,9 @@ owned_sub_object_data = {
 class JSONUserClient(JSONWebServiceAPIClient, UserExtensionClientBase):
     pass
 
+
 handlers = UserExtensionHandlerRegistry()
+
 
 class JSONUserServer(JSONWebServiceAPIServer, UserExtensionServer):
     @classmethod

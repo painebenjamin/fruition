@@ -198,7 +198,7 @@ class AESCipher:
     def encrypt(self, raw: str, iv: Optional[bytes] = None) -> str:
         """
         Encrypts a string and returns the base64 representation.
-        
+
         >>> from pibble.util.encryption import AESCipher
         >>> iv = b'0' * AESCipher.BLOCK_SIZE
         >>> key = b'0' * AESCipher.KEY_SIZE

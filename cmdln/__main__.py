@@ -30,12 +30,14 @@ class MetaServerProcess(multiprocessing.Process):
     def run(self):
         self.service.serve()
 
+
 @click.group(name="pibble")
 def main() -> None:
     """
     Goody library command-line tools.
     """
     pass
+
 
 @main.command(short_help="Start a server based on configuration.")
 @click.argument("configuration")
@@ -155,7 +157,7 @@ def client(
     json: Optional[str] = None,
     wrapper: bool = False,
     long: bool = False,
-    debug: bool = False
+    debug: bool = False,
 ):
     """
     Initiates a client from a configuration file.
@@ -168,9 +170,16 @@ def client(
     factory = MetaFactory.from_file(configuration)
 
     if wrapper:
-        wrapper_path = "pibble.api.client.webservice.wrapper.WebServiceAPILambdaClientWrapper"
-        if wrapper_path not in factory.configuration["configuration"]["client"]["classes"]:
-            factory.configuration["configuration"]["client"]["classes"].append(wrapper_path)
+        wrapper_path = (
+            "pibble.api.client.webservice.wrapper.WebServiceAPILambdaClientWrapper"
+        )
+        if (
+            wrapper_path
+            not in factory.configuration["configuration"]["client"]["classes"]
+        ):
+            factory.configuration["configuration"]["client"]["classes"].append(
+                wrapper_path
+            )
     if debug:
         context = DebugUnifiedLoggingContext()
     else:
@@ -185,7 +194,12 @@ def client(
                 kwargs = {}
             args = tuple() if arg is None else arg
             if type(kwargs) is not dict:
-                print(termcolor.colored("JSON doesn't evaluate to an object; it's best if you use a mapping. Passing this as 'value'.", "yellow"))
+                print(
+                    termcolor.colored(
+                        "JSON doesn't evaluate to an object; it's best if you use a mapping. Passing this as 'value'.",
+                        "yellow",
+                    )
+                )
                 kwargs = {"value": kwargs}
             response = client(command, *args, **kwargs)
             if isinstance(response, requests.Response):
@@ -215,6 +229,7 @@ def client(
                 )
             )
             code.interact(local={"client": client})
+
 
 @main.command(short_help="Generates a thumbnail of most kinds of files.")
 @click.argument("input")

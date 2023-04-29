@@ -41,7 +41,6 @@ class WebServiceAPIClientBase(APIClientBase):
     retry: bool
     http_session: Union[Session, SessionWrapper]
 
-
     session_class: Type[Union[Session, SessionWrapper]] = Session
     request_class: Type[Union[Request, RequestWrapper]] = Request
     response_class: Type[Union[Response, ResponseWrapper]] = Response
@@ -55,7 +54,10 @@ class WebServiceAPIClientBase(APIClientBase):
         Builds the configuration.
         """
         self.host = self.configuration["client.host"]
-        self.schema = self.configuration.get("client.schema", "https" if self.configuration.get("client.secure", False) else "http")
+        self.schema = self.configuration.get(
+            "client.schema",
+            "https" if self.configuration.get("client.secure", False) else "http",
+        )
         self.port = int(
             self.configuration.get("client.port", 80 if self.schema == "http" else 443)
         )
@@ -65,9 +67,9 @@ class WebServiceAPIClientBase(APIClientBase):
         self.requests_session = self.session_class()
 
     def prepare_all(
-        self, 
-        request: Optional[Union[Request, RequestWrapper]] = None, 
-        response: Optional[Union[Response, ResponseWrapper]] = None
+        self,
+        request: Optional[Union[Request, RequestWrapper]] = None,
+        response: Optional[Union[Response, ResponseWrapper]] = None,
     ) -> None:
         """
         Runs all ``prepare()`` methods.
@@ -81,7 +83,7 @@ class WebServiceAPIClientBase(APIClientBase):
 
     def parse_all(
         self,
-        request: Optional[Union[Request, RequestWrapper]] = None, 
+        request: Optional[Union[Request, RequestWrapper]] = None,
         response: Optional[Union[Response, ResponseWrapper]] = None,
         raise_errors: Optional[bool] = True,
     ) -> None:
@@ -99,8 +101,8 @@ class WebServiceAPIClientBase(APIClientBase):
 
     def prepare(
         self,
-        request: Optional[Union[Request, RequestWrapper]] = None, 
-        response: Optional[Union[Response, ResponseWrapper]] = None
+        request: Optional[Union[Request, RequestWrapper]] = None,
+        response: Optional[Union[Response, ResponseWrapper]] = None,
     ) -> None:
         """
         This base ``prepare()`` method formats query parameters into strings. We don't use the
@@ -229,8 +231,8 @@ class WebServiceAPIClientBase(APIClientBase):
         request = self.request_class(method.upper(), url, **request_kwargs)
         self.prepare_all(request)
 
-        prepared = self.requests_session.prepare_request(request) # type: ignore
-        response = self.requests_session.send(prepared, **send_kwargs) # type: ignore
+        prepared = self.requests_session.prepare_request(request)  # type: ignore
+        response = self.requests_session.send(prepared, **send_kwargs)  # type: ignore
         self.retry = False
         self.parse_all(request, response, raise_errors)
         if self.retry:

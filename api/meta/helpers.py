@@ -10,6 +10,7 @@ from pibble.api.meta.base import MetaService, MetaFunction
 
 __all__ = ["MetaFactory"]
 
+
 class MetaFactory:
     """
     A class to hold configuration values and create services.
@@ -43,29 +44,31 @@ class MetaFactory:
                 "Unsupported configuration file '{0}'.".format(configuration_file)
             )
         if type(configuration) is not dict:
-            raise TypeError(f"Bad configuration file {configuration_file} - must evaluate to a dictionary.")
+            raise TypeError(
+                f"Bad configuration file {configuration_file} - must evaluate to a dictionary."
+            )
         return MetaFactory(configuration)
 
     def __call__(self, scope: str) -> MetaService:
         if scope not in self.configuration["configuration"]:
-            raise KeyError(
-                "Missing configuration for scope '{0}'.".format(scope)
-            )
+            raise KeyError("Missing configuration for scope '{0}'.".format(scope))
 
         if "classes" not in self.configuration["configuration"][scope]:
-            raise KeyError(
-                "Configuration missing keyword '{0}.classes'.".format(scope)
-            )
+            raise KeyError("Configuration missing keyword '{0}.classes'.".format(scope))
 
         functions = dict(
             [
                 (
                     str(function["name"]),
-                    MetaFunction(function["language"], function["script"], function.get("register", False)),
+                    MetaFunction(
+                        function["language"],
+                        function["script"],
+                        function.get("register", False),
+                    ),
                 )
-                for function in self.configuration["configuration"][
-                    scope
-                ].get("functions", [])
+                for function in self.configuration["configuration"][scope].get(
+                    "functions", []
+                )
             ]
         )
 

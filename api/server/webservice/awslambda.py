@@ -11,6 +11,7 @@ from pibble.api.helpers.wrappers import RequestWrapper, ResponseWrapper
 
 # V1
 
+
 class LambdaRequestContextV1(TypedDict):
     accountId: str
     apiId: str
@@ -25,6 +26,7 @@ class LambdaRequestContextV1(TypedDict):
     resourcePath: str
     stage: str
 
+
 class LambdaRequestPayloadV1(TypedDict):
     resource: str
     path: str
@@ -37,7 +39,9 @@ class LambdaRequestPayloadV1(TypedDict):
     body: Optional[str]
     isBase64Encoded: Optional[bool]
 
+
 # V2
+
 
 class LambdaRequestContextV2HTTP(TypedDict):
     method: str
@@ -45,6 +49,7 @@ class LambdaRequestContextV2HTTP(TypedDict):
     protocol: str
     sourceIp: str
     userAgent: str
+
 
 class LambdaRequestContextV2(TypedDict):
     accountId: str
@@ -59,6 +64,7 @@ class LambdaRequestContextV2(TypedDict):
     time: str
     timeEpoch: int
 
+
 class LambdaRequestPayloadV2(TypedDict):
     routeKey: str
     rawPath: str
@@ -70,13 +76,16 @@ class LambdaRequestPayloadV2(TypedDict):
     body: Optional[str]
     isBase64Encoded: Optional[bool]
 
+
 # Common
+
 
 class LambdaResponseDict(TypedDict):
     statusCode: int
     headers: dict[str, str]
     multiValueHeaders: dict[str, list[str]]
     body: str
+
 
 class LambdaContext:
     function_name: str
@@ -87,11 +96,17 @@ class LambdaContext:
     log_group_name: str
     log_stream_name: str
 
+
 class WebServiceAPILambdaServer(WebServiceAPIServerBase):
     """
     Provides an easy function for getting a lambda handler.
     """
-    def handle_lambda_request(self, event: Union[LambdaRequestPayloadV1, LambdaRequestPayloadV2], context: Optional[LambdaContext] = None) -> LambdaResponseDict:
+
+    def handle_lambda_request(
+        self,
+        event: Union[LambdaRequestPayloadV1, LambdaRequestPayloadV2],
+        context: Optional[LambdaContext] = None,
+    ) -> LambdaResponseDict:
         logger.debug(f"Receiving lambda request {event}")
         try:
             # Declare base variables to parse from differing payload
@@ -101,7 +116,7 @@ class WebServiceAPILambdaServer(WebServiceAPIServerBase):
             http_method: str = ""
             remote_addr: str = ""
             path: str = ""
-            
+
             # Common between payload types
             headers: dict[str, str] = event["headers"]
 
@@ -115,7 +130,9 @@ class WebServiceAPILambdaServer(WebServiceAPIServerBase):
             # Evaluate payload
             use_v2 = event.get("version", None) == "2.0" or "routeKey" in event
 
-            logger.debug("Parsing version {0} payload".format("2.0" if use_v2 else "1.0"))
+            logger.debug(
+                "Parsing version {0} payload".format("2.0" if use_v2 else "1.0")
+            )
             if use_v2:
                 # v2.0 Payload
                 payload_v2 = cast(LambdaRequestPayloadV2, event)
@@ -130,16 +147,20 @@ class WebServiceAPILambdaServer(WebServiceAPIServerBase):
 
                 if payload_v2.get("rawQueryString", None) is not None:
                     parsed_parameters = parse_qs(payload_v2["rawQueryString"])
-                    parameters.update(dict([
-                        (
-                            key,
-                            parsed_parameters[key][0]
-                            if len(parsed_parameters[key]) == 0
-                            else parsed_parameters[key]
+                    parameters.update(
+                        dict(
+                            [
+                                (
+                                    key,
+                                    parsed_parameters[key][0]
+                                    if len(parsed_parameters[key]) == 0
+                                    else parsed_parameters[key],
+                                )
+                                for key in parsed_parameters
+                            ]
                         )
-                        for key in parsed_parameters
-                    ]))
-                
+                    )
+
             else:
                 # v1.0 Payload
                 payload_v1 = cast(LambdaRequestPayloadV1, event)
@@ -148,16 +169,23 @@ class WebServiceAPILambdaServer(WebServiceAPIServerBase):
                 path = payload_v1["path"]
 
                 if payload_v1.get("multiValueQueryStringParameters", None) is not None:
-                    payload_params = cast(dict[str, list[str]], payload_v1["multiValueQueryStringParameters"])
-                    parameters.update(dict([
-                        (
-                            key,
-                            payload_params[key][0]
-                            if len(payload_params[key]) == 0
-                            else payload_params[key]
+                    payload_params = cast(
+                        dict[str, list[str]],
+                        payload_v1["multiValueQueryStringParameters"],
+                    )
+                    parameters.update(
+                        dict(
+                            [
+                                (
+                                    key,
+                                    payload_params[key][0]
+                                    if len(payload_params[key]) == 0
+                                    else payload_params[key],
+                                )
+                                for key in payload_params
+                            ]
                         )
-                        for key in payload_params
-                    ]))
+                    )
 
                 if payload_v1["requestContext"].get("identity", None) is not None:
                     identity_dict = cast(dict, payload_v1["requestContext"]["identity"])
@@ -171,25 +199,29 @@ class WebServiceAPILambdaServer(WebServiceAPIServerBase):
                 user_agent=user_agent,
                 headers=headers,
                 remote_addr=remote_addr,
-                body=body
+                body=body,
             )
-            
+
             response = ResponseWrapper()
             self.handle_request(request, response)
 
             return {
                 "statusCode": response.status_code,
-                "headers": dict([
-                    (key, response.headers[key])
-                    for key in response.headers
-                    if not isinstance(response.headers[key], list)
-                ]),
-                "multiValueHeaders": dict([
-                    (key, response.headers[key])
-                    for key in response.headers
-                    if isinstance(response.headers[key], list)
-                ]),
-                "body": response.text
+                "headers": dict(
+                    [
+                        (key, response.headers[key])
+                        for key in response.headers
+                        if not isinstance(response.headers[key], list)
+                    ]
+                ),
+                "multiValueHeaders": dict(
+                    [
+                        (key, response.headers[key])
+                        for key in response.headers
+                        if isinstance(response.headers[key], list)
+                    ]
+                ),
+                "body": response.text,
             }
         except KeyError as ex:
             raise ConfigurationError(f"Required API gateway variable {ex} not present.")

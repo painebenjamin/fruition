@@ -2,5 +2,6 @@
 
 from pibble.database.orm import ORMObjectBase
 
+
 class DAMObjectBase(ORMObjectBase):
-  pass
+    pass

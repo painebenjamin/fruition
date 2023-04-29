@@ -144,9 +144,9 @@ class SOAPClient(WebServiceAPIClientBase):
         raise KeyError("Unknown or disallowed method '{0}'.".format(method_name))
 
     def parse(
-        self, 
-        request: Optional[Union[Request, RequestWrapper]] = None, 
-        response: Optional[Union[Response, ResponseWrapper]] = None
+        self,
+        request: Optional[Union[Request, RequestWrapper]] = None,
+        response: Optional[Union[Response, ResponseWrapper]] = None,
     ) -> None:
         """
         Parses the response from requests.

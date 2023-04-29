@@ -1,7 +1,5 @@
 from pibble.ext.rest.database.base import RESTObjectBase
 
-__all__ = [
-    "RESTObjectBase"
-]
+__all__ = ["RESTObjectBase"]
 
 RESTObjectBase

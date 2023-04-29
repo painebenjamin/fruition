@@ -16,6 +16,7 @@ class ExtensionBase:
     getConfiguration: Callable[[], APIConfiguration]
     getServer: Callable[[], APIBase]
 
+
 class ContextExtensionBase(ExtensionBase, Extension):
     """
     A class for extending context-based processors.

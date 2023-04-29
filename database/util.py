@@ -73,10 +73,10 @@ def row_to_dict(row: Any) -> dict:
     :returns dict: The row, now in dictionary form.
     """
     if hasattr(row, "__table__"):
-        return dict([
-            (column.name, str(getattr(row, column.name)))
-            for column in row.__table__.columns
-        ])
+        return dict(
+            [
+                (column.name, str(getattr(row, column.name)))
+                for column in row.__table__.columns
+            ]
+        )
     return dict(zip(row.keys(), row))
-
-

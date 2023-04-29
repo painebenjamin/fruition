@@ -21,7 +21,6 @@ class GRPCAPIClient(APIClientBase):
     """
 
     def on_configure(self) -> None:
-
         self.grpc = GRPCConfiguration(self.configuration)
         self.service = self.grpc.service
         self.messages = self.service.messages
@@ -47,7 +46,7 @@ class GRPCAPIClient(APIClientBase):
         """
         for cls in type(self).mro():
             if hasattr(cls, "prepare") and "prepare" in cls.__dict__:
-                cls.prepare(self, request) # type: ignore
+                cls.prepare(self, request)  # type: ignore
 
     def _parse(self, response: GRPCResponse) -> None:
         """
@@ -55,7 +54,7 @@ class GRPCAPIClient(APIClientBase):
         """
         for cls in type(self).mro():
             if hasattr(cls, "parse") and "parse" in cls.__dict__:
-                cls.parse(self, response) # type: ignore
+                cls.parse(self, response)  # type: ignore
 
     def _call_method(self, method: str, *args: Any, **kwargs: Any) -> Any:
         """

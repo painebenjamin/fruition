@@ -10,7 +10,17 @@ import mimetypes
 from multiprocessing import cpu_count
 from traceback import format_exc
 
-from typing import Optional, Any, Callable, Iterable, Type, Tuple, Union, TYPE_CHECKING, cast
+from typing import (
+    Optional,
+    Any,
+    Callable,
+    Iterable,
+    Type,
+    Tuple,
+    Union,
+    TYPE_CHECKING,
+    cast,
+)
 
 from webob import Request, Response
 
@@ -59,7 +69,8 @@ if TYPE_CHECKING:
     # type to notate, and will be appropriately checked when necessary. Neat!
     from _typeshed.wsgi import StartResponse, WSGIEnvironment, WSGIApplication
 
-TEXT_CONTENT_TYPE=re.compile(r"^(text|application).*$")
+TEXT_CONTENT_TYPE = re.compile(r"^(text|application).*$")
+
 
 class CustomApplication(GunicornApplication):
     """
@@ -127,7 +138,7 @@ class WebServiceAPIServerBase(APIServerBase):
         self,
         exception: Exception,
         request: Union[Request, RequestWrapper],
-        response: Union[Response, ResponseWrapper]
+        response: Union[Response, ResponseWrapper],
     ) -> str:
         """
         Formats an exception. The base class only stringifies this; implementing classes should put in their appropriate formats.
@@ -140,7 +151,7 @@ class WebServiceAPIServerBase(APIServerBase):
         self,
         result: Any,
         request: Union[Request, RequestWrapper],
-        response: Union[Response, ResponseWrapper]
+        response: Union[Response, ResponseWrapper],
     ) -> str:
         """
         Formats a response. The base class stringifies this.
@@ -222,7 +233,7 @@ class WebServiceAPIServerBase(APIServerBase):
 
         path = None
         last_error = None
-        
+
         for handlers in self.class_handlers:
             try:
                 path = handlers.resolve(view_name, **kwargs)
@@ -237,7 +248,9 @@ class WebServiceAPIServerBase(APIServerBase):
             raise NotFoundError(f"No view with name {view_name}")
         return path
 
-    def _find_handler_by_request(self, request: Union[Request, RequestWrapper]) -> WebServiceAPIHandler:
+    def _find_handler_by_request(
+        self, request: Union[Request, RequestWrapper]
+    ) -> WebServiceAPIHandler:
         """
         Finds a handler by the request object.
 
@@ -255,9 +268,11 @@ class WebServiceAPIServerBase(APIServerBase):
         path = request.path
         root = self.configuration.get("server.root", "")
         if path.startswith(root):
-            path = path[len(root):]
+            path = path[len(root) :]
         else:
-            logger.warning(f"Request path {path} does not begin with server root {root}. This is likely a misconfiguration.")
+            logger.warning(
+                f"Request path {path} does not begin with server root {root}. This is likely a misconfiguration."
+            )
 
         for handlers in self.class_handlers:
             try:
@@ -273,24 +288,27 @@ class WebServiceAPIServerBase(APIServerBase):
             raise cast(Exception, last_error)
         return handler
 
-    def redirect(self, response: Union[Response, ResponseWrapper], location: str, code: int = 301) -> None:
+    def redirect(
+        self, response: Union[Response, ResponseWrapper], location: str, code: int = 301
+    ) -> None:
         """
         Issues a redirect response.
         """
         response.status_code = code
         response.location = location
 
-    def handle_request(self, 
-        request: Union[Request, RequestWrapper], 
-        response: Union[Response, ResponseWrapper]
-     ) -> Union[Response, ResponseWrapper]:
+    def handle_request(
+        self,
+        request: Union[Request, RequestWrapper],
+        response: Union[Response, ResponseWrapper],
+    ) -> Union[Response, ResponseWrapper]:
         """
         Given a request, this will find the appropriate handler, execute
         its method, and put the response into the provided response object.
 
         :param request Request: A webob.Request or RequestWrapper
         :param response Response: A webob.Response or ResponseWarpper
-        :returns: 
+        :returns:
         """
         headers = {
             **WebServiceAPIServerBase.HEADERS,
@@ -313,14 +331,9 @@ class WebServiceAPIServerBase(APIServerBase):
                 if handler.download_response:
                     # Check to see if we can compress.
                     if isinstance(result, io.IOBase):
-                        if (
-                            "gzip" in accepted_encodings
-                            and handler.compress_response
-                        ):
+                        if "gzip" in accepted_encodings and handler.compress_response:
                             # Compress the result itearatively.
-                            logger.debug(
-                                "Iteratively compressing IO-based result."
-                            )
+                            logger.debug("Iteratively compressing IO-based result.")
                             response.app_iter = CompressedIterator(result)
                             response.headers["Content-Encoding"] = "gzip"
                         else:
@@ -341,21 +354,14 @@ class WebServiceAPIServerBase(APIServerBase):
                         # Pass through the basename of the file.
                         response.headers[
                             "Content-Disposition"
-                        ] = 'inline; filename="{0}"'.format(
-                            os.path.basename(result)
-                        )
+                        ] = 'inline; filename="{0}"'.format(os.path.basename(result))
                         iterable = FileIterator(
                             result,
                             self.configuration.get("server.chunksize", 4096),
                         )
-                        if (
-                            "gzip" in accepted_encodings
-                            and handler.compress_response
-                        ):
+                        if "gzip" in accepted_encodings and handler.compress_response:
                             # Compress the result iteratively
-                            logger.debug(
-                                "Iteratively compressing file-based result."
-                            )
+                            logger.debug("Iteratively compressing file-based result.")
                             response.app_iter = CompressedIterator(iterable)
                             response.headers["Content-Encoding"] = "gzip"
                         else:
@@ -376,19 +382,14 @@ class WebServiceAPIServerBase(APIServerBase):
                         result = self.format_response(
                             result=result, request=request, response=response
                         )
-                    if (
-                        "gzip" in accepted_encodings
-                        and handler.compress_response
-                    ):
+                    if "gzip" in accepted_encodings and handler.compress_response:
                         logger.debug("Compressing unicode result.")
                         response.headers["Content-Encoding"] = "gzip"
                         if isinstance(result, str):
                             result = result.encode("utf-8")
                         elif not isinstance(result, bytes):
                             result = str(result).encode("utf-8")
-                        response.app_iter = CompressedIterator(
-                            io.BytesIO(result)
-                        )
+                        response.app_iter = CompressedIterator(io.BytesIO(result))
                     elif isinstance(result, str):
                         response.text = result
                     elif isinstance(result, bytes):
@@ -400,7 +401,7 @@ class WebServiceAPIServerBase(APIServerBase):
                 UnsupportedMethodError,
                 NotImplementedError,
                 BadRequestError,
-                TooManyRequestsError
+                TooManyRequestsError,
             ) as ex:
                 logger.warning(
                     "Received exception in handler: {0}({1})".format(
@@ -433,12 +434,16 @@ class WebServiceAPIServerBase(APIServerBase):
             logger.debug("Sending headers:")
             for header_name in response.headers:
                 logger.debug(
-                    "{0}: {1}".format(
-                        header_name, response.headers[header_name]
-                    )
+                    "{0}: {1}".format(header_name, response.headers[header_name])
                 )
-            if response.headers.get("Content-Encoding", None) is None and TEXT_CONTENT_TYPE.match(str(response.headers.get("Content-Type", "text"))):
-                logger.debug("Sending text: {0}".format(truncate(response.text, length = 100)))
+            if response.headers.get(
+                "Content-Encoding", None
+            ) is None and TEXT_CONTENT_TYPE.match(
+                str(response.headers.get("Content-Type", "text"))
+            ):
+                logger.debug(
+                    "Sending text: {0}".format(truncate(response.text, length=100))
+                )
         return response
 
     def wsgi(self) -> WSGIApplication:
@@ -504,7 +509,6 @@ class WebServiceAPIServerBase(APIServerBase):
 
                 WerkzeugRun(host, int(port), self.wsgi(), ssl_context=context)
             elif driver == "gunicorn":
-
                 options = {
                     "bind": "{0}:{1}".format(host, port),
                     "workers": int(
@@ -613,7 +617,9 @@ class MethodBasedWebServiceAPIServerBase(WebServiceAPIServerBase):
                 if name is None:
                     name = getattr(method, "__name__")
                 if name is None:
-                    raise ConfigurationError("Can't get name for method {0}".format(method))
+                    raise ConfigurationError(
+                        "Can't get name for method {0}".format(method)
+                    )
                 fn = self._find_method_by_function(method)
                 if fn is None:
                     if any([m.name == name and m.registered for m in self.methods]):
@@ -632,7 +638,11 @@ class MethodBasedWebServiceAPIServerBase(WebServiceAPIServerBase):
                     fn.registered = True
                 return method
             except Exception as ex:
-                raise ConfigurationError("Received exception when registering method. {0}: {1}".format(type(ex).__name__, ex))
+                raise ConfigurationError(
+                    "Received exception when registering method. {0}: {1}".format(
+                        type(ex).__name__, ex
+                    )
+                )
 
         if len(args) == 1 and (isinstance(args[0], str) or isinstance(args[0], bytes)):
             setattr(wrap, "name", args[0])
@@ -641,7 +651,9 @@ class MethodBasedWebServiceAPIServerBase(WebServiceAPIServerBase):
             method = cast(Callable, args[0])
             return wrap(method)
 
-    def sign_response(self, *args: Union[Type, Callable]) -> Callable[[Callable], Callable]:
+    def sign_response(
+        self, *args: Union[Type, Callable]
+    ) -> Callable[[Callable], Callable]:
         """
         Signs the response type of a method.
 
@@ -700,7 +712,9 @@ class MethodBasedWebServiceAPIServerBase(WebServiceAPIServerBase):
         setattr(wrap, "signature", args[0])
         return wrap
 
-    def sign_request(self, *args: Union[Type, Callable]) -> Callable[[Callable], Callable]:
+    def sign_request(
+        self, *args: Union[Type, Callable]
+    ) -> Callable[[Callable], Callable]:
         """
         Signs the request type of a method. Can be called multiple times for multiple signatures.
 

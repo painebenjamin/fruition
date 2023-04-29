@@ -1,19 +1,27 @@
 from pibble.api.server.webservice.rpc.jsonrpc import JSONRPCServer
 from pibble.api.server.webservice.awslambda import WebServiceAPILambdaServer
 from pibble.api.client.webservice.rpc.jsonrpc import JSONRPCClient
-from pibble.api.client.webservice.wrapper import WebServiceAPIClientWrapper, WebServiceAPILambdaTestClientWrapper
+from pibble.api.client.webservice.wrapper import (
+    WebServiceAPIClientWrapper,
+    WebServiceAPILambdaTestClientWrapper,
+)
 
 from pibble.util.log import DebugUnifiedLoggingContext
 from pibble.util.helpers import Assertion
 
-class JSONRPCLambdaTestClientWrapper(JSONRPCClient, WebServiceAPILambdaTestClientWrapper):
+
+class JSONRPCLambdaTestClientWrapper(
+    JSONRPCClient, WebServiceAPILambdaTestClientWrapper
+):
     pass
+
 
 class JSONRPCLambdaServerWrapper(JSONRPCServer, WebServiceAPILambdaServer):
     pass
 
 
 server = JSONRPCLambdaServerWrapper()
+
 
 @server.register
 @server.sign_request(int, int)
@@ -24,6 +32,7 @@ def add(a: int, b: int) -> int:
     """
     return a + b
 
+
 @server.register
 @server.sign_named_request(base=int, exponent=2)
 @server.sign_named_response(result=int)
@@ -32,6 +41,7 @@ def pow(base: int, exponent: int = 2) -> dict[str, int]:
     Raises base to the power of exponent.
     """
     return {"result": base**exponent}
+
 
 def main() -> None:
     with DebugUnifiedLoggingContext():
@@ -44,7 +54,12 @@ def main() -> None:
         try:
             for client_class in [JSONRPCLambdaTestClientWrapper, JSONRPCClient]:
                 client = client_class()
-                client.configure(**{"client": {"host": "127.0.0.1", "port": 8192}, "server": {"instance": server}})
+                client.configure(
+                    **{
+                        "client": {"host": "127.0.0.1", "port": 8192},
+                        "server": {"instance": server},
+                    }
+                )
                 Assertion(Assertion.EQ)(
                     client["system.listMethods"](),
                     [

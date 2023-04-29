@@ -1,6 +1,7 @@
 import os
 import stat
 import paramiko
+
 try:
     import pwd
 except ImportError:
@@ -53,8 +54,10 @@ class SFTPClient(FileTransferAPIClientBase):
 
         if not username:
             if os.name == "nt":
-                raise ConfigurationError("You must provide a username on Windows sytems.")
-            username = pwd.getpwuid(os.getuid()).pw_name # type: ignore
+                raise ConfigurationError(
+                    "You must provide a username on Windows sytems."
+                )
+            username = pwd.getpwuid(os.getuid()).pw_name  # type: ignore
             if not privatekeyfile:
                 path = os.path.join(os.path.expanduser("~"), ".ssh", "id_rsa")
                 if os.path.exists(path):

@@ -10,6 +10,8 @@ from typing import Type, Optional, Union
 
 
 handlers = WebServiceAPIHandlerRegistry()
+
+
 class RPCServerBase(MethodBasedWebServiceAPIServerBase):
     """
     A base server for RPC classes.
@@ -36,14 +38,14 @@ class RPCServerBase(MethodBasedWebServiceAPIServerBase):
 
         See the source for each methods return and help (or, deploy a server and ask it yourself.)
         """
-        
+
         fn = self.register("system.listMethods")(self.list_methods)
         self.sign_response(list)(fn)
 
         fn2 = self.register("system.methodSignature")(self.method_signature)
         self.sign_request(str)(fn2)
         self.sign_response(list)(fn2)
-    
+
         fn3 = self.register("system.methodHelp")(self.method_help)
         self.sign_request(str)(fn3)
         self.sign_response(str)(fn3)
@@ -56,7 +58,9 @@ class RPCServerBase(MethodBasedWebServiceAPIServerBase):
         """
         return [method.name for method in self.methods]
 
-    def method_signature(self, fn_name: str) -> Optional[Union[list[list[Type]], list[dict[str, Type]]]]:
+    def method_signature(
+        self, fn_name: str
+    ) -> Optional[Union[list[list[Type]], list[dict[str, Type]]]]:
         """
         Returns the signature of a method.
 
@@ -72,7 +76,9 @@ class RPCServerBase(MethodBasedWebServiceAPIServerBase):
         if fn.named_signature:
             return [fn.named_signature]
         elif not fn.signature:
-            raise ConfigurationError("Method {0} is missing a signature.".format(fn_name))
+            raise ConfigurationError(
+                "Method {0} is missing a signature.".format(fn_name)
+            )
         signatures: list[list[Type]] = []
         for signature in fn.signature:
             if fn.response_signature is not None:

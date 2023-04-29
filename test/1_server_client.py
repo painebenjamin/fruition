@@ -38,21 +38,30 @@ def main() -> None:
         with DebugUnifiedLoggingContext():
             server = TestServer()
             server.configure(
-                contents = random_contents,
-                server = {"driver": "werkzeug", "host": "0.0.0.0", "port": 8192}
+                contents=random_contents,
+                server={"driver": "werkzeug", "host": "0.0.0.0", "port": 8192},
             )
 
             try:
-                for client_class in [WebServiceAPIClientWrapper, WebServiceAPIClientBase]:
+                for client_class in [
+                    WebServiceAPIClientWrapper,
+                    WebServiceAPIClientBase,
+                ]:
                     if client_class is WebServiceAPIClientBase:
                         server.start()
                         Pause.milliseconds(100)
                     client = client_class()
-                    client.configure(client = {"host": "127.0.0.1", "port": 8192}, server = {"instance": server})
+                    client.configure(
+                        client={"host": "127.0.0.1", "port": 8192},
+                        server={"instance": server},
+                    )
                     path = client.download(
                         "GET", "download", directory=context.directory
                     )
-                    Assertion(Assertion.EQ)(open(os.path.join(context.directory, path), "r").read(), random_contents)
+                    Assertion(Assertion.EQ)(
+                        open(os.path.join(context.directory, path), "r").read(),
+                        random_contents,
+                    )
                     os.remove(path)
             finally:
                 server.stop()

@@ -20,6 +20,7 @@ from pibble.api.exceptions import AuthenticationError
 from pibble.api.middleware.webservice.base import WebServiceAPIMiddlewareBase
 from pibble.api.middleware.screening import ScreeningAPIMiddlewareBase
 
+
 class ScreeningWebServiceAPIMiddleware(
     WebServiceAPIMiddlewareBase, ScreeningAPIMiddlewareBase
 ):
@@ -27,10 +28,13 @@ class ScreeningWebServiceAPIMiddleware(
     Extends the base ScreeningAPIMiddlewareBase to get necessary details
     from requests.
     """
+
     def parse(
         self,
         request: Optional[Union[WebobRequest, RequestsRequest, RequestWrapper]] = None,
-        response: Optional[Union[WebobResponse, RequestsResponse, ResponseWrapper]] = None,
+        response: Optional[
+            Union[WebobResponse, RequestsResponse, ResponseWrapper]
+        ] = None,
     ) -> None:
         if isinstance(request, WebobRequest) or isinstance(request, RequestWrapper):
             peer = ipaddress.IPv4Address(request.remote_addr)

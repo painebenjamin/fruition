@@ -35,7 +35,7 @@ class JSONWebServiceAPIServer(WebServiceAPIServerBase):
                             show=request.GET.getall("show"),
                         )
             elif isinstance(result, ORMObject):
-                result = result.format( # type: ignore
+                result = result.format(  # type: ignore
                     include=request.GET.getall("include"),
                     show=request.GET.getall("show"),
                 )

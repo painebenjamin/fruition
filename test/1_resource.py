@@ -33,6 +33,8 @@ FAKE_DATA = "".join(
 
 
 handlers = WebServiceAPIHandlerRegistry()
+
+
 class FakeFileServingAPI(WebServiceAPIServerBase):
     @classmethod
     def get_handlers(cls) -> WebServiceAPIHandlerRegistry:

@@ -621,7 +621,6 @@ class GRPCCompiler:
         self.outdir = tempfile.mkdtemp()
 
         for path in os.listdir(self.directory):
-
             src = os.path.join(self.directory, path)
             dest = os.path.join(self.indir, path)
 

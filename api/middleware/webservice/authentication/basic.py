@@ -19,6 +19,7 @@ from pibble.api.middleware.webservice.base import WebServiceAPIMiddlewareBase
 from pibble.api.middleware.webservice.authentication.header import AuthorizationHeader
 from pibble.api.exceptions import AuthenticationError, ConfigurationError
 
+
 class BasicAuthenticationMiddleware(WebServiceAPIMiddlewareBase):
     """
     Middleware for basic HTTP authentication.
@@ -34,7 +35,9 @@ class BasicAuthenticationMiddleware(WebServiceAPIMiddlewareBase):
     def parse(
         self,
         request: Optional[Union[WebobRequest, RequestsRequest, RequestWrapper]] = None,
-        response: Optional[Union[WebobResponse, RequestsResponse, ResponseWrapper]] = None,
+        response: Optional[
+            Union[WebobResponse, RequestsResponse, ResponseWrapper]
+        ] = None,
     ) -> None:
         """
         Used to parse a request object for servers.
@@ -79,7 +82,9 @@ class BasicAuthenticationMiddleware(WebServiceAPIMiddlewareBase):
     def prepare(
         self,
         request: Optional[Union[WebobRequest, RequestsRequest, RequestWrapper]] = None,
-        response: Optional[Union[WebobResponse, RequestsResponse, ResponseWrapper]] = None,
+        response: Optional[
+            Union[WebobResponse, RequestsResponse, ResponseWrapper]
+        ] = None,
     ) -> None:
         """
         Used to prepare a request for clients.

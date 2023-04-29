@@ -71,7 +71,7 @@ class TemplateLoader:
                 for template_directory in self.directories
                 for directory, subdirectory, filenames in os.walk(template_directory)
             ]
- 
+
         self.extensions = self.configuration.get("server.template.extensions", [])
         if not isinstance(self.extensions, list):
             self.extensions = [self.extensions]
@@ -132,7 +132,12 @@ class TemplateLoader:
 
     def extend(
         self,
-        *extensions: Union[Type[TestExtensionBase], Type[FilterExtensionBase], Type[FunctionExtensionBase], Type[Extension]]
+        *extensions: Union[
+            Type[TestExtensionBase],
+            Type[FilterExtensionBase],
+            Type[FunctionExtensionBase],
+            Type[Extension],
+        ]
     ) -> None:
         """
         Adds an extension after initial creation.
@@ -143,7 +148,9 @@ class TemplateLoader:
         lambdas["getServer"] = lambda *args: self.server
         lambdas["getConfiguration"] = lambda *args: self.configuration
         for extension in extensions:
-            extension = type("{0}Extension".format(extension.__name__), (extension,), lambdas)
+            extension = type(
+                "{0}Extension".format(extension.__name__), (extension,), lambdas
+            )
 
             if issubclass(extension, TestExtensionBase):
                 if extension in self.tests:
@@ -184,14 +191,20 @@ class TemplateLoader:
                 return self.environment.from_string(name).render(**context)
             return self.environment.get_template(name).render(**context)
         except jinja2.exceptions.TemplateNotFound:
-            raise ConfigurationError("Couldn't find template {0}. Tried:\r\n{1}".format(
-                name,
-                "\r\n".join([
-                    "{0:d}: {1:s}{2:s}".format(
-                        i+1,
-                        directory,
-                        "" if os.path.isdir(directory) else " (NOT FOUND/PERMISSION ERROR)"
-                    )
-                    for i, directory in enumerate(self.directories)
-                ])
-            ))
+            raise ConfigurationError(
+                "Couldn't find template {0}. Tried:\r\n{1}".format(
+                    name,
+                    "\r\n".join(
+                        [
+                            "{0:d}: {1:s}{2:s}".format(
+                                i + 1,
+                                directory,
+                                ""
+                                if os.path.isdir(directory)
+                                else " (NOT FOUND/PERMISSION ERROR)",
+                            )
+                            for i, directory in enumerate(self.directories)
+                        ]
+                    ),
+                )
+            )

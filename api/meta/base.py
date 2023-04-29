@@ -34,7 +34,9 @@ class MetaFunction:
     :param context Any: Any context to pass to the function.
     """
 
-    def __init__(self, language: str, script: str, register: bool = False, **context: Any):
+    def __init__(
+        self, language: str, script: str, register: bool = False, **context: Any
+    ):
         self.language = language
         self.script = script
         self.context = context
@@ -125,7 +127,9 @@ class MetaService:
             if isinstance(self._class_instance, MethodBasedWebServiceAPIServerBase):
                 for function in self.functions:
                     if getattr(self.functions[function], "register", False):
-                        self._class_instance.register(function)(self.functions[function])
+                        self._class_instance.register(function)(
+                            self.functions[function]
+                        )
         return cast(APIBase, self._class_instance)
 
     @instance.deleter

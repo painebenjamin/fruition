@@ -25,7 +25,9 @@ class DigestAuthenticationXMLRPCServer(DigestAuthenticationMiddleware, XMLRPCSer
 class DigestAuthenticationXMLRPCClient(DigestAuthenticationMiddleware, XMLRPCClient):
     pass
 
+
 server = DigestAuthenticationXMLRPCServer()
+
 
 @server.register
 @server.sign_request(int, int)
@@ -35,6 +37,7 @@ def add(a, b):
     Adds two numbers together.
     """
     return a + b
+
 
 @server.register
 @server.sign_request(int)
@@ -64,7 +67,9 @@ def main():
                     Column("password", String),
                 )
                 table.create()
-                engine.execute(table.insert().values(username=username, password=password))
+                engine.execute(
+                    table.insert().values(username=username, password=password)
+                )
 
             server.configure(
                 **{

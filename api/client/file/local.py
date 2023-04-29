@@ -46,8 +46,8 @@ def UserContext(fn) -> Callable:
         demote = False
         uid = None
         if user is not None:
-            uid = pwd.getpwnam(user).pw_uid # type: ignore
-            if uid != os.getuid(): # type: ignore
+            uid = pwd.getpwnam(user).pw_uid  # type: ignore
+            if uid != os.getuid():  # type: ignore
                 demote = True
                 logger.debug(
                     "Demoting to user {0} ({1}) for process {2}::{3}".format(
@@ -57,7 +57,7 @@ def UserContext(fn) -> Callable:
 
         def context(pipe: Connection) -> None:
             if uid is not None:
-                os.setuid(uid) # type: ignore
+                os.setuid(uid)  # type: ignore
             try:
                 result = fn(*args, **kwargs)
                 if isinstance(result, types.GeneratorType):
@@ -124,15 +124,15 @@ class LocalFileTransferAPIClient(FileTransferAPIClientBase):
 
         if os.name != "nt":
             if owner is not None:
-                uid = pwd.getpwnam(owner).pw_uid # type: ignore
+                uid = pwd.getpwnam(owner).pw_uid  # type: ignore
             else:
                 uid = -1
             if group is not None:
-                gid = pwd.getpwnam(group).pw_uid # type: ignore
+                gid = pwd.getpwnam(group).pw_uid  # type: ignore
             else:
                 gid = -1
 
-            os.chown(path, uid, gid) # type: ignore
+            os.chown(path, uid, gid)  # type: ignore
         return self.getPath(path)
 
     @UserContext
@@ -250,8 +250,8 @@ class LocalFileTransferAPIClient(FileTransferAPIClientBase):
             owner = None
             group = None
         else:
-            owner = pwd.getpwuid(lstat.st_uid).pw_name # type: ignore
-            group = pwd.getpwuid(lstat.st_gid).pw_name # type: ignore
+            owner = pwd.getpwuid(lstat.st_uid).pw_name  # type: ignore
+            group = pwd.getpwuid(lstat.st_gid).pw_name  # type: ignore
 
         return RemoteObject(
             otype,
@@ -365,12 +365,12 @@ class LocalFileTransferAPIClient(FileTransferAPIClientBase):
                 group is not None and node.group != group
             ):
                 if owner is not None:
-                    uid = pwd.getpwnam(owner).pw_uid # type: ignore
+                    uid = pwd.getpwnam(owner).pw_uid  # type: ignore
                 else:
                     uid = -1
                 if group is not None:
-                    gid = pwd.getpwnam(group).pw_uid # type: ignore
+                    gid = pwd.getpwnam(group).pw_uid  # type: ignore
                 else:
                     gid = -1
-                os.chown(path, uid, gid) # type: ignore
+                os.chown(path, uid, gid)  # type: ignore
         return self.getPath(path)

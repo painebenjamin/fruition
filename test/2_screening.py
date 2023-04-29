@@ -15,6 +15,8 @@ PORT = 9091
 
 
 handlers = WebServiceAPIHandlerRegistry()
+
+
 class ScreeningWebServer(ScreeningWebServiceAPIMiddleware, WebServiceAPIServerBase):
     @classmethod
     def get_handlers(cls) -> WebServiceAPIHandlerRegistry:

@@ -1,11 +1,10 @@
 from typing import Literal
 from PIL import ImageColor
 
-__all__ = [
-    "contrast_color"
-]
+__all__ = ["contrast_color"]
 
-def contrast_color(color: str) -> Literal['black', 'white']:
+
+def contrast_color(color: str) -> Literal["black", "white"]:
     """
     Given a color, return the best contrasting color
     of either black or white.
@@ -21,4 +20,3 @@ def contrast_color(color: str) -> Literal['black', 'white']:
     g = colors[1]
     b = colors[2]
     return "black" if (r * 0.299 + g * 0.587 + b * 0.114) > 186 else "white"
-    

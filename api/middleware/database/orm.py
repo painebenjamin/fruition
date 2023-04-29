@@ -39,7 +39,9 @@ class ORMMiddlewareBase(APIMiddlewareBase):
     def parse(
         self,
         request: Optional[Union[WebobRequest, RequestsRequest, RequestWrapper]] = None,
-        response: Optional[Union[WebobResponse, RequestsResponse, ResponseWrapper]] = None,
+        response: Optional[
+            Union[WebobResponse, RequestsResponse, ResponseWrapper]
+        ] = None,
     ) -> None:
         """
         Either open or a close a database session, depending on client or server.
@@ -50,7 +52,9 @@ class ORMMiddlewareBase(APIMiddlewareBase):
                 if hasattr(self, "database"):
                     logger.debug("Closing client ORM session.")
                     self.database.close()
-            elif isinstance(request, WebobRequest) or isinstance(request, RequestWrapper):
+            elif isinstance(request, WebobRequest) or isinstance(
+                request, RequestWrapper
+            ):
                 # Server parsing a request, open database
                 logger.debug("Opening server ORM session.")
                 self.database = self.orm.session(expire_on_commit=False)
@@ -58,7 +62,9 @@ class ORMMiddlewareBase(APIMiddlewareBase):
     def prepare(
         self,
         request: Optional[Union[WebobRequest, RequestsRequest, RequestWrapper]] = None,
-        response: Optional[Union[WebobResponse, RequestsResponse, ResponseWrapper]] = None,
+        response: Optional[
+            Union[WebobResponse, RequestsResponse, ResponseWrapper]
+        ] = None,
     ) -> None:
         """
         Either open or a close a database session, depending on client or server.
@@ -68,7 +74,9 @@ class ORMMiddlewareBase(APIMiddlewareBase):
                 # Client preparing a request, open database
                 logger.debug("Opening client ORM session.")
                 self.database = self.orm.session(expire_on_commit=False)
-            elif isinstance(request, WebobRequest) or isinstance(request, RequestWrapper):
+            elif isinstance(request, WebobRequest) or isinstance(
+                request, RequestWrapper
+            ):
                 # Server preparing a response, close database
                 if hasattr(self, "database"):
                     logger.debug("Closing server ORM session.")

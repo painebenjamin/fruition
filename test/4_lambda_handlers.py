@@ -24,9 +24,7 @@ JSONRPC_API_CONFIG = {
         "client": {
             "host": "127.0.0.1",
             "port": 9000,
-            "classes": [
-                "pibble.api.client.webservice.rpc.jsonrpc.JSONRPCClient"
-            ]
+            "classes": ["pibble.api.client.webservice.rpc.jsonrpc.JSONRPCClient"],
         },
         "server": {
             "driver": "werkzeug",
@@ -34,19 +32,20 @@ JSONRPC_API_CONFIG = {
             "port": 9000,
             "classes": [
                 "pibble.api.server.webservice.rpc.jsonrpc.JSONRPCServer",
-                "pibble.api.server.webservice.awslambda.WebServiceAPILambdaServer"
+                "pibble.api.server.webservice.awslambda.WebServiceAPILambdaServer",
             ],
             "functions": [
                 {
                     "name": "getText",
                     "language": "python",
                     "register": True,
-                    "script": "result = 'Hello, Lambda!'"
+                    "script": "result = 'Hello, Lambda!'",
                 }
-            ]
-        }
-    }
+            ],
+        },
+    },
 }
+
 
 def main() -> None:
     with DebugUnifiedLoggingContext():
@@ -63,81 +62,99 @@ def main() -> None:
                 expected_json_rpc = {
                     "jsonrpc": "2.0",
                     "result": "Hello, Lambda!",
-                    "id": 1
+                    "id": 1,
                 }
 
-                payload_v1 = cast(LambdaRequestPayloadV1, {
-                    "resource": "",
-                    "path": "/RPC2",
-                    "httpMethod": "POST",
-                    "headers": {},
-                    "multiValueHeaders": None,
-                    "queryStringParameters": None,
-                    "multiValueQueryStringParameters": None,
-                    "requestContext": cast(LambdaRequestContextV1, {
-                        "accountId": "",
-                        "apiId": "",
-                        "domainName": "",
-                        "httpMethod": "POST",
-                        "identity": None,
+                payload_v1 = cast(
+                    LambdaRequestPayloadV1,
+                    {
+                        "resource": "",
                         "path": "/RPC2",
-                        "protocol": "",
-                        "requestId": "",
-                        "requestTime": "",
-                        "requestTimeEpoch": 0,
-                        "resourcePath": "",
-                        "stage": ""
-                    }),
-                    "body": json.dumps({
-                        "jsonrpc": "2.0",
-                        "method": "getText",
-                        "id": 1
-                    }),
-                    "isBase64Encoded": False
-                })
-                
-                payload_v2 = cast(LambdaRequestPayloadV2, {
-                    "routeKey": "",
-                    "rawPath": "/RPC2",
-                    "rawQueryString": "",
-                    "cookies": None,
-                    "headers": {},
-                    "queryStringParameters": None,
-                    "requestContext": cast(LambdaRequestContextV2, {
-                        "accountId": "",
-                        "apiId": "",
-                        "authentication": None,
-                        "authorizer": None,
-                        "domainName": "",
-                        "requestId": "",
+                        "httpMethod": "POST",
+                        "headers": {},
+                        "multiValueHeaders": None,
+                        "queryStringParameters": None,
+                        "multiValueQueryStringParameters": None,
+                        "requestContext": cast(
+                            LambdaRequestContextV1,
+                            {
+                                "accountId": "",
+                                "apiId": "",
+                                "domainName": "",
+                                "httpMethod": "POST",
+                                "identity": None,
+                                "path": "/RPC2",
+                                "protocol": "",
+                                "requestId": "",
+                                "requestTime": "",
+                                "requestTimeEpoch": 0,
+                                "resourcePath": "",
+                                "stage": "",
+                            },
+                        ),
+                        "body": json.dumps(
+                            {"jsonrpc": "2.0", "method": "getText", "id": 1}
+                        ),
+                        "isBase64Encoded": False,
+                    },
+                )
+
+                payload_v2 = cast(
+                    LambdaRequestPayloadV2,
+                    {
                         "routeKey": "",
-                        "stage": "",
-                        "time": "",
-                        "timeEpoch": 0,
-                        "http": {
-                            "method": "POST",
-                            "path": "/RPC2",
-                            "protocol": "",
-                            "sourceIp": "127.0.0.1",
-                            "userAgent": "pibble"
-                        }
-                    }),
-                    "body": decode(b64encode(encode(json.dumps({
-                        "jsonrpc": "2.0",
-                        "method": "getText",
-                        "id": 1
-                    })))),
-                    "isBase64Encoded": True
-                })
+                        "rawPath": "/RPC2",
+                        "rawQueryString": "",
+                        "cookies": None,
+                        "headers": {},
+                        "queryStringParameters": None,
+                        "requestContext": cast(
+                            LambdaRequestContextV2,
+                            {
+                                "accountId": "",
+                                "apiId": "",
+                                "authentication": None,
+                                "authorizer": None,
+                                "domainName": "",
+                                "requestId": "",
+                                "routeKey": "",
+                                "stage": "",
+                                "time": "",
+                                "timeEpoch": 0,
+                                "http": {
+                                    "method": "POST",
+                                    "path": "/RPC2",
+                                    "protocol": "",
+                                    "sourceIp": "127.0.0.1",
+                                    "userAgent": "pibble",
+                                },
+                            },
+                        ),
+                        "body": decode(
+                            b64encode(
+                                encode(
+                                    json.dumps(
+                                        {"jsonrpc": "2.0", "method": "getText", "id": 1}
+                                    )
+                                )
+                            )
+                        ),
+                        "isBase64Encoded": True,
+                    },
+                )
 
                 received_json_rpc = lambda_api_handler(payload_v1)
-                Assertion(Assertion.EQ)(expected_json_rpc, json.loads(received_json_rpc["body"]))
-                
-                received_json_rpc_2 = lambda_api_handler(payload_v2)
-                Assertion(Assertion.EQ)(expected_json_rpc, json.loads(received_json_rpc_2["body"]))
+                Assertion(Assertion.EQ)(
+                    expected_json_rpc, json.loads(received_json_rpc["body"])
+                )
 
+                received_json_rpc_2 = lambda_api_handler(payload_v2)
+                Assertion(Assertion.EQ)(
+                    expected_json_rpc, json.loads(received_json_rpc_2["body"])
+                )
 
                 lambda_action_handler({"action": "clean"})
+
 
 if __name__ == "__main__":
     main()

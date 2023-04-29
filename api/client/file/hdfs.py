@@ -14,9 +14,8 @@ from pibble.api.client.file.base import (
 )
 from pibble.api.exceptions import BadRequestError
 
-__all__ = [
-    "HDFSFileTransferAPIClient"
-]
+__all__ = ["HDFSFileTransferAPIClient"]
+
 
 class HDFSFileTransferAPIClient(FileTransferAPIClientBase):
     """

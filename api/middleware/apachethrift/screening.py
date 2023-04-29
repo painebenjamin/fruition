@@ -14,6 +14,7 @@ class ScreeningApacheThriftAPIMiddleware(
     Extends the base ScreeningAPIMiddleware to get necessary details
     from a thrift request.
     """
+
     def prepare(self, request: ApacheThriftRequest) -> None:
         if isinstance(self, ApacheThriftServer):
             peer_address, peer_port = self.tfactory.client.handle.getpeername()

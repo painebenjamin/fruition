@@ -17,8 +17,10 @@ service Calculator {
 """
 PORT = 9091
 
+
 class ApacheThriftWebClientWrapper(ApacheThriftWebClient, WebServiceAPIClientWrapper):
     pass
+
 
 class CalculatorHandler(ApacheThriftHandler):
     def add(self, num1, num2):

@@ -288,7 +288,6 @@ class UserExtensionServerBase(ORMWebServiceAPIServer):
             secondary_action=secondary_action,
             **kwargs,
         ):
-
             raise PermissionError(
                 "User {0} is not authorized to {1} on {2}.".format(
                     request.token.user.email,
@@ -476,9 +475,9 @@ class UserExtensionServerBase(ORMWebServiceAPIServer):
         if not hasattr(self, "orm"):
             raise ConfigurationError("No ORM configured, cannot use user extension.")
         self.orm.extend_base(
-            UserExtensionObjectBase, 
+            UserExtensionObjectBase,
             force=self.configuration.get("orm.force", False),
-            create=self.configuration.get("orm.create", True)
+            create=self.configuration.get("orm.create", True),
         )
         if "user.permissions" in self.configuration:
             self.migrate_permissions()
@@ -541,10 +540,13 @@ class UserExtensionServerBase(ORMWebServiceAPIServer):
 
 
 handlers = UserExtensionHandlerRegistry()
+
+
 class UserExtensionServer(UserExtensionServerBase):
     """
     This base class defines default handlers, if desired.
     """
+
     @classmethod
     def get_handlers(cls) -> UserExtensionHandlerRegistry:
         return handlers
@@ -573,6 +575,7 @@ class UserExtensionTemplateServer(UserExtensionServerBase, TemplateServer):
     This avoids default handler registration and adds cookies, since the template server
     will likely be acting through a browser.
     """
+
     def on_configure(self) -> None:
         """
         On configure, grab the cookie name from config.

@@ -27,7 +27,7 @@ class TestTemplateServer(TemplateServer):
     @handlers.path("/base.html")
     def base(self, request, response):
         return {"context": "success", "url": self.resolve("Base")}
-    
+
     @handlers.template("no-template.html.j2")
     @handlers.path("/none")
     @handlers.methods("GET")

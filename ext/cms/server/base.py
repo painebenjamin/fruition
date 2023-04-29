@@ -11,6 +11,8 @@ from pibble.ext.cms.server.mixin import CMSExtensionContextMixin
 
 
 handlers = TemplateServerHandlerRegistry()
+
+
 class CMSServerBase(
     TemplateServer, DAMServerBase, CMSExtensionContextMixin, ORMMiddlewareBase
 ):
@@ -137,7 +139,7 @@ class CMSServerBase(
         self.orm.extend_base(
             CMSExtensionObjectBase,
             force=self.configuration.get("orm.force", False),
-            create=self.configuration.get("orm.create", True)
+            create=self.configuration.get("orm.create", True),
         )
         if "cms.taxonomies" in self.configuration:
             logger.debug("Migrating taxonomies.")

@@ -21,7 +21,7 @@ from requests.auth import HTTPBasicAuth
 from requests_oauthlib import OAuth1Session
 from requests_oauthlib import OAuth2Session
 
-#from oauthlib.oauth2 import WebApplicationClient
+# from oauthlib.oauth2 import WebApplicationClient
 from oauthlib.oauth2 import LegacyApplicationClient
 from oauthlib.oauth2 import BackendApplicationClient
 
@@ -37,6 +37,7 @@ from pibble.api.exceptions import (
 
 from pibble.util.strings import FlexibleStringer
 from pibble.util.log import logger
+
 
 class OAuthAuthenticationMiddleware(WebServiceAPIMiddlewareBase):
     """
@@ -56,7 +57,9 @@ class OAuthAuthenticationMiddleware(WebServiceAPIMiddlewareBase):
     def parse(
         self,
         request: Optional[Union[WebobRequest, RequestsRequest, RequestWrapper]] = None,
-        response: Optional[Union[WebobResponse, RequestsResponse, ResponseWrapper]] = None,
+        response: Optional[
+            Union[WebobResponse, RequestsResponse, ResponseWrapper]
+        ] = None,
     ) -> None:
         if isinstance(request, WebobRequest):
             """
@@ -67,9 +70,13 @@ class OAuthAuthenticationMiddleware(WebServiceAPIMiddlewareBase):
     def prepare(
         self,
         request: Optional[Union[WebobRequest, RequestsRequest, RequestWrapper]] = None,
-        response: Optional[Union[WebobResponse, RequestsResponse, ResponseWrapper]] = None,
+        response: Optional[
+            Union[WebobResponse, RequestsResponse, ResponseWrapper]
+        ] = None,
     ) -> None:
-        if isinstance(request, RequestsRequest) and isinstance(response, RequestsResponse):
+        if isinstance(request, RequestsRequest) and isinstance(
+            response, RequestsResponse
+        ):
             if self.session is None:
                 raise ConfigurationError(
                     "A session state store is required for OAuth authentication flows."

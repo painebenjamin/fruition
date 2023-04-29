@@ -14,7 +14,7 @@ from logging import (
     LogRecord,
     Logger,
     getLogger,
-    DEBUG
+    DEBUG,
 )
 from typing import Any
 from logging.handlers import SysLogHandler
@@ -38,10 +38,11 @@ class ColoredLoggingFormatter(Formatter):
     """
     An extension of the base logging.Formatter that colors the log
     depending on the level.
-    
+
     This is using termcolor, so it's using terminal color escape sequences.
     These will appear as garbage bytes when not appropriately accounted for.
     """
+
     def format(self, record: LogRecord) -> str:
         """
         The main ``format`` function enumerates the six possible log levels

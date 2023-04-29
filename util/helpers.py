@@ -515,11 +515,13 @@ class CompressedIterator:
             except:
                 raise StopIteration()
 
+
 class DecompressedIterator:
     """
     The opposite of CompressedIterator, this is a helper for decompressing
     using zlib.
     """
+
     def __init__(self, iterable: Iterator[bytes]) -> None:
         """
         :param iterable Iterable: The content to compress.
@@ -557,7 +559,7 @@ class DecompressedIterator:
                     raise StopIteration()
             except:
                 raise StopIteration()
-    
+
 
 class AttributeDictionary:
     """
@@ -737,11 +739,11 @@ class ProcessRunner:
         """
         subprocess_kwargs: dict[str, Any] = {
             "stdout": subprocess.PIPE,
-            "stderr": subprocess.PIPE
+            "stderr": subprocess.PIPE,
         }
         if user is not None and os.name != "nt":
             # Set the env for the subprocess
-            user_pw = pwd.getpwnam(user) # type: ignore
+            user_pw = pwd.getpwnam(user)  # type: ignore
             env = os.environ.copy()
             env.update(
                 {
@@ -756,6 +758,7 @@ class ProcessRunner:
                 env.update({"PWD": os.getcwd()})
 
             subprocess_kwargs["env"] = env
+
             # Generate a demote function as pre-executable
             def demote(user_id, group_id):
                 def wrapper():
@@ -852,7 +855,7 @@ class ProcessRunner:
         """
         if self.process is not None:
             if os.name != "nt":
-                os.killpg(os.getpgid(self.process.pid), signal.SIGTERM) # type: ignore
+                os.killpg(os.getpgid(self.process.pid), signal.SIGTERM)  # type: ignore
             else:
                 os.kill(self.process.pid, signal.SIGTERM)
 
@@ -862,7 +865,7 @@ class ProcessRunner:
         """
         if self.process is not None:
             if os.name != "nt":
-                os.killpg(os.getpgid(self.process.pid), signal.SIGKILL) # type: ignore
+                os.killpg(os.getpgid(self.process.pid), signal.SIGKILL)  # type: ignore
             else:
                 os.kill(self.process.pid, signal.SIGTERM)
 
@@ -1003,6 +1006,7 @@ class Printer:
         """
         print(msg)
 
+
 class CaseInsensitiveDict(dict):
     """
     A dictionary drop-in that always lowercases keys.
@@ -1030,7 +1034,10 @@ class FlexibleJSONDecoder(json.JSONDecoder):
     """
     Extends the base JSONDecoder to allow for more string formats (incl. dates/times.)
     """
-    def decode(self, string: str, *args: Any) -> Union[dict, list, str, int, float, bool, None]:
+
+    def decode(
+        self, string: str, *args: Any
+    ) -> Union[dict, list, str, int, float, bool, None]:
         """
         The function called by the decoder - will be passed the raw string of the JSON text.
 
@@ -1040,10 +1047,12 @@ class FlexibleJSONDecoder(json.JSONDecoder):
         """
         return FlexibleStringer.parse(string)
 
+
 class FlexibleJSONEncoder(json.JSONEncoder):
     """
     Extends the base JSONEncoder to allow for more string formats (incl. dates/times.)
     """
+
     def encode(self, to_encode: Any) -> str:
         """
         The function called by the encoder - will be passed anything, and respond with a string.
@@ -1053,4 +1062,3 @@ class FlexibleJSONEncoder(json.JSONEncoder):
         :see: class:`funllib.helpers.strings.FlexibleStringer`
         """
         return FlexibleStringer.serialize(to_encode)
-

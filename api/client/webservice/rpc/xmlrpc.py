@@ -130,7 +130,9 @@ class XMLRPCClient(RPCClientBase):
             *[XMLRPCClient.format_parameter(parameter) for parameter in parameters]
         )
 
-    def format_request(self, method_name: str, *args: Any, **kwargs: Any) -> ET._Element:
+    def format_request(
+        self, method_name: str, *args: Any, **kwargs: Any
+    ) -> ET._Element:
         """
         Formats a request with method_name and *args into XML syntax.
 

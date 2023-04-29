@@ -6,12 +6,15 @@ from pibble.api.client.webservice.rpc.xmlrpc import XMLRPCClient
 from pibble.util.log import DebugUnifiedLoggingContext
 from pibble.util.helpers import Assertion
 
+
 class RootResult(TypedDict):
     value: int
     root: int
     result: float
 
+
 server = XMLRPCServer()
+
 
 @server.register
 @server.sign_request(int, int)
@@ -22,24 +25,27 @@ def add(a: int, b: int) -> int:
     """
     return a + b
 
+
 @server.register
 @server.sign_request(int)
 @server.sign_request(int, int)
 @server.sign_response(int)
-def pow(a: int, b: int=2) -> int:
+def pow(a: int, b: int = 2) -> int:
     """
     Raises a to the power of b.
     """
     return a**b
 
+
 @server.register
 @server.sign_named_request(value=int, root=2)
 @server.sign_named_response(value=int, root=int, result=float)
-def root(value: int, root: int=2) -> RootResult:
+def root(value: int, root: int = 2) -> RootResult:
     """
     Returns the nth root of a value.
     """
     return {"value": value, "root": root, "result": value ** (1 / float(root))}
+
 
 def main() -> None:
     with DebugUnifiedLoggingContext():

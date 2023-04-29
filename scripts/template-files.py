@@ -34,19 +34,20 @@ import os
 import shutil
 import jinja2
 
+
 def main(path: str, *args: str):
     template = jinja2.Template(open(path, "r").read())
     context: Dict[str, Union[str, List[str]]] = {}
     i = 0
     while i < len(args):
         key_flag = args[i]
-        value = args[i+1]
-        if key_flag.startswith('--'):
+        value = args[i + 1]
+        if key_flag.startswith("--"):
             key = key_flag[2:].strip()
             if key in context:
                 if not isinstance(context[key], list):
-                    context[key] = [context[key]] # type: ignore
-                context[key].append(value.strip()) # type: ignore
+                    context[key] = [context[key]]  # type: ignore
+                context[key].append(value.strip())  # type: ignore
             else:
                 context[key] = value.strip()
             i += 2
@@ -58,7 +59,10 @@ def main(path: str, *args: str):
     shutil.copy(tmp, path)
     os.remove(tmp)
 
+
 if __name__ == "__main__":
     if len(sys.argv) < 2:
-        raise ValueError("USAGE: python3 template-files.py <template_file> *<arg>=<value>")
+        raise ValueError(
+            "USAGE: python3 template-files.py <template_file> *<arg>=<value>"
+        )
     main(sys.argv[1], *sys.argv[2:])

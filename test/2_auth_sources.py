@@ -28,7 +28,7 @@ from pibble.api.server.webservice.handler import WebServiceAPIHandlerRegistry
 from pibble.api.client.webservice.base import WebServiceAPIClientBase
 
 
-def randomletters(n: int=10) -> str:
+def randomletters(n: int = 10) -> str:
     return "".join([random.choice(string.ascii_lowercase) for i in range(n)])
 
 
@@ -37,6 +37,8 @@ class BasicAuthenticationClient(BasicAuthenticationMiddleware, WebServiceAPIClie
 
 
 handlers = WebServiceAPIHandlerRegistry()
+
+
 class BasicAuthenticationServer(BasicAuthenticationMiddleware, WebServiceAPIServerBase):
     @classmethod
     def get_handlers(cls) -> WebServiceAPIHandlerRegistry:
@@ -55,7 +57,7 @@ class BasicAuthenticationServer(BasicAuthenticationMiddleware, WebServiceAPIServ
 
 
 class ServerContext:
-    def __init__(self, configuration: dict={}) -> None:
+    def __init__(self, configuration: dict = {}) -> None:
         if "server" not in configuration:
             configuration["server"] = {}
         configuration["server"]["host"] = "0.0.0.0"
@@ -73,7 +75,7 @@ class ServerContext:
 
 
 def main() -> None:
-    test_host = os.getenv("TEST_HOST", default = None)
+    test_host = os.getenv("TEST_HOST", default=None)
     with DebugUnifiedLoggingContext():
         with TempfileContext() as tempgen:
             username = "goodydata"

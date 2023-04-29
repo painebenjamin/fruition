@@ -36,6 +36,8 @@ class MultiNamespaceElementBuilder:
 
 
 handlers = WebServiceAPIHandlerRegistry()
+
+
 class SOAPServer(MethodBasedWebServiceAPIServerBase):
     """
     A SOAP server class that operates similarly to the RPC classes.
@@ -304,7 +306,7 @@ class SOAPServer(MethodBasedWebServiceAPIServerBase):
         except ET.XMLSyntaxError:
             logger.error(f"Couldn't parse SOAP envelope {request.text}")
             raise
-            
+
         body = envelope.find("{http://schemas.xmlsoap.org/soap/envelope/}Body")
 
         method_node = body[0]

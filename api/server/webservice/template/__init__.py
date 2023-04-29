@@ -45,12 +45,16 @@ class TemplateHandler(WebServiceAPIHandler):
         **kwargs: Any,
     ) -> str:
         if self.template is not None and isinstance(server, TemplateServer):
-            response.content_type = "text/html" # Push default now, this could be changed in handler
+            response.content_type = (
+                "text/html"  # Push default now, this could be changed in handler
+            )
             server.prepare_context_all(request, response)
             try:
                 context = self.function(server, request, response, *args, **kwargs)
             except:
-                logger.error("Template handler function raised exception, abandoning template render.")
+                logger.error(
+                    "Template handler function raised exception, abandoning template render."
+                )
                 raise
             if not isinstance(context, dict):
                 raise ConfigurationError(
@@ -203,7 +207,11 @@ class TemplateServer(WebServiceAPIServerBase):
                                 and result
                             ):
                                 if logger.isEnabledFor(logging.DEBUG):
-                                    logger.debug("Error handler compressing result {0}".format(truncate(str(result))))
+                                    logger.debug(
+                                        "Error handler compressing result {0}".format(
+                                            truncate(str(result))
+                                        )
+                                    )
                                 if isinstance(result, str):
                                     result = result.encode("utf-8")
                                 response.app_iter = CompressedIterator(
@@ -212,7 +220,11 @@ class TemplateServer(WebServiceAPIServerBase):
                                 response.headers["Content-Encoding"] = "gzip"
                             elif isinstance(result, str):
                                 if logger.isEnabledFor(logging.DEBUG):
-                                    logger.debug("Error handler returning result {0}".format(truncate(str(result))))
+                                    logger.debug(
+                                        "Error handler returning result {0}".format(
+                                            truncate(str(result))
+                                        )
+                                    )
                                 response.text = result
                         except Exception as ex:
                             logger.error(
@@ -222,7 +234,5 @@ class TemplateServer(WebServiceAPIServerBase):
                             )
                             logger.debug(traceback.format_exc())
                             response.status_code = 500
-                            response.text = self.format_exception(
-                                ex, request, response
-                            )
+                            response.text = self.format_exception(ex, request, response)
                         break
