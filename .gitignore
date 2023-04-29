@@ -1,2 +1,7 @@
 pibble.egg-info
-pibble.egg-info/*
+.mypy_cache
+__pycache__
+build
+dist
+.*.swp
+python

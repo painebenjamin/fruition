@@ -261,10 +261,9 @@ def thumbnail(
         ThumbnailBuilder(input).build(output, width, height, trim=trim)
 
 
-if __name__ == "__main__":
-    try:
-        main()
-    except Exception as ex:
-        print(termcolor.colored(str(ex), "red"))
-        sys.exit(5)
-    sys.exit(0)
+try:
+    main()
+except Exception as ex:
+    print(termcolor.colored(str(ex), "red"))
+    sys.exit(5)
+sys.exit(0)

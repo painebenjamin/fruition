@@ -1,9 +1,10 @@
+import os
 from setuptools import setup, find_packages
 
 package_name = "pibble"
 version_major = "0"
 version_minor = "4"
-version_patch = "0"
+version_patch = "2"
 
 install_requires = [
     "bcrypt>=4.0,<4.1",
@@ -73,8 +74,17 @@ setup(
     version=f"{version_major}.{version_minor}.{version_patch}",
     packages=find_packages("."),
     package_data={"pibble": []},
-    license="GPLv3",
-    long_description="A framework for developing webapps quickly and easily using Python",
+    license="gpl-3.0",
+    description="A framework for developing webapps quickly and easily using Python",
+    long_description=open(
+        os.path.join(os.path.dirname(os.path.abspath(__file__)), "README.md"), "r"
+    ).read(),
+    long_description_content_type="text/markdown",
+    entry_points={
+        "console_scripts": [
+            "pibble = pibble.__main__:main"
+        ],
+    },
     install_requires=install_requires,
     extras_require=extras_require,
 )
