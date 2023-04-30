@@ -13,25 +13,8 @@ except ImportError:
     )
     raise
 
-try:
-    from psd_tools import PSDImage
-except ImportError:
-    logger.warning(
-        "Cannot import PSDImage libray. Make sure to install with the [imaging] option selected if imaging functionality is required."
-    )
-    raise
-
-try:
-    from pdf2image import convert_from_path
-except ImportError:
-    logger.warning(
-        "Cannot import pdf2image library. Make sure to install with the [imaging] option selected if imaging functionality is required."
-    )
-    raise
-
 from pibble.util.helpers import find_executable
 from pibble.util.files import TempfileContext
-from pibble.web.scraper import WebScraper
 
 video_extensions = [".mov", ".mp4", ".flv", ".gif", ".webm"]
 audio_extensions = [
@@ -261,6 +244,7 @@ class ThumbnailBuilder:
             ).build(output, width, height)
 
     def _build_browser(self, output: str, width: int, height: int) -> Image.Image:
+        from pibble.web.scraper import WebScraper
         logger.debug(f"Building browser thumbnail from {self.filename} to {output}")
         tempfiles = TempfileContext()
         with tempfiles as generator:
@@ -276,6 +260,7 @@ class ThumbnailBuilder:
 
     def _build_pdf(self, output: str, width: int, height: int) -> Image.Image:
         logger.debug(f"Building PDF thumbnail from {self.filename} to {output}")
+        from pdf2image import convert_from_path
         tempfiles = TempfileContext()
         with tempfiles as generator:
             images_from_path = convert_from_path(
@@ -287,6 +272,7 @@ class ThumbnailBuilder:
         return page_1
 
     def _build_psd(self, output: str, width: int, height: int) -> Image.Image:
+        from psd_tools import PSDImage
         logger.debug(f"Building PSD thumbnail from {self.filename} to {output}")
         psd = PSDImage.open(self.filename)
         image = psd.composite()

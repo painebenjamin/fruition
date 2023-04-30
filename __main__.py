@@ -10,7 +10,6 @@ import traceback
 
 from typing import Optional
 
-from pibble.media.thumbnail import ThumbnailBuilder
 from pibble.api.meta.helpers import MetaFactory
 from pibble.util.log import (
     logger,
@@ -258,8 +257,8 @@ def thumbnail(
     Builds a thumbnail from an input path.
     """
     with LevelUnifiedLoggingContext(logging.DEBUG if debug else logging.WARNING):
+        from pibble.media.thumbnail import ThumbnailBuilder
         ThumbnailBuilder(input).build(output, width, height, trim=trim)
-
 
 try:
     main()
