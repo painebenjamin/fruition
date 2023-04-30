@@ -8,6 +8,7 @@ from pibble.api.exceptions import ConfigurationError
 from pibble.api.configuration import APIConfiguration
 from pibble.api.base import APIBase
 
+from pibble.util.log import logger
 from pibble.util.helpers import resolve
 
 from pibble.api.server.webservice.template.extensions import (
@@ -154,22 +155,30 @@ class TemplateLoader:
 
             if issubclass(extension, TestExtensionBase):
                 if extension in self.tests:
+                    logger.debug("Tried to extend template loader with duplicate test {0}".format(extension))
                     return
+                logger.debug("Template loading adding test {0}".format(extension))
                 self.tests.append(extension)
                 extension.assign(self.environment)
             elif issubclass(extension, FilterExtensionBase):
                 if extension in self.filters:
+                    logger.debug("Tried to extend template loader with duplicate filter {0}".format(extension))
                     return
+                logger.debug("Template loading adding filter {0}".format(extension))
                 self.filters.append(extension)
                 extension.assign(self.environment)
             elif issubclass(extension, FunctionExtensionBase):
                 if extension in self.functions:
+                    logger.debug("Tried to extend template loader with duplicate function {0}".format(extension))
                     return
+                logger.debug("Template loading adding function {0}".format(extension))
                 self.functions.append(extension)
                 extension.assign(self.environment)
             elif issubclass(extension, Extension):
                 if extension in self.extensions:
+                    logger.debug("Tried to extend template loader with duplicate extension {0}".format(extension))
                     return
+                logger.debug("Template loading adding extension {0}".format(extension))
                 self.extensions.append(extension)
                 self.environment.add_extension(extension)
             else:
