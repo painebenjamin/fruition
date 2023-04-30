@@ -141,7 +141,9 @@ class TemplateServer(WebServiceAPIServerBase):
 
         This does not require any actual configuration, but see :class:pibble.api.server.webservice.html.server.TemplateServerTemplateLoader for optional keys.
         """
-        self.templates = TemplateLoader(self.configuration, server=self)
+        if not hasattr(self, "templates"):
+            logger.debug("Creating template loader.")
+            self.templates = TemplateLoader(self.configuration, server=self)
 
     def prepare_context_all(self, request: Request, response: Response) -> None:
         """

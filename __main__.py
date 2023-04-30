@@ -43,7 +43,13 @@ def main() -> None:
 @click.option(
     "--debug", is_flag=True, help="Turn on debug unified logging.", default=False
 )
-def server(configuration: str, debug: bool = False) -> None:
+@click.option(
+    "--interactive",
+    is_flag=True,
+    help="After instantiation, enter an interactive console instead of serving.",
+    default=False,
+)
+def server(configuration: str, debug: bool = False, interactive: bool = False) -> None:
     """
     Starts a server, synchronously, using a configuration file.
 
@@ -58,10 +64,19 @@ def server(configuration: str, debug: bool = False) -> None:
 
     with context:
         service = factory("server")
-        try:
-            service.serve()
-        finally:
-            service.destroy()
+        if interactive:
+            print(
+                termcolor.colored(
+                    "Entering console. Use global object 'server' as instantiated server.",
+                    "cyan",
+                )
+            )
+            code.interact(local={"server": service.instance})
+        else:
+            try:
+                service.serve()
+            finally:
+                service.destroy()
 
 
 @main.command(short_help="Start multiple servers based on configurations.")
@@ -258,7 +273,9 @@ def thumbnail(
     """
     with LevelUnifiedLoggingContext(logging.DEBUG if debug else logging.WARNING):
         from pibble.media.thumbnail import ThumbnailBuilder
+
         ThumbnailBuilder(input).build(output, width, height, trim=trim)
+
 
 try:
     main()
