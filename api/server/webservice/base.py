@@ -244,7 +244,9 @@ class WebServiceAPIServerBase(APIServerBase):
                 continue
 
         if not path:
-            raise NotFoundError(f"No view with name {view_name} (tried {tried_handlers})")
+            raise NotFoundError(
+                f"No view with name {view_name} (tried {tried_handlers})"
+            )
         return path
 
     def _find_handler_by_request(
@@ -491,7 +493,30 @@ class WebServiceAPIServerBase(APIServerBase):
                 )
             )
 
-            if driver == "werkzeug":
+            if driver == "cherrypy":
+                import cherrypy
+
+                cherrypy.tree.graft(self.wsgi(), "/")
+                cherrypy.server.unsubscribe()
+                server = cherrypy._cpserver.Server()
+                server.socket_host = host
+                server.socket_port = port
+                server.thread_pool = self.configuration.get("server.threads", 30)
+
+                if secure and cert is not None and key is not None:
+                    server.ssl_module = "pyopenssl"
+                    server.ssl_certificate = cert
+                    server.ssl_private_key = key
+                elif secure:
+                    logger.warning(
+                        "No SSL certificate/key specified. If this server is being proxied through another service that provides SSL context, this is okay - otherwise connections will fail."
+                    )
+
+                server.subscribe()
+                cherrypy.engine.start()
+                cherrypy.engine.block()
+
+            elif driver == "werkzeug":
                 context = None
 
                 if secure and cert is not None and key is not None:

@@ -4,7 +4,7 @@ from setuptools import setup, find_packages
 package_name = "pibble"
 version_major = "0"
 version_minor = "4"
-version_patch = "7"
+version_patch = "8"
 
 install_requires = [
     "bcrypt>=4.0,<4.1",
@@ -45,6 +45,7 @@ extras_require = {
     "grpc": ["grpcio<1.49", "grpcio-tools<1.49"],
     "browser": ["selenium>=4.8,<5.0"],
     "imaging": ["pdf2image>=1.16,<2.0", "pillow>=9.5,<10.0", "psd-tools>=1.9,<2.0"],
+    "cherrypy": ["cherrypy>=18.8,<19.0"],
     "build": [
         "sphinx>=6.2,<6.3",
         "sphinx-rtd-theme>=1.2,<1.3",

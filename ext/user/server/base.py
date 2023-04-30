@@ -538,7 +538,7 @@ class UserExtensionServerBase(ORMWebServiceAPIServer):
 
         return token
 
-    def bypass_login(self) -> AuthenticationToken:
+    def bypass_login(self, request: Request, response: Response) -> AuthenticationToken:
         """
         Generates a 'noauth' authentication token.
         """
@@ -650,7 +650,7 @@ class UserExtensionTemplateServer(UserExtensionServerBase, TemplateServer):
         """
         Override the bypass_login handler to add token cookie.
         """
-        token = super(UserExtensionTemplateServer, self).bypass_login()
+        token = super(UserExtensionTemplateServer, self).bypass_login(request, response)
         self.set_token_cookie(response, token)
         return token
 
