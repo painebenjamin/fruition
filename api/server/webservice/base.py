@@ -233,19 +233,18 @@ class WebServiceAPIServerBase(APIServerBase):
 
         path = None
         last_error = None
+        tried_handlers = []
 
         for handlers in self.class_handlers:
+            tried_handlers.append(handlers)
             try:
                 path = handlers.resolve(view_name, **kwargs)
                 break
             except NotFoundError as ex:
-                last_error = ex
                 continue
 
-        if last_error and not path:
-            raise last_error
-        elif not path:
-            raise NotFoundError(f"No view with name {view_name}")
+        if not path:
+            raise NotFoundError(f"No view with name {view_name} (tried {tried_handlers})")
         return path
 
     def _find_handler_by_request(

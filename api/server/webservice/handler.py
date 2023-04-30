@@ -45,8 +45,9 @@ class WebServiceAPIHandler:
         return WebServiceAPIBoundHandler(self, **kwargs)
 
     def __repr__(self) -> str:
-        return "{0} {1}: {2}".format(
-            ", ".join(self.methods), self.pattern, self.function.__name__
+        return "{0} {1}: {2}{3}".format(
+            ", ".join(self.methods), self.pattern, self.function.__name__,
+            "" if not self.reverse else ", reverse: {0}".format(self.reverse)
         )
 
     def __call__(
@@ -378,6 +379,8 @@ class WebServiceAPIHandlerRegistry:
                     resolved = resolved.replace("//", "/")
                 while resolved and resolved[-1] == "/":
                     resolved = resolved[:-1]
+                if not resolved:
+                    return "/"
                 return resolved
         raise NotFoundError("No view with name {0}".format(view_name))
 

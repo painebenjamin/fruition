@@ -538,9 +538,36 @@ class UserExtensionServerBase(ORMWebServiceAPIServer):
 
         return token
 
+    def bypass_login(self) -> AuthenticationToken:
+        """
+        Generates a 'noauth' authentication token.
+        """
+        user = (
+            self.database.query(self.orm.User)
+            .filter(self.orm.User.id == 0)
+            .one_or_none()
+        )
+        if not user:
+            user = self.orm.User(id = 0, email = "noauth", superuser = True)
+            self.database.add(user)
+            self.database.commit()
+
+        token = self.orm.AuthenticationToken(
+            access_token=get_uuid(),
+            refresh_token=get_uuid(),
+            token_type=self.token_type,
+            user_id=user.id
+        )
+        
+        user.last_login = datetime.datetime.now()
+
+        self.database.add(token)
+        self.database.commit()
+
+        return token
+
 
 handlers = UserExtensionHandlerRegistry()
-
 
 class UserExtensionServer(UserExtensionServerBase):
     """
@@ -582,6 +609,23 @@ class UserExtensionTemplateServer(UserExtensionServerBase, TemplateServer):
         """
         self.cookie = self.configuration.get("user.cookie", "pibbledata_token")
 
+    def set_token_cookie(self, response: Response, token: AuthenticationToken) -> None:
+        """
+        Sets the cookie on the response object that contains the token.
+        """
+        response.set_cookie(
+            self.cookie,
+            token.access_token,
+            secure=self.configuration.get("server.secure", False),
+            domain=self.configuration.get("server.domain", None),
+            samesite="strict"
+            if self.configuration.get("server.secure", False)
+            else None,
+            expires=datetime.timedelta(
+                days=self.configuration.get("user.token.days", 30)
+            ),
+        )
+
     def logout(self, request: Request, response: Response) -> None:
         """
         Override the logout handler to remove token cookie.
@@ -599,18 +643,15 @@ class UserExtensionTemplateServer(UserExtensionServerBase, TemplateServer):
                 self.cookie, self.configuration.get("server.domain", None)
             )
         )
-        response.set_cookie(
-            self.cookie,
-            token.access_token,
-            secure=self.configuration.get("server.secure", False),
-            domain=self.configuration.get("server.domain", None),
-            samesite="strict"
-            if self.configuration.get("server.secure", False)
-            else None,
-            expires=datetime.timedelta(
-                days=self.configuration.get("user.token.days", 30)
-            ),
-        )
+        self.set_token_cookie(response, token)
+        return token
+
+    def bypass_login(self, request: Request, response: Response) -> AuthenticationToken:
+        """
+        Override the bypass_login handler to add token cookie.
+        """
+        token = super(UserExtensionTemplateServer, self).bypass_login()
+        self.set_token_cookie(response, token)
         return token
 
     def parse(
