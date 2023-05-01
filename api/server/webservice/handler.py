@@ -46,8 +46,10 @@ class WebServiceAPIHandler:
 
     def __repr__(self) -> str:
         return "{0} {1}: {2}{3}".format(
-            ", ".join(self.methods), self.pattern, self.function.__name__,
-            "" if not self.reverse else ", reverse: {0}".format(self.reverse)
+            ", ".join(self.methods),
+            self.pattern,
+            self.function.__name__,
+            "" if not self.reverse else ", reverse: {0}".format(self.reverse),
         )
 
     def __call__(

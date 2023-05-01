@@ -155,28 +155,44 @@ class TemplateLoader:
 
             if issubclass(extension, TestExtensionBase):
                 if extension in self.tests:
-                    logger.debug("Tried to extend template loader with duplicate test {0}".format(extension))
+                    logger.debug(
+                        "Tried to extend template loader with duplicate test {0}".format(
+                            extension
+                        )
+                    )
                     return
                 logger.debug("Template loader adding test {0}".format(extension))
                 self.tests.append(extension)
                 extension.assign(self.environment)
             elif issubclass(extension, FilterExtensionBase):
                 if extension in self.filters:
-                    logger.debug("Tried to extend template loader with duplicate filter {0}".format(extension))
+                    logger.debug(
+                        "Tried to extend template loader with duplicate filter {0}".format(
+                            extension
+                        )
+                    )
                     return
                 logger.debug("Template loader adding filter {0}".format(extension))
                 self.filters.append(extension)
                 extension.assign(self.environment)
             elif issubclass(extension, FunctionExtensionBase):
                 if extension in self.functions:
-                    logger.debug("Tried to extend template loader with duplicate function {0}".format(extension))
+                    logger.debug(
+                        "Tried to extend template loader with duplicate function {0}".format(
+                            extension
+                        )
+                    )
                     return
                 logger.debug("Template loader adding function {0}".format(extension))
                 self.functions.append(extension)
                 extension.assign(self.environment)
             elif issubclass(extension, Extension):
                 if extension in self.extensions:
-                    logger.debug("Tried to extend template loader with duplicate extension {0}".format(extension))
+                    logger.debug(
+                        "Tried to extend template loader with duplicate extension {0}".format(
+                            extension
+                        )
+                    )
                     return
                 logger.debug("Template loader adding extension {0}".format(extension))
                 self.extensions.append(extension)

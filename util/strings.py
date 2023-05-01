@@ -1,5 +1,6 @@
 import io
 import sys
+import base64
 import string
 import hashlib
 
@@ -14,6 +15,7 @@ from numpy import nan, isnan
 from datetime import datetime, date, time
 from chardet import detect
 from urllib.parse import unquote
+from PIL import Image
 
 from pibble.util.log import logger
 
@@ -53,6 +55,26 @@ def try_json_list_parse(to_parse: str) -> Union[list, str]:
         return to_parse
 
 
+def serialize_image(image: Image.Image, **kwargs: Any) -> str:
+    """
+    Serializes an image to a base64 Data URI.
+    """
+    image_byte_io = io.BytesIO()
+    image.save(image_byte_io, format="PNG")
+    image_bytestring = base64.b64encode(image_byte_io.getvalue()).decode("utf-8")
+    return f"data:image/png;base64,{image_bytestring}"
+
+
+def deserialize_image(image_string: str, **kwargs: Any) -> Image.Image:
+    """
+    Deserializes an image from a base64 Data URI.
+    """
+    image_bytestring = image_string.split(",")[1]
+    logger.debug(image_bytestring)
+    image_bytes = base64.b64decode(image_bytestring)
+    return Image.open(io.BytesIO(image_bytes))
+
+
 class FlexibleStringer:
     """
     A class that takes a string and attempts to parse it into an object by matching
@@ -80,6 +102,7 @@ class FlexibleStringer:
     """
 
     PARSE_FORMATS = {
+        compile(r"^data:image/.+;base64,.+$"): lambda p: deserialize_image(p),
         compile(r"^[0-9\,]+$"): lambda p: int(p.replace(",", "")),
         compile(r"^[0-9\,]+\.[0-9\,]+$"): lambda p: float(p.replace(",", "")),
         compile(r"^(null|Null|NULL|none|None|NONE)$"): lambda p: None,
@@ -141,6 +164,7 @@ class FlexibleStringer:
     }
 
     SERIALIZE_FORMATS = {
+        Image.Image: lambda p, **k: serialize_image(p, **k),
         nan: lambda p, **k: "null",
         type(None): lambda p, **k: "null",
         str: lambda p, **k: p,

@@ -4,7 +4,7 @@ from setuptools import setup, find_packages
 package_name = "pibble"
 version_major = "0"
 version_minor = "4"
-version_patch = "8"
+version_patch = "9"
 
 install_requires = [
     "bcrypt>=4.0,<4.1",
@@ -62,7 +62,7 @@ extras_require = {
         "types-urllib3<1.27",
         "importchecker>=2.0,<3.0",
         "black>=23.3,<24.0",
-        "twine>=4.0,<5.0"
+        "twine>=4.0,<5.0",
     ],
 }
 

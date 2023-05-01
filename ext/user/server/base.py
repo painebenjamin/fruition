@@ -548,7 +548,7 @@ class UserExtensionServerBase(ORMWebServiceAPIServer):
             .one_or_none()
         )
         if not user:
-            user = self.orm.User(id = 0, email = "noauth", superuser = True)
+            user = self.orm.User(id=0, email="noauth", superuser=True)
             self.database.add(user)
             self.database.commit()
 
@@ -556,9 +556,9 @@ class UserExtensionServerBase(ORMWebServiceAPIServer):
             access_token=get_uuid(),
             refresh_token=get_uuid(),
             token_type=self.token_type,
-            user_id=user.id
+            user_id=user.id,
         )
-        
+
         user.last_login = datetime.datetime.now()
 
         self.database.add(token)
@@ -568,6 +568,7 @@ class UserExtensionServerBase(ORMWebServiceAPIServer):
 
 
 handlers = UserExtensionHandlerRegistry()
+
 
 class UserExtensionServer(UserExtensionServerBase):
     """
