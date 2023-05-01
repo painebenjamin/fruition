@@ -70,7 +70,6 @@ def deserialize_image(image_string: str, **kwargs: Any) -> Image.Image:
     Deserializes an image from a base64 Data URI.
     """
     image_bytestring = image_string.split(",")[1]
-    logger.debug(image_bytestring)
     image_bytes = base64.b64decode(image_bytestring)
     return Image.open(io.BytesIO(image_bytes))
 
