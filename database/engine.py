@@ -58,6 +58,10 @@ class Engine:
         self.engines = {}
         if "database" in self.connection_params:
             self._default_database = str(self.connection_params.pop("database"))
+            if self.connection_params["drivername"].startswith(
+                "sqlite"
+            ) and self._default_database.startswith("~"):
+                self._default_database = os.path.expanduser(self._default_database)
         else:
             self._default_database = "default"
         self._create_engine(self._default_database)

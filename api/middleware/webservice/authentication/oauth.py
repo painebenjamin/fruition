@@ -35,7 +35,7 @@ from pibble.api.exceptions import (
     ConfigurationError,
 )
 
-from pibble.util.strings import FlexibleStringer
+from pibble.util.strings import Serializer
 from pibble.util.log import logger
 
 
@@ -253,7 +253,7 @@ class OAuthAuthenticationMiddleware(WebServiceAPIMiddlewareBase):
             )
 
             if not isinstance(expires_at, datetime.datetime):
-                expires_at = FlexibleStringer.parse(expires_at)
+                expires_at = Serializer.deserialize(expires_at)
 
             if expires_at <= datetime.datetime.now() and refresh_token:
                 logger.debug("OAuth2 (authorization_code) expired, refreshing.")
@@ -330,7 +330,7 @@ class OAuthAuthenticationMiddleware(WebServiceAPIMiddlewareBase):
             )
 
             if not isinstance(expires_at, datetime.datetime):
-                expires_at = FlexibleStringer.parse(expires_at)
+                expires_at = Serializer.deserialize(expires_at)
             expires_in = int((expires_at - datetime.datetime.now()).total_seconds())
 
             if access_token is not None:
@@ -438,7 +438,7 @@ class OAuthAuthenticationMiddleware(WebServiceAPIMiddlewareBase):
         return {
             "access_token": self.session.get("oauth_access_token", None),
             "token_type": self.session.get("oauth_token_type", None),
-            "expires_at": FlexibleStringer.parse(
+            "expires_at": Serializer.deserialize(
                 self.session.get("oauth_expires_at", None)
             ),
             "refresh_token": self.session.get("oauth_refresh_token", None),

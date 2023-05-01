@@ -6,7 +6,7 @@ from typing import Any, Optional
 
 from pibble.database.orm import ORMObject
 from pibble.api.server.webservice.base import WebServiceAPIServerBase
-from pibble.util.strings import FlexibleStringer
+from pibble.util.strings import Serializer
 
 
 class JSONWebServiceAPIServer(WebServiceAPIServerBase):
@@ -50,7 +50,7 @@ class JSONWebServiceAPIServer(WebServiceAPIServerBase):
             response_meta.update(response.meta)
 
         return json.dumps(
-            {"meta": response_meta, "data": result}, default=FlexibleStringer.serialize
+            {"meta": response_meta, "data": result}, default=Serializer.serialize
         )
 
     def format_exception(
@@ -81,7 +81,7 @@ class JSONWebServiceAPIServer(WebServiceAPIServerBase):
                     }
                 ]
             },
-            default=FlexibleStringer.serialize,
+            default=Serializer.serialize,
         )
 
     def parse(
@@ -95,7 +95,7 @@ class JSONWebServiceAPIServer(WebServiceAPIServerBase):
         if request is not None:
             if request.body:
                 try:
-                    setattr(request, "parsed", FlexibleStringer.parse(request.json))
+                    setattr(request, "parsed", Serializer.deserialize(request.json))
                 except json.JSONDecodeError:
                     setattr(request, "parsed", {})
             else:

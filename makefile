@@ -10,8 +10,8 @@ PACKAGE_DIR=package
 README=README.md
 
 SCRIPT_DIR=scripts
-SCRIPT_IMPORTCHECK=import-check.py
-SCRIPT_TEMPLATE=template-files.py
+SCRIPT_IMPORTCHECK=importcheck.py
+SCRIPT_TEMPLATE=templatefiles.py
 
 ###############
 ## VARIABLES ##

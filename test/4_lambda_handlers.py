@@ -6,7 +6,7 @@ from typing import cast
 from base64 import b64encode
 
 from pibble.util.files import TempfileContext, dump_json, dump_yaml
-from pibble.util.strings import FlexibleStringer, encode, decode
+from pibble.util.strings import Serializer, encode, decode
 from pibble.util.log import DebugUnifiedLoggingContext
 from pibble.util.helpers import Assertion
 from pibble.hooks.aws import lambda_action_handler, lambda_api_handler

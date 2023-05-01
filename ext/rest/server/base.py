@@ -17,7 +17,7 @@ from pibble.api.server.webservice.handler import WebServiceAPIHandlerRegistry
 from pibble.api.server.webservice.orm import ORMWebServiceAPIServer
 from pibble.database.orm import ORMSession, ORMObjectBase
 from pibble.util.log import logger
-from pibble.util.strings import FlexibleStringer, pretty_print, pretty_print_sentence
+from pibble.util.strings import Serializer, pretty_print, pretty_print_sentence
 
 from webob import Request, Response
 
@@ -123,14 +123,14 @@ class RESTExtensionServerBase(ORMWebServiceAPIServer):
                     condition = or_(
                         *[
                             filter_func(
-                                getattr(obj, column), FlexibleStringer.parse(value_part)
+                                getattr(obj, column), Serializer.deserialize(value_part)
                             )
                             for value_part in value_or_split
                         ]
                     )
                 else:
                     condition = filter_func(
-                        getattr(obj, column), FlexibleStringer.parse(value)
+                        getattr(obj, column), Serializer.deserialize(value)
                     )
                 if negate:
                     return not_(condition)

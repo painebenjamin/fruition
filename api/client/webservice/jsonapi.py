@@ -4,7 +4,7 @@ from io import IOBase
 from requests import Response
 from typing import Any, Union
 
-from pibble.util.strings import FlexibleStringer
+from pibble.util.strings import Serializer
 from pibble.api.helpers.wrappers import ResponseWrapper
 from pibble.api.client.webservice.base import WebServiceAPIClientBase
 
@@ -25,7 +25,7 @@ class JSONWebServiceAPIClient(WebServiceAPIClientBase):
         Sends a POST request. See :func:`pibble.api.client.webservice.base.WebServiceAPIClientBase.query`
         """
         if data:
-            formatted_data = json.dumps(data, default=FlexibleStringer.serialize)
+            formatted_data = json.dumps(data, default=Serializer.serialize)
             headers["Content-Type"] = "application/vnd.api+json"
         else:
             formatted_data = None
@@ -43,7 +43,7 @@ class JSONWebServiceAPIClient(WebServiceAPIClientBase):
         **kwargs: Any,
     ) -> Union[Response, ResponseWrapper]:
         if data:
-            formatted_data = json.dumps(data, default=FlexibleStringer.serialize)
+            formatted_data = json.dumps(data, default=Serializer.serialize)
             headers["Content-Type"] = "application/vnd.api+json"
         else:
             formatted_data = None
@@ -61,7 +61,7 @@ class JSONWebServiceAPIClient(WebServiceAPIClientBase):
         **kwargs: Any,
     ) -> Union[Response, ResponseWrapper]:
         if data:
-            formatted_data = json.dumps(data, default=FlexibleStringer.serialize)
+            formatted_data = json.dumps(data, default=Serializer.serialize)
             headers["Content-Type"] = "application/vnd.api+json"
         else:
             formatted_data = None

@@ -6,7 +6,7 @@ from pibble.database.engine import EngineFactory
 from pibble.database.util import row_to_dict
 from pibble.api.exceptions import ConfigurationError
 from pibble.api.configuration import APIConfiguration
-from pibble.util.strings import FlexibleStringer
+from pibble.util.strings import Serializer
 from pibble.util.helpers import resolve
 from pibble.util.log import logger
 
@@ -31,8 +31,8 @@ class APISessionStore:
 
     Optional configuration:
       2. ``session.store.scope``: A scope value. Defaults to None.
-      3. ``session.store.serializer``: How values are serialized. Defaults to ``FlexibleStringer.serialize``.
-      4. ``session.store.deserializer``: How values are deserialized. Defaults to ``FlexibleStringer.deserialize``.
+      3. ``session.store.serializer``: How values are serialized. Defaults to ``Serializer.serialize``.
+      4. ``session.store.deserializer``: How values are deserialized. Defaults to ``Serializer.deserialize``.
 
     :param configuration pibble.api.configuration.APIConfiguration: The configuration for the server or client.
     """
@@ -42,10 +42,10 @@ class APISessionStore:
     def __init__(self, configuration: APIConfiguration):
         self.serializer = configuration.get(
             "{0}.serializer".format(self.CONFIGURATION_PREFIX),
-            FlexibleStringer.serialize,
+            Serializer.serialize,
         )
         self.deserializer = configuration.get(
-            "{0}.deserializer".format(self.CONFIGURATION_PREFIX), FlexibleStringer.parse
+            "{0}.deserializer".format(self.CONFIGURATION_PREFIX), Serializer.deserialize
         )
         self.scope = configuration.get(
             "{0}.scope".format(self.CONFIGURATION_PREFIX), None

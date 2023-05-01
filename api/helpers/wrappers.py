@@ -416,7 +416,7 @@ class ResponseWrapper:
 
     def json(self) -> Any:
         """
-        Loads the text as JSON. Doesn't use the FlexibleStringer, since this is
+        Loads the text as JSON. Doesn't use the Serializer, since this is
         emulating a requests.Response in this context.
         """
         return json.loads(self.text)

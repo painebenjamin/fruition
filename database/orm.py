@@ -11,7 +11,7 @@ from pibble.api.configuration import APIConfiguration
 
 from pibble.util.log import logger
 from pibble.util.helpers import resolve
-from pibble.util.strings import FlexibleStringer, decode
+from pibble.util.strings import Serializer, decode
 from pibble.util.encryption import AESCipher
 
 from pibble.database.engine import EngineFactory
@@ -443,17 +443,17 @@ class ORMEncryptedTextType(sqlalchemy.types.TypeDecorator):
 
 class ORMVariadicType(sqlalchemy.types.TypeDecorator):
     """
-    Using `pibble.util.FlexibleStringer` and `pibble.util.FlexibleStringer`, serialize values
+    Using `pibble.util.Serializer` and `pibble.util.Serializer`, serialize values
     on their way into the databased, and deserialize them on their way out.
     """
 
     impl = sqlalchemy.String
 
     def process_bind_param(self, value: Any, dialect: Dialect) -> str:
-        return FlexibleStringer.serialize(value)
+        return Serializer.serialize(value)
 
     def process_result_value(self, value: str, dialect: Dialect) -> Any:
-        return FlexibleStringer.parse(value)
+        return Serializer.deserialize(value)
 
 
 class ORMEncryptedVariadicType(sqlalchemy.types.TypeDecorator):
@@ -464,10 +464,10 @@ class ORMEncryptedVariadicType(sqlalchemy.types.TypeDecorator):
     impl = sqlalchemy.String
 
     def process_bind_param(self, value: Any, dialect: Dialect) -> str:
-        return decode(self.__orm__.cipher.encrypt(FlexibleStringer.serialize(value)))
+        return decode(self.__orm__.cipher.encrypt(Serializer.serialize(value)))
 
     def process_result_value(self, value: str, dialect: Dialect) -> Any:
-        return FlexibleStringer.parse(decode(self.__orm__.cipher.decrypt(value)))
+        return Serializer.deserialize(decode(self.__orm__.cipher.decrypt(value)))
 
 
 class ORMObject:

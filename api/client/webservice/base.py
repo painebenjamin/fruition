@@ -5,7 +5,7 @@ from typing import Optional, Callable, Any, Union, Type, cast
 
 from pibble.util.helpers import url_join, resolve
 from pibble.util.log import logger
-from pibble.util.strings import FlexibleStringer
+from pibble.util.strings import Serializer
 
 from pibble.api.exceptions import (
     NotFoundError,
@@ -118,7 +118,7 @@ class WebServiceAPIClientBase(APIClientBase):
             if "client.serializer" in self.configuration:
                 self.serializer = self.configuration["client.serializer"]
             else:
-                self.serializer = FlexibleStringer.serialize
+                self.serializer = Serializer.serialize
             if type(self.serializer) in [str, bytes] and not callable(self.serializer):
                 try:
                     self.serializer = resolve(self.serializer)

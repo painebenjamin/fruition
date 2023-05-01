@@ -9,7 +9,7 @@ from pibble.api.exceptions import (
     UnknownError,
     UnsupportedMethodError,
 )
-from pibble.util.strings import FlexibleStringer
+from pibble.util.strings import Serializer
 
 
 class JSONRPCClient(RPCClientBase):
@@ -81,7 +81,7 @@ class JSONRPCClient(RPCClientBase):
             raise BadRequestError(
                 "Cannot pass both positional and named arguments into a JSONRPC method request."
             )
-        return json.dumps(base, default=FlexibleStringer.serialize)
+        return json.dumps(base, default=Serializer.serialize)
 
     def format_response(self, response: str) -> Any:
         """
@@ -126,4 +126,4 @@ class JSONRPCClient(RPCClientBase):
                         code, msg
                     )
                 )
-        return FlexibleStringer.parse(body.get("result", None))
+        return Serializer.deserialize(body.get("result", None))

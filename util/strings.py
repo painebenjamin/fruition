@@ -38,7 +38,7 @@ def try_json_dict_parse(to_parse: str) -> Union[dict, str]:
     """
     try:
         loaded = loads(to_parse)
-        return dict([(key, FlexibleStringer.parse(loaded[key])) for key in loaded])
+        return dict([(key, Serializer.deserialize(loaded[key])) for key in loaded])
     except JSONDecodeError:
         return to_parse
 
@@ -50,7 +50,7 @@ def try_json_list_parse(to_parse: str) -> Union[list, str]:
     """
     try:
         loaded = loads(to_parse)
-        return [FlexibleStringer.parse(i) for i in loaded]
+        return [Serializer.deserialize(i) for i in loaded]
     except JSONDecodeError:
         return to_parse
 
@@ -74,26 +74,26 @@ def deserialize_image(image_string: str, **kwargs: Any) -> Image.Image:
     return Image.open(io.BytesIO(image_bytes))
 
 
-class FlexibleStringer:
+class Serializer:
     """
     A class that takes a string and attempts to parse it into an object by matching
     it with a regular expression, and vice-versa.
 
-    >>> from pibble.util.strings import FlexibleStringer
+    >>> from pibble.util.strings import Serializer
     >>> from datetime import datetime
-    >>> FlexibleStringer.parse("4")
+    >>> Serializer.deserialize("4")
     4
-    >>> FlexibleStringer.parse("4.0")
+    >>> Serializer.deserialize("4.0")
     4.0
-    >>> FlexibleStringer.parse("true")
+    >>> Serializer.deserialize("true")
     True
-    >>> FlexibleStringer.parse("2018-01-01T00:00:00")
+    >>> Serializer.deserialize("2018-01-01T00:00:00")
     datetime.datetime(2018, 1, 1, 0, 0)
-    >>> FlexibleStringer.serialize(4)
+    >>> Serializer.serialize(4)
     '4'
-    >>> FlexibleStringer.serialize(False)
+    >>> Serializer.serialize(False)
     'false'
-    >>> FlexibleStringer.serialize(datetime(2018, 1, 1))
+    >>> Serializer.serialize(datetime(2018, 1, 1))
     '2018-01-01T00:00:00'
 
     :param parameter str: The string to attempt to parse.
@@ -179,12 +179,12 @@ class FlexibleStringer:
     }
 
     @classmethod
-    def parse(cls, parameter: Any, permissive: bool = False) -> Any:
+    def deserialize(cls, parameter: Any, permissive: bool = False) -> Any:
         try:
             if isinstance(parameter, list):
-                return [cls.parse(p) for p in parameter]
+                return [cls.deserialize(p) for p in parameter]
             elif isinstance(parameter, dict):
-                return dict([(p, cls.parse(parameter[p])) for p in parameter])
+                return dict([(p, cls.deserialize(parameter[p])) for p in parameter])
             elif isinstance(parameter, str):
                 test_parameter = parameter.strip().replace("\n", "")
                 for pattern in cls.PARSE_FORMATS:
@@ -319,9 +319,7 @@ def dump_json(obj: Union[list, dict], **kwargs: Any) -> str:
             return dict([(_key, _fix_nan(_obj[_key])) for _key in _obj])
         return _obj
 
-    return dumps(
-        _fix_nan(obj), allow_nan=False, default=FlexibleStringer.serialize, **kwargs
-    )
+    return dumps(_fix_nan(obj), allow_nan=False, default=Serializer.serialize, **kwargs)
 
 
 def random_string(

@@ -1,7 +1,7 @@
 from webob import Request, Response
 from typing import Any
 
-from pibble.util.strings import FlexibleStringer
+from pibble.util.strings import Serializer
 from pibble.api.server.webservice.base import WebServiceAPIServerBase
 from pibble.api.middleware.database.orm import ORMMiddlewareBase
 
@@ -18,7 +18,7 @@ class ORMWebServiceAPIServer(WebServiceAPIServerBase, ORMMiddlewareBase):
         response: Response,
     ) -> str:
         if isinstance(result, list):
-            return FlexibleStringer.serialize(
+            return Serializer.serialize(
                 [
                     r.format(include=request.GET.getall("include"))
                     for r in result
@@ -26,7 +26,7 @@ class ORMWebServiceAPIServer(WebServiceAPIServerBase, ORMMiddlewareBase):
                 ]
             )
         if result is not None:
-            return FlexibleStringer.serialize(
+            return Serializer.serialize(
                 result.format(include=request.GET.getall("include"))
             )
         return ""

@@ -33,7 +33,7 @@ from datetime import date, datetime
 from openpyxl import load_workbook
 
 from pibble.util.log import logger
-from pibble.util.strings import truncate, decode, FlexibleStringer
+from pibble.util.strings import truncate, decode, Serializer
 
 __all__ = [
     "url_join",
@@ -1043,9 +1043,9 @@ class FlexibleJSONDecoder(json.JSONDecoder):
 
         :param string str: The contents of the JSON to be decoded.
         :returns Any: The decoded value - see the flexible stringer for more details.
-        :see: class:`pibble.helpers.strings.FlexibleStringer`
+        :see: class:`pibble.helpers.strings.Serializer`
         """
-        return FlexibleStringer.parse(string)
+        return Serializer.deserialize(string)
 
 
 class FlexibleJSONEncoder(json.JSONEncoder):
@@ -1059,6 +1059,6 @@ class FlexibleJSONEncoder(json.JSONEncoder):
 
         :param to_encode Any: The object to encode to a string.
         :returns str: The stringified object.
-        :see: class:`funllib.helpers.strings.FlexibleStringer`
+        :see: class:`funllib.helpers.strings.Serializer`
         """
-        return FlexibleStringer.serialize(to_encode)
+        return Serializer.serialize(to_encode)

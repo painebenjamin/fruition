@@ -3,7 +3,7 @@ from __future__ import annotations
 import os
 
 from pibble.util.files import load_yaml, load_json
-from pibble.util.strings import FlexibleStringer
+from pibble.util.strings import Serializer
 
 from pibble.api.configuration import APIConfiguration
 from pibble.api.meta.base import MetaService, MetaFunction
@@ -25,7 +25,7 @@ class MetaFactory:
         if "configuration" not in configuration:
             raise KeyError("Missing keyword 'configuration.'")
 
-        self.configuration = FlexibleStringer.parse(configuration)
+        self.configuration = Serializer.deserialize(configuration)
         if "cwd" not in self.configuration:
             self.configuration["cwd"] = os.getcwd()
         self.api_configuration = APIConfiguration(**self.configuration["configuration"])

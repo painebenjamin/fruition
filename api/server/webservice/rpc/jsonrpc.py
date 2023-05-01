@@ -7,12 +7,12 @@ from webob import Request, Response
 
 from pibble.api.server.webservice.rpc.base import RPCServerBase
 from pibble.api.exceptions import UnsupportedMethodError, BadRequestError
-from pibble.util.strings import FlexibleStringer, decode
+from pibble.util.strings import Serializer, decode
 
 
-class JSONRPCFlexibleStringer(FlexibleStringer):
+class JSONRPCSerializer(Serializer):
     SERIALIZE_FORMATS = {
-        **FlexibleStringer.SERIALIZE_FORMATS,
+        **Serializer.SERIALIZE_FORMATS,
         **{type: lambda p, **k: JSONRPCServer.map_typename(p)},
     }
 
@@ -107,10 +107,10 @@ class JSONRPCServer(RPCServerBase):
         if params is None:
             return request["method"], [], {}
         elif type(params) is dict:
-            params = FlexibleStringer.parse(params)
+            params = Serializer.deserialize(params)
             return request["method"], [], params
         elif type(params) is list:
-            params = FlexibleStringer.parse(params)
+            params = Serializer.deserialize(params)
             return request["method"], params, {}
         else:
             raise BadRequestError(
@@ -133,7 +133,7 @@ class JSONRPCServer(RPCServerBase):
                 return decode(
                     json.dumps(
                         {"jsonrpc": "2.0", "result": result, "id": id},
-                        default=JSONRPCFlexibleStringer.serialize,
+                        default=JSONRPCSerializer.serialize,
                     )
                 )
         return ""
@@ -157,6 +157,6 @@ class JSONRPCServer(RPCServerBase):
         return decode(
             json.dumps(
                 {"jsonrpc": "2.0", "code": code, "message": str(exception)},
-                default=JSONRPCFlexibleStringer.serialize,
+                default=JSONRPCSerializer.serialize,
             )
         )

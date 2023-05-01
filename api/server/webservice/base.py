@@ -3,11 +3,9 @@ from __future__ import annotations
 import io
 import os
 import re
-import ssl
 import logging
 import mimetypes
 
-from multiprocessing import cpu_count
 from traceback import format_exc
 
 from typing import (
@@ -18,18 +16,11 @@ from typing import (
     Type,
     Tuple,
     Union,
-    TYPE_CHECKING,
     cast,
+    TYPE_CHECKING,
 )
 
 from webob import Request, Response
-
-from werkzeug.serving import run_simple as WerkzeugRun
-
-try:
-    from gunicorn.app.base import Application as GunicornApplication
-except ImportError:
-    GunicornApplication = object
 
 from pibble.util.strings import decode, truncate
 from pibble.util.log import logger
@@ -70,37 +61,6 @@ if TYPE_CHECKING:
     from _typeshed.wsgi import StartResponse, WSGIEnvironment, WSGIApplication
 
 TEXT_CONTENT_TYPE = re.compile(r"^(text|application).*$")
-
-
-class CustomApplication(GunicornApplication):
-    """
-    A simple extension of the gunicorn application base
-    to work with the webservice.
-    """
-
-    def __init__(self, application: WSGIApplication, options: dict):
-        self.options = options
-        self.application = application
-        super(CustomApplication, self).__init__()
-
-    def load_config(self) -> None:
-        config = dict(
-            [
-                (key, self.options[key])
-                for key in self.options
-                if key in self.cfg.settings and self.options[key] is not None
-            ]
-        )
-        for key in config:
-            logger.debug(
-                "Setting Gunicorn configuration key {0} = {1}".format(
-                    key.lower(), config[key]
-                )
-            )
-            self.cfg.set(key.lower(), config[key])
-
-    def load(self) -> WSGIApplication:
-        return self.application
 
 
 class WebServiceAPIServerBase(APIServerBase):
@@ -482,10 +442,11 @@ class WebServiceAPIServerBase(APIServerBase):
         try:
             driver = self.configuration["server.driver"]
             host = self.configuration["server.host"]
-            port = self.configuration["server.port"]
+            port = int(self.configuration["server.port"])
             secure = self.configuration.get("server.secure", False)
             cert = self.configuration.get("server.cert", None)
             key = self.configuration.get("server.key", None)
+            workers = self.configuration.get("server.workers", None)
 
             logger.debug(
                 "Attempting to run development server process using driver {0} on {1}://{2}:{3}.".format(
@@ -493,71 +454,32 @@ class WebServiceAPIServerBase(APIServerBase):
                 )
             )
 
+            run_driver: Optional[Callable] = None
+
             if driver == "cherrypy":
-                import cherrypy
+                from pibble.api.server.webservice.drivers.driver_cherrypy import (
+                    run_cherrypy,
+                )
 
-                cherrypy.tree.graft(self.wsgi(), "/")
-                cherrypy.server.unsubscribe()
-                server = cherrypy._cpserver.Server()
-                server.socket_host = host
-                server.socket_port = port
-                server.thread_pool = self.configuration.get("server.threads", 30)
-
-                if secure and cert is not None and key is not None:
-                    server.ssl_module = "pyopenssl"
-                    server.ssl_certificate = cert
-                    server.ssl_private_key = key
-                elif secure:
-                    logger.warning(
-                        "No SSL certificate/key specified. If this server is being proxied through another service that provides SSL context, this is okay - otherwise connections will fail."
-                    )
-
-                server.subscribe()
-                cherrypy.engine.start()
-                cherrypy.engine.block()
-
+                run_driver = run_cherrypy
             elif driver == "werkzeug":
-                context = None
+                from pibble.api.server.webservice.drivers.driver_werkzeug import (
+                    run_werkzeug,
+                )
 
-                if secure and cert is not None and key is not None:
-                    context = ssl.SSLContext(ssl.PROTOCOL_SSLv23)
-                    logger.info(
-                        "Loading SSL Certificate Chain, certfile {0}, keyfile {1}.".format(
-                            cert, key
-                        )
-                    )
-                elif secure:
-                    logger.warning(
-                        "No SSL certificate/key specified. If this server is being proxied through another service that provides SSL context, this is okay - otherwise connections will fail."
-                    )
-
-                WerkzeugRun(host, int(port), self.wsgi(), ssl_context=context)
+                run_driver = run_werkzeug
             elif driver == "gunicorn":
-                options = {
-                    "bind": "{0}:{1}".format(host, port),
-                    "workers": int(
-                        self.configuration.get("server.workers", cpu_count() * 2 + 1)
-                    ),
-                }
+                from pibble.api.server.webservice.drivers.driver_gunicorn import (
+                    run_gunicorn,
+                )
 
-                if secure and cert is not None and key is not None:
-                    options["keyfile"] = key
-                    options["certfile"] = cert
-                    logger.info(
-                        "Loading SSL Certificate Chain, certfile {0}, keyfile {1}.".format(
-                            cert, key
-                        )
-                    )
-                elif secure:
-                    logger.warning(
-                        "No SSL certificate/key specified. If this server is being proxied through another service that provides SSL context, this is okay - otherwise connections will fail."
-                    )
+                run_driver = run_gunicorn
 
-                CustomApplication(self.wsgi(), options).run()
-            else:
+            if run_driver is None:
                 raise ConfigurationError(
                     "Server driver {0} not supported.".format(driver)
                 )
+            run_driver(self.wsgi(), host, port, secure, cert, key, workers)
         except KeyError as ex:
             raise ConfigurationError(str(ex))
         finally:

@@ -129,7 +129,7 @@ def dump_yaml(path: str, to_dump: Union[dict, list]) -> None:
 
 def load_json(path: str) -> Union[dict, list, str, int, float, bool, None]:
     """
-    Loads a JSON file, using the FlexibleStringer.
+    Loads a JSON file, using the Serializer.
 
     >>> from pibble.util.files import TempfileContext, load_json
     >>> import datetime
@@ -356,7 +356,7 @@ class SpreadsheetParser:
     ) -> None:
         """
         :param file_path str: The path to the spreadsheet file. Also allows for other IO types.
-        :param parse bool: Whether or not to parse the values using FlexibleStringer.
+        :param parse bool: Whether or not to parse the values using Serializer.
         """
         self.path = file_path
         self.parse = parse

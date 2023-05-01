@@ -15,7 +15,7 @@ from pibble.api.exceptions import (
     ConfigurationError,
     NotFoundError,
 )
-from pibble.util.strings import decode, encode, FlexibleStringer
+from pibble.util.strings import decode, encode, Serializer
 from pibble.util.log import logger
 
 
@@ -331,7 +331,7 @@ class SOAPServer(MethodBasedWebServiceAPIServerBase):
                 if (
                     type(fn.signature[0][i]) is type and fn.signature[0][i] is not str
                 ) or not isinstance(fn.signature[0][i], str):
-                    args[i] = FlexibleStringer.parse(arg)
+                    args[i] = Serializer.deserialize(arg)
         elif fn.named_signature:
             for key in kwargs:
                 if key not in fn.named_signature:
@@ -344,7 +344,7 @@ class SOAPServer(MethodBasedWebServiceAPIServerBase):
                     type(fn.named_signature[key]) is type
                     and fn.named_signature[key] is not str
                 ) or not isinstance(fn.named_signature[key], str):
-                    kwargs[key] = FlexibleStringer.parse(kwargs[key])
+                    kwargs[key] = Serializer.deserialize(kwargs[key])
 
         return method, args, kwargs
 
