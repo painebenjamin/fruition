@@ -4,7 +4,7 @@ from setuptools import setup, find_packages
 package_name = "pibble"
 version_major = "0"
 version_minor = "4"
-version_patch = "9"
+version_patch = "10"
 
 install_requires = [
     "bcrypt>=4.0,<4.1",
@@ -76,7 +76,7 @@ setup(
     author_email="painebenjamin@gmail.com",
     version=f"{version_major}.{version_minor}.{version_patch}",
     packages=find_packages("."),
-    package_data={"pibble": []},
+    package_data={"pibble": ["py.typed"]},
     license="gpl-3.0",
     description="A framework for developing webapps quickly and easily using Python",
     long_description=open(
