@@ -9,8 +9,6 @@ from pibble.api.exceptions import (
 from typing import Type, Optional, Union, List, Dict
 
 
-handlers = WebServiceAPIHandlerRegistry()
-
 
 class RPCServerBase(MethodBasedWebServiceAPIServerBase):
     """
@@ -18,14 +16,12 @@ class RPCServerBase(MethodBasedWebServiceAPIServerBase):
 
     This will handle function registration and dispatching. Inherited classes are responsible for parsing and formatting requests and responses.
     """
+    handlers = WebServiceAPIHandlerRegistry()
+
 
     def __init__(self) -> None:
         super(RPCServerBase, self).__init__()
         self.register_introspection_functions()
-
-    @classmethod
-    def get_handlers(cls) -> WebServiceAPIHandlerRegistry:
-        return handlers
 
     def register_introspection_functions(self) -> None:
         """

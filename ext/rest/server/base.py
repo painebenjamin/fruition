@@ -25,10 +25,6 @@ from typing import Any, Callable, List
 
 DEFAULT_LIMIT = 100
 
-
-handlers = WebServiceAPIHandlerRegistry()
-
-
 class RESTExtensionServerBase(ORMWebServiceAPIServer):
     """
     Using the JSON web service and ORM extensions, provide a configurable
@@ -54,10 +50,7 @@ class RESTExtensionServerBase(ORMWebServiceAPIServer):
                   for all objects (and enables the use of DELETE and PUT endpoints, as well as
                   GET on a single object.)
     """
-
-    @classmethod
-    def get_handlers(cls) -> WebServiceAPIHandlerRegistry:
-        return handlers
+    handlers = WebServiceAPIHandlerRegistry()
 
     def paginate_object(
         self,
@@ -349,9 +342,9 @@ class RESTExtensionServerBase(ORMWebServiceAPIServer):
             handler_classname, handler_root, handler_parent, handler_scope, **scope
         )
         scoped_handler.__name__ = f"{handler_classname}RESTHandler"
-        handlers.methods(*handler_methods)(scoped_handler)
-        handlers.path(re.compile(handler_regex))(scoped_handler)
-        handlers.format()(scoped_handler)
+        RESTExtensionServerBase.handlers.methods(*handler_methods)(scoped_handler)
+        RESTExtensionServerBase.handlers.path(re.compile(handler_regex))(scoped_handler)
+        RESTExtensionServerBase.handlers.format()(scoped_handler)
 
     def on_configure(self) -> None:
         """

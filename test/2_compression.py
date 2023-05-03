@@ -15,13 +15,8 @@ from pibble.util.helpers import Assertion, Pause, CompressedIterator
 # random_contents = "\n".join([random_string() for i in range(10)])
 random_contents = "a" * 128
 
-handlers = WebServiceAPIHandlerRegistry()
-
-
 class TestServer(WebServiceAPIServerBase):
-    @classmethod
-    def get_handlers(cls) -> WebServiceAPIHandlerRegistry:
-        return handlers
+    handlers = WebServiceAPIHandlerRegistry()
 
     @handlers.methods("GET")
     @handlers.compress()

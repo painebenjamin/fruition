@@ -12,14 +12,8 @@ from pibble.util.strings import random_string
 from pibble.util.helpers import Assertion, Pause
 from pibble.util.files import TempfileContext
 
-
-handlers = WebServiceAPIHandlerRegistry()
-
-
 class TestServer(WebServiceAPIServerBase):
-    @classmethod
-    def get_handlers(cls) -> WebServiceAPIHandlerRegistry:
-        return handlers
+    handlers = WebServiceAPIHandlerRegistry()
 
     @handlers.methods("GET")
     @handlers.path("^/download$")

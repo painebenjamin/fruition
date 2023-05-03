@@ -566,17 +566,11 @@ class UserExtensionServerBase(ORMWebServiceAPIServer):
         return cast(AuthenticationToken, token)
 
 
-handlers = UserExtensionHandlerRegistry()
-
-
 class UserExtensionServer(UserExtensionServerBase):
     """
     This base class defines default handlers, if desired.
     """
-
-    @classmethod
-    def get_handlers(cls) -> UserExtensionHandlerRegistry:
-        return handlers
+    handlers = UserExtensionHandlerRegistry()
 
     @handlers.format()
     @handlers.methods("POST")

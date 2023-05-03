@@ -36,13 +36,8 @@ class BasicAuthenticationClient(BasicAuthenticationMiddleware, WebServiceAPIClie
     pass
 
 
-handlers = WebServiceAPIHandlerRegistry()
-
-
 class BasicAuthenticationServer(BasicAuthenticationMiddleware, WebServiceAPIServerBase):
-    @classmethod
-    def get_handlers(cls) -> WebServiceAPIHandlerRegistry:
-        return handlers
+    handlers = WebServiceAPIHandlerRegistry()
 
     @handlers.methods("GET")
     @handlers.path("^[/]{0,1}$")

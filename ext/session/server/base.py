@@ -77,11 +77,8 @@ class SessionExtensionServerBase(ORMWebServiceAPIServer):
     handlers. The session is distinguished by the user token, which is set via cookie.
 
     Example usage::
-        handlers = WebServiceAPIHandlerRegistry()
         class MySessionServer(SessionExtensionServerBase):
-            @classmethod
-            def get_handlers(cls) -> WebServiceAPIHandlerRegistry:
-                return handlers
+            handlers = WebServiceAPIHandlerRegistry()
 
             @handlers.methods("GET")
             @handlers.path("^/?$")

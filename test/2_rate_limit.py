@@ -11,13 +11,9 @@ from pibble.api.middleware.webservice.limit import RateLimitedWebServiceAPIMiddl
 from pibble.util.log import LevelUnifiedLoggingContext, logger
 from pibble.util.helpers import Assertion
 
-handlers = WebServiceAPIHandlerRegistry()
-
 
 class RateLimitedServer(RateLimitedWebServiceAPIMiddleware, WebServiceAPIServerBase):
-    @classmethod
-    def get_handlers(cls) -> WebServiceAPIHandlerRegistry:
-        return handlers
+    handlers = WebServiceAPIHandlerRegistry()
 
     @handlers.methods("GET")
     @handlers.path("^/$")

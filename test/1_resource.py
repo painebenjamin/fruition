@@ -32,13 +32,8 @@ FAKE_DATA = "".join(
 )
 
 
-handlers = WebServiceAPIHandlerRegistry()
-
-
 class FakeFileServingAPI(WebServiceAPIServerBase):
-    @classmethod
-    def get_handlers(cls) -> WebServiceAPIHandlerRegistry:
-        return handlers
+    handlers = WebServiceAPIHandlerRegistry()
 
     @handlers.methods("GET")
     @handlers.path("/file")

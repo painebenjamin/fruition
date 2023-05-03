@@ -16,10 +16,6 @@ from webob import Request, Response
 class TestExtensionServer(SessionExtensionServerBase):
     handlers = WebServiceAPIHandlerRegistry()
 
-    @classmethod
-    def get_handlers(cls):
-        return cls.handlers
-
     @handlers.path("^/?$")
     @handlers.methods("GET")
     @handlers.format()

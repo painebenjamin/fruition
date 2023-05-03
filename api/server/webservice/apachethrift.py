@@ -13,7 +13,6 @@ from pibble.api.helpers.apachethrift import (
     ApacheThriftServerHandler,
 )
 
-handlers = WebServiceAPIHandlerRegistry()
 
 
 class ApacheThriftWebServer(WebServiceAPIServerBase):
@@ -34,10 +33,7 @@ class ApacheThriftWebServer(WebServiceAPIServerBase):
         1. `thrift.compile` The thrift IDL.
         2. `thrift.service` The service name.
     """
-
-    @classmethod
-    def get_handlers(cls) -> WebServiceAPIHandlerRegistry:
-        return handlers
+    handlers = WebServiceAPIHandlerRegistry()
 
     def on_configure(self) -> None:
         self.thrift = ApacheThriftService(self.configuration, True)

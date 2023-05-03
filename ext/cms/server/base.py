@@ -13,15 +13,10 @@ from pibble.ext.cms.middleware import CMSExtensionContextMiddleware
 from pibble.ext.cms.database import *
 
 
-handlers = TemplateServerHandlerRegistry()
-
-
 class CMSServerBase(
     TemplateServer, DAMServerBase, CMSExtensionContextMiddleware, ORMMiddlewareBase
 ):
-    @classmethod
-    def get_handlers(cls) -> TemplateServerHandlerRegistry:
-        return handlers
+    handlers = TemplateServerHandlerRegistry()
 
     def migrate_taxonomies(self) -> None:
         """

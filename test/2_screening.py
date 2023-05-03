@@ -14,13 +14,8 @@ from pibble.util.helpers import expect_exception
 PORT = 9091
 
 
-handlers = WebServiceAPIHandlerRegistry()
-
-
 class ScreeningWebServer(ScreeningWebServiceAPIMiddleware, WebServiceAPIServerBase):
-    @classmethod
-    def get_handlers(cls) -> WebServiceAPIHandlerRegistry:
-        return handlers
+    handlers = WebServiceAPIHandlerRegistry()
 
     @handlers.path("/")
     @handlers.methods("GET")

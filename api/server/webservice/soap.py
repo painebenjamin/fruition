@@ -35,9 +35,6 @@ class MultiNamespaceElementBuilder:
         return ElementMaker(namespace=self.namespaces[ns], nsmap=self.namespaces)
 
 
-handlers = WebServiceAPIHandlerRegistry()
-
-
 class SOAPServer(MethodBasedWebServiceAPIServerBase):
     """
     A SOAP server class that operates similarly to the RPC classes.
@@ -56,10 +53,7 @@ class SOAPServer(MethodBasedWebServiceAPIServerBase):
       - `server.hostname`: The hostname of the server. Defaults to loopback - '127.0.0.1'.
       - `server.name`: The name of the service. Defaults to "SOAPServer".
     """
-
-    @classmethod
-    def get_handlers(cls) -> WebServiceAPIHandlerRegistry:
-        return handlers
+    handlers = WebServiceAPIHandlerRegistry()
 
     @staticmethod
     def get_type(obj: Type) -> str:

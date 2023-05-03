@@ -17,10 +17,6 @@ from pibble.api.client.webservice.base import WebServiceAPIClientBase
 class TestTemplateServer(TemplateServer):
     handlers = TemplateServerHandlerRegistry()
 
-    @classmethod
-    def get_handlers(cls):
-        return cls.handlers
-
     @handlers.reverse("Base", "/base.html")
     @handlers.methods("GET")
     @handlers.template("context.html.j2")

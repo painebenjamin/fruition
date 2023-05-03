@@ -96,13 +96,10 @@ class JSONUserClient(JSONWebServiceAPIClient, UserExtensionClientBase):
     pass
 
 
-handlers = UserExtensionHandlerRegistry()
 
 
 class JSONUserServer(JSONWebServiceAPIServer, UserExtensionServer):
-    @classmethod
-    def get_handlers(cls) -> UserExtensionHandlerRegistry:
-        return handlers
+    handlers = UserExtensionHandlerRegistry()
 
     @handlers.format()
     @handlers.secured(OwnedObject, action="create")

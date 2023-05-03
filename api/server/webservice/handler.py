@@ -101,12 +101,8 @@ class WebServiceAPIHandlerRegistry:
 
     Example ::
 
-      handlers = WebServiceAPIHandlerRegistry()
       class MyWebServiceAPI(APIServerBase):
-
-        @classmethod
-        def get_handlers(cls):
-          return handlers
+        handlers = WebServiceAPIHandlerRegistry()
 
         @handlers.path("/")
         @handlers.methods("GET")

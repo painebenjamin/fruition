@@ -30,32 +30,28 @@ from pibble.api.server.webservice.base import (
 )
 
  
-handlers = WebServiceAPIHandlerRegistry()
 
 class SimpleFileServer(WebServiceAPIServerBase):
+  handlers = WebServiceAPIHandlerRegistry()
   base_directory = "/var/www/html"
 
-  @classmethod
-  def get_handlers(cls) -> WebServiceAPIHandlerRegistry:
-    return handlers
-    
   @handlers.path("(?P<file_path>.*)")
   @handlers.methods("GET")
   def retrieve_file(self, request: Request, response: Response, file_path: Optional[str] = None) -> None:
-    """
-    Handles the request by looking for the path in ``self.base_directory``.
-
-    :param request webob.Request: The request object.
-    :param response webob.Response: The response object.
-    :param file_path str: The file path, captured from the URI.
-    :throws: :class:`pibble.api.exceptions.NotFoundError`
-    """
-
-    file_path = os.path.join(self.base_directory, file_path)
-    if not os.path.isfile(file_path):
-      raise NotFoundError("Could not find file at {0}".format(file_path))
-
-    response.body = open(file_path, "r").read()
+      """
+      Handles the request by looking for the path in ``self.base_directory``.
+  
+      :param request webob.Request: The request object.
+      :param response webob.Response: The response object.
+      :param file_path str: The file path, captured from the URI.
+      :throws: :class:`pibble.api.exceptions.NotFoundError`
+      """
+  
+      file_path = os.path.join(self.base_directory, file_path)
+      if not os.path.isfile(file_path):
+          raise NotFoundError("Could not find file at {0}".format(file_path))
+  
+      response.body = open(file_path, "r").read()
 ```
 
 The request and response parameters are webob.Request and webob.Response objects, respectively. See The WebOb Documentation for help with their usage. Note the method name does not matter, so use a naming schema relevant to your project.
@@ -88,25 +84,25 @@ server = XMLRPCServer()
 @server.sign_request(int, int)
 @server.sign_response(int)
 def add(x, y):
-  return x + y
+    return x + y
 
 @server.register
 @server.sign_request(int, int)
 @server.sign_response(int)
 def subtract(x, y):
-  return x - y
+    return x - y
 
 @server.register
 @server.sign_request(int, int)
 @server.sign_response(int)
 def multiply(x, y):
-  return x * y
+    return x * y
 
 @server.register
 @server.sign_request(int, int)
 @server.sign_response(float)
 def divide(x, y):
-  return x / y
+    return x / y
 
 server.configure(server = {"driver": "werkzeug", "host": "0.0.0.0", "port": 9090})
 print("Running server, listening on 0.0.0.0:9090. Hit Ctrl+C to exit.")
@@ -134,8 +130,8 @@ Using an XML RPC Client is very simple. Once a client is instantiated, it will q
 ```python
 from pibble.api.client.webservice.rpc.xml.client import XMLRPCClient
 from pibble.api.exceptions import (
-  BadRequestError,
-  UnsupportedMethodError
+    BadRequestError,
+    UnsupportedMethodError
 )
 
 client = XMLRPCClient("127.0.0.1")
@@ -144,20 +140,19 @@ client = XMLRPCClient("127.0.0.1")
 methods = client["system.listMethods"]()
 
 for method in methods:
-  # Get method signature - note this is automatically retrieved and checked when calling any function,
-  # but you can retrieve it for yourself if you need to.
-  signature = client["system.methodSignature"](method)
-  return_type, parameter_types = signature[0], signature[1:] # RPC specification
-  print("Method {0} takes ({1}) and returns ({2})".format(method, ", ".join(parameter_types), return_type))
+    # Get method signature - note this is automatically retrieved and checked when calling any function, but you can retrieve it for yourself if you need to.
+    signature = client["system.methodSignature"](method)
+    return_type, parameter_types = signature[0], signature[1:] # RPC specification
+    print("Method {0} takes ({1}) and returns ({2})".format(method, ", ".join(parameter_types), return_type))
 
 try:
-  method.pow(1, 2, 3)
+    method.pow(1, 2, 3)
 except BadRequestError:
-  # Wrong parameters
+    # Wrong parameters
 except BadResponseError:
-  # Wrong response time
+    # Wrong response time
 except UnsupportedMethodError:
-  # Method does not exist
+    # Method does not exist
 ```
 
 The base client has handlers for introspection and dispatching requests. Implementations are responsible for formatting requests and parsing responses.

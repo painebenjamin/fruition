@@ -11,13 +11,8 @@ from pibble.ext.user.server.base import (
 from pibble.ext.rest.server.base import RESTExtensionServerBase
 from pibble.ext.user.database import *
 
-handlers = UserExtensionHandlerRegistry()
-
-
 class UserRESTExtensionServerBase(UserExtensionServer, RESTExtensionServerBase):
-    @classmethod
-    def get_handlers(cls) -> UserExtensionHandlerRegistry:
-        return handlers
+    handlers = UserExtensionHandlerRegistry()
 
     def grant_permission_to_group(
         self, permission: Permission, user_permission_group: UserPermissionGroup
