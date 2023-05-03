@@ -78,7 +78,7 @@ def main() -> None:
     test_host = os.getenv("TEST_HOST", default=None)
     with DebugUnifiedLoggingContext():
         with TempfileContext() as tempgen:
-            username = "pibbledata"
+            username = "pibble"
             password = "password"
 
             passwordfile = next(tempgen)

@@ -171,7 +171,7 @@ def main() -> None:
 
             if os.name != "nt" and os.getuid() == 0:
                 try:
-                    test_user = "pibbledata-test"
+                    test_user = "pibble-test"
                     test_user_password = "password"
                     test_file = "ftp-test.csv"
 

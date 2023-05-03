@@ -34,9 +34,9 @@ class POSTWrapper:
     """
     Used for the request.POST wrapper provided by webob.
 
-    >>> wrapper = POSTWrapper('email=benjamin%40pibbledata.com&password=mypassword')
+    >>> wrapper = POSTWrapper('email=benjamin%40pibble.com&password=mypassword')
     >>> wrapper['email']
-    'benjamin@pibbledata.com'
+    'benjamin@pibble.com'
     >>> wrapper['password']
     'mypassword'
     """

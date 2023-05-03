@@ -608,7 +608,7 @@ class UserExtensionTemplateServer(UserExtensionServerBase, TemplateServer):
         """
         On configure, grab the cookie name from config.
         """
-        self.cookie = self.configuration.get("user.cookie", "pibbledata_token")
+        self.cookie = self.configuration.get("user.cookie", "pibble_token")
 
     def set_token_cookie(self, response: Response, token: AuthenticationToken) -> None:
         """

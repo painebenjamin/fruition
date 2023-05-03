@@ -137,5 +137,5 @@ class SessionExtensionServerBase(ORMWebServiceAPIServer):
             create=self.configuration.get("orm.create", True),
         )
         self.session_cookie_name = self.configuration.get(
-            "session.cookie", "pibbledata_session"
+            "session.cookie", "pibble_session"
         )

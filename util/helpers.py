@@ -42,8 +42,6 @@ __all__ = [
     "resolve",
     "expect_exception",
     "ignore_exceptions",
-    "human_size",
-    "human_file_size",
     "is_binary",
     "is_binary_file",
     "openpyxl_dataframe",

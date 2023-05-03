@@ -23,6 +23,9 @@ def run_cherrypy(
     """
     cherrypy.tree.graft(application, "/")
     cherrypy.server.unsubscribe()
+    cherrypy.config.update(
+        {"global": {"environment": "production"}}
+    )  # Disable reloading
 
     server = cherrypy._cpserver.Server()
     server.socket_host = host

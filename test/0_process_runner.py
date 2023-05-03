@@ -12,13 +12,13 @@ def main() -> None:
         if os.geteuid() == 0:
             out, err = echo.run("$HOME", shell=True)
             Assertion(Assertion.EQ)(out, "/root")
-            out, err = echo.run("$HOME", shell=True, user="pibbledata")
-            Assertion(Assertion.EQ)(out, "/home/pibbledata")
+            out, err = echo.run("$HOME", shell=True, user="pibble")
+            Assertion(Assertion.EQ)(out, "/home/pibble")
             out, err = echo.run("$HOME", shell=True, user="testuser")
             Assertion(Assertion.EQ)(out, "/home/testuser")
         else:
             out, err = echo.run("$HOME", shell=True)
-            Assertion(Assertion.EQ)(out, "/home/pibbledata")
+            Assertion(Assertion.EQ)(out, "/home/pibble")
 
 
 if __name__ == "__main__":

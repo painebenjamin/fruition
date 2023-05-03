@@ -51,7 +51,14 @@ class ORMMiddlewareBase(APIMiddlewareBase):
                 # Client parsing a response, close database
                 if hasattr(self, "database"):
                     logger.debug("Closing client ORM session.")
-                    self.database.close()
+                    try:
+                        self.database.close()
+                    except Exception as ex:
+                        logger.debug(
+                            "Ignoring exception during database close {0}: {1}".format(
+                                type(ex).__name__, ex
+                            )
+                        )
             elif isinstance(request, WebobRequest) or isinstance(
                 request, RequestWrapper
             ):
@@ -80,4 +87,11 @@ class ORMMiddlewareBase(APIMiddlewareBase):
                 # Server preparing a response, close database
                 if hasattr(self, "database"):
                     logger.debug("Closing server ORM session.")
-                    self.database.close()
+                    try:
+                        self.database.close()
+                    except Exception as ex:
+                        logger.debug(
+                            "Ignoring exception during database close {0}: {1}".format(
+                                type(ex).__name__, ex
+                            )
+                        )

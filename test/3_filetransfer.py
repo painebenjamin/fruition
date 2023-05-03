@@ -65,7 +65,7 @@ def main():
                     "client": {
                         "host": "127.0.0.1",
                         "port": 9091,
-                        "ftp": {"username": "pibbledata-test", "password": "password"},
+                        "ftp": {"username": "pibble-test", "password": "password"},
                     }
                 },
                 "/",
@@ -78,10 +78,10 @@ def main():
                     "client": {
                         "host": "127.0.0.1",
                         "port": 9092,
-                        "sftp": {"username": "pibbledata-test", "password": "password"},
+                        "sftp": {"username": "pibble-test", "password": "password"},
                     }
                 },
-                "/home/pibbledata-test",
+                "/home/pibble-test",
                 False,
             ),
         ]
@@ -108,7 +108,7 @@ def main():
                 },
             )
             sftp_server.start()
-            os.chown(tempdir, pwd.getpwnam("pibbledata-user-1").pw_uid, -1)
+            os.chown(tempdir, pwd.getpwnam("pibble-user-1").pw_uid, -1)
             os.chmod(tempdir, 0o777)
 
         try:
@@ -124,9 +124,9 @@ def main():
                     FILE_2 = "test2.txt"
                     CONTENTS = "testcontents"
                     APPEND = "_appended"
-                    MAIN_USER = "pibbledata-user-1"
-                    SECOND_USER = "pibbledata-user-2"
-                    THIRD_USER = "pibbledata-user-3"
+                    MAIN_USER = "pibble-user-1"
+                    SECOND_USER = "pibble-user-2"
+                    THIRD_USER = "pibble-user-3"
 
                     if cls is SFTPClient:
                         MAIN_USER = pwd.getpwnam(MAIN_USER).pw_uid
