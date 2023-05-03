@@ -8,9 +8,9 @@ import multiprocessing
 import time
 import traceback
 
-from typing import Optional
+from typing import Optional, List
 
-from pibble.api.meta.helpers import MetaFactory
+from pibble.api.meta.helpers import MetaFactory, MetaService
 from pibble.util.log import (
     logger,
     LevelUnifiedLoggingContext,
@@ -21,12 +21,12 @@ from pibble.util.files import load_json
 
 
 class MetaServerProcess(multiprocessing.Process):
-    def __init__(self, service):
+    def __init__(self, service: MetaService) -> None:
         super(MetaServerProcess, self).__init__()
         self.service = service
         self.name = self.service.name
 
-    def run(self):
+    def run(self) -> None:
         self.service.serve()
 
 
@@ -84,7 +84,7 @@ def server(configuration: str, debug: bool = False, interactive: bool = False) -
 @click.option(
     "--debug", is_flag=True, help="Turn on debug unified logging.", default=False
 )
-def servers(configuration: List[str], debug: bool = False):
+def servers(configuration: List[str], debug: bool = False) -> None:
     """
     Starts servers, synchronously, using a configuration file.
 
@@ -172,7 +172,7 @@ def client(
     wrapper: bool = False,
     long: bool = False,
     debug: bool = False,
-):
+) -> None:
     """
     Initiates a client from a configuration file.
 
