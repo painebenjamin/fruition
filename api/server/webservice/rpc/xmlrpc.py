@@ -65,7 +65,7 @@ class XMLRPCServer(RPCServerBase):
         return typename
 
     @staticmethod
-    def format_parameter(parameter) -> ET._Element:
+    def format_parameter(parameter: Any) -> ET._Element:
         """
         Formats a single datum into a <parameter/> node.
 
@@ -122,7 +122,7 @@ class XMLRPCServer(RPCServerBase):
                     )
                 )
 
-            def _format_name(n: Any) -> str:
+            def _format_name(n: Any) -> ET._Element:
                 return E.name(str(n))
 
             if name is not None:
@@ -185,7 +185,7 @@ class XMLRPCServer(RPCServerBase):
         return method_name, parameters, kwargs
 
     @staticmethod
-    def parse_parameters(node: ET._Element):
+    def parse_parameters(node: ET._Element) -> Any:
         """
         Takes the <params/> node from a request, then returns a list of the parsed parameters.
 
@@ -242,7 +242,7 @@ class XMLRPCServer(RPCServerBase):
 
         return [parse_parameter(param) for param in node]
 
-    def format_response(self, result: Any, request: Request, response: Response):
+    def format_response(self, result: Any, request: Request, response: Response) -> str:
         """
         Formats a method response from the dispatcher.
 
@@ -257,7 +257,7 @@ class XMLRPCServer(RPCServerBase):
 
     def format_exception(
         self, exception: Exception, request: Request, response: Response
-    ):
+    ) -> str:
         """
         Formats an exception into a <fault/> node.
 

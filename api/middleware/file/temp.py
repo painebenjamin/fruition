@@ -8,9 +8,9 @@ class APITempfileMiddleware(APIMiddlewareBase):
     and deletes it on destruction.
     """
 
-    def on_configure(self):
+    def on_configure(self) -> None:
         self.tempfiles = TempfileContext()
         self.tempfiles.start()
 
-    def on_destroy(self):
+    def on_destroy(self) -> None:
         self.tempfiles.stop()

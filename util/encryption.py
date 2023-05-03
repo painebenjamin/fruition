@@ -13,7 +13,7 @@ from Crypto.Cipher import AES
 from Crypto.Cipher._mode_cbc import CbcMode as CBCModeCipher
 from Crypto.Protocol.KDF import PBKDF2
 
-from typing import Optional, Tuple, Union, cast
+from typing import Optional, Tuple, Union
 
 from pibble.util.strings import encode, decode
 
@@ -171,7 +171,7 @@ class AESCipher:
                 raise
 
     @property
-    def b64key(self):
+    def b64key(self) -> bytes:
         """
         Simply encodes the current key in base64. Necessary if you're going to store it later.
 
@@ -193,7 +193,7 @@ class AESCipher:
         """
         if iv is None:
             iv = self.random(AES.block_size)
-        return iv, cast(CBCModeCipher, AES.new(self.key, AES.MODE_CBC, iv))
+        return iv, AES.new(self.key, AES.MODE_CBC, iv)
 
     def encrypt(self, raw: str, iv: Optional[bytes] = None) -> str:
         """

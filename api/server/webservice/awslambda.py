@@ -1,4 +1,4 @@
-from typing import TypedDict, Optional, Union, cast
+from typing import TypedDict, Optional, Union, Dict, List, Any, cast
 from base64 import b64decode
 from urllib.parse import parse_qs
 
@@ -17,7 +17,7 @@ class LambdaRequestContextV1(TypedDict):
     apiId: str
     domainName: str
     httpMethod: str
-    identity: Optional[dict]
+    identity: Optional[Dict[str, Any]]
     path: str
     protocol: str
     requestId: str
@@ -31,10 +31,10 @@ class LambdaRequestPayloadV1(TypedDict):
     resource: str
     path: str
     httpMethod: str
-    headers: dict[str, str]
-    multiValueHeaders: Optional[dict[str, list[str]]]
-    queryStringParameters: Optional[dict[str, str]]
-    multiValueQueryStringParameters: Optional[dict[str, list[str]]]
+    headers: Dict[str, str]
+    multiValueHeaders: Optional[Dict[str, List[str]]]
+    queryStringParameters: Optional[Dict[str, str]]
+    multiValueQueryStringParameters: Optional[Dict[str, List[str]]]
     requestContext: LambdaRequestContextV1
     body: Optional[str]
     isBase64Encoded: Optional[bool]
@@ -54,8 +54,8 @@ class LambdaRequestContextV2HTTP(TypedDict):
 class LambdaRequestContextV2(TypedDict):
     accountId: str
     apiId: str
-    authentication: Optional[dict]
-    authorizer: Optional[dict]
+    authentication: Optional[Dict[str, Any]]
+    authorizer: Optional[Dict[str, Any]]
     domainName: str
     http: LambdaRequestContextV2HTTP
     requestId: str
@@ -69,9 +69,9 @@ class LambdaRequestPayloadV2(TypedDict):
     routeKey: str
     rawPath: str
     rawQueryString: str
-    cookies: Optional[list[str]]
-    headers: dict[str, str]
-    queryStringParameters: Optional[dict[str, str]]
+    cookies: Optional[List[str]]
+    headers: Dict[str, str]
+    queryStringParameters: Optional[Dict[str, str]]
     requestContext: LambdaRequestContextV2
     body: Optional[str]
     isBase64Encoded: Optional[bool]
@@ -82,8 +82,8 @@ class LambdaRequestPayloadV2(TypedDict):
 
 class LambdaResponseDict(TypedDict):
     statusCode: int
-    headers: dict[str, str]
-    multiValueHeaders: dict[str, list[str]]
+    headers: Dict[str, str]
+    multiValueHeaders: Dict[str, List[str]]
     body: str
 
 
@@ -110,7 +110,7 @@ class WebServiceAPILambdaServer(WebServiceAPIServerBase):
         logger.debug(f"Receiving lambda request {event}")
         try:
             # Declare base variables to parse from differing payload
-            parameters: dict[str, Union[str, list[str]]] = {}
+            parameters: Dict[str, Union[str, List[str]]] = {}
             body: Optional[bytes] = None
             user_agent: Optional[str] = None
             http_method: str = ""
@@ -118,7 +118,7 @@ class WebServiceAPILambdaServer(WebServiceAPIServerBase):
             path: str = ""
 
             # Common between payload types
-            headers: dict[str, str] = event["headers"]
+            headers: Dict[str, str] = event["headers"]
 
             if event.get("body", None) is not None:
                 body_str = cast(str, event["body"])
@@ -143,7 +143,7 @@ class WebServiceAPILambdaServer(WebServiceAPIServerBase):
                 remote_addr = payload_v2["requestContext"]["http"]["sourceIp"]
 
                 if payload_v2.get("cookies", None) is not None:
-                    headers["cookie"] = ";".join(cast(list[str], payload_v2["cookies"]))
+                    headers["cookie"] = ";".join(cast(List[str], payload_v2["cookies"]))
 
                 if payload_v2.get("rawQueryString", None) is not None:
                     parsed_parameters = parse_qs(payload_v2["rawQueryString"])
@@ -170,7 +170,7 @@ class WebServiceAPILambdaServer(WebServiceAPIServerBase):
 
                 if payload_v1.get("multiValueQueryStringParameters", None) is not None:
                     payload_params = cast(
-                        dict[str, list[str]],
+                        Dict[str, List[str]],
                         payload_v1["multiValueQueryStringParameters"],
                     )
                     parameters.update(

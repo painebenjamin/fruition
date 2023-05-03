@@ -21,7 +21,7 @@ from pibble.util.strings import Serializer, pretty_print, pretty_print_sentence
 
 from webob import Request, Response
 
-from typing import Any, Callable
+from typing import Any, Callable, List
 
 DEFAULT_LIMIT = 100
 
@@ -108,7 +108,7 @@ class RESTExtensionServerBase(ORMWebServiceAPIServer):
             obj: ORMObjectBase,
             column: str,
             value: str,
-            filter_func: Callable[[QueryableAttribute, str], None],
+            filter_func: Callable[[QueryableAttribute, str], Any],
         ) -> Query:
             or_split = column.split("|")
             and_split = column.split("+")
@@ -191,10 +191,10 @@ class RESTExtensionServerBase(ORMWebServiceAPIServer):
         cls,
         handler_classname: str,
         handler_root: str,
-        handler_parent: list[str],
+        handler_parent: List[str],
         handler_scope: str,
         **scope: Any,
-    ) -> Callable[[RESTExtensionServerBase, Request, Response], list[ORMObjectBase]]:
+    ) -> Callable[[RESTExtensionServerBase, Request, Response], List[ORMObjectBase]]:
         """
         Returns a rest handler that has been properly handler_scoped to be callable when registering
         with a handler registry.
@@ -207,7 +207,7 @@ class RESTExtensionServerBase(ORMWebServiceAPIServer):
             request: Request,
             response: Response,
             **kwargs: Any,
-        ) -> list[ORMObjectBase]:
+        ) -> List[ORMObjectBase]:
             method = request.method.upper()
 
             if hasattr(self, "database"):
@@ -324,9 +324,9 @@ class RESTExtensionServerBase(ORMWebServiceAPIServer):
     def bind_rest_handler(
         self,
         handler_classname: str,
-        handler_methods: list[str],
+        handler_methods: List[str],
         handler_root: str,
-        handler_parent: list[str],
+        handler_parent: List[str],
         handler_scope: str,
         handler_regex: str,
         **scope: Any,

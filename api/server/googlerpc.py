@@ -29,7 +29,7 @@ class GRPCAPIServer(APIServerBase):
     See :class:`pibble.api.helpers.GRPC.GRPCService` for required arguments for the GRPC service.
     """
 
-    def __init__(self):
+    def __init__(self) -> None:
         super(GRPCAPIServer, self).__init__()
 
     def on_configure(self) -> None:

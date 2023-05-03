@@ -5,7 +5,7 @@ import boto3
 
 from io import IOBase
 from urllib.parse import urlparse, ParseResult
-from typing import Optional, Iterator, Type, Sequence, Union
+from typing import Optional, Iterator, Type, Sequence, Union, List, Dict
 
 from pibble.util.log import logger
 
@@ -115,7 +115,7 @@ class HTTPRetriever(Retriever):
         if self.configuration is not None:
             api_configuration.update(**self.configuration)
 
-        classes: list[Type] = [WebServiceAPIClientBase]
+        classes: List[Type] = [WebServiceAPIClientBase]
         if self.configuration is not None:
             authentication_type = api_configuration.get("authentication.type", None)
             if authentication_type == "oauth":
@@ -147,7 +147,7 @@ class HTTPRetriever(Retriever):
             "HTTPRetrieverClient", classes, api_configuration.configuration
         )
 
-    def __iter__(self):
+    def __iter__(self) -> Iterator[bytes]:
         kwargs = {}
         if self.url.params:
             kwargs["parameters"] = self.url.params
@@ -178,7 +178,7 @@ class FileRetriever(Retriever):
         if not os.path.exists(self.file_path):
             raise NotFoundError("Could not find file at {0}".format(self.file_path))
 
-    def __iter__(self):
+    def __iter__(self) -> Iterator[bytes]:
         fp = open(self.file_path, "rb")
         try:
             while True:
@@ -200,7 +200,7 @@ class FTPRetriever(Retriever):
     def __init__(self, url: ParseResult, configuration: Optional[dict] = None):
         super(FTPRetriever, self).__init__(url, configuration)
 
-        client_config: dict[str, Union[dict, str, int, None]] = {
+        client_config: Dict[str, Union[dict, str, int, None]] = {
             "host": self.url.hostname,
             "secure": self.url.scheme == "ftps",
             "ftp": {
@@ -216,7 +216,7 @@ class FTPRetriever(Retriever):
         self.client = FTPClient()
         self.client.configure(client=client_config)
 
-    def __iter__(self):
+    def __iter__(self) -> Iterator[bytes]:
         for chunk in self.client.readFile(self.url.path):
             yield chunk.encode("UTF-8")
 
@@ -231,7 +231,7 @@ class SFTPRetriever(Retriever):
     def __init__(self, url: ParseResult, configuration: Optional[dict] = None):
         super(SFTPRetriever, self).__init__(url, configuration)
 
-        client_config: dict[str, Union[dict, str, int, None]] = {
+        client_config: Dict[str, Union[dict, str, int, None]] = {
             "host": self.url.hostname,
             "sftp": {
                 "username": self.url.username,
@@ -245,15 +245,12 @@ class SFTPRetriever(Retriever):
 
         self.client_config = client_config
 
-    def __iter__(self):
+    def __iter__(self) -> Iterator[bytes]:
         client = SFTPClient()
         client.configure(client=self.client_config)
         try:
             for chunk in client.readFile(self.url.path):
-                if isinstance(chunk, str):
-                    yield chunk.encode("UTF-8")
-                else:
-                    yield chunk
+                yield chunk.encode("UTF-8")
         finally:
             logger.warning("Closing client.")
             try:
@@ -273,7 +270,7 @@ class S3Retriever(Retriever):
         super(S3Retriever, self).__init__(url, configuration)
         self.s3 = boto3.client("s3")
 
-    def __iter__(self):
+    def __iter__(self) -> Iterator[bytes]:
         logger.debug(
             f"Getting data from S3 bucket {self.url.hostname},key {self.url.path[1:]}"
         )

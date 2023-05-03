@@ -1,7 +1,7 @@
 import re
 import os
 from io import IOBase
-from typing import Optional, Callable, Any, Union, Type, cast
+from typing import Optional, Callable, Any, Union, Type, Dict, List, cast
 
 from pibble.util.helpers import url_join, resolve
 from pibble.util.log import logger
@@ -45,7 +45,7 @@ class WebServiceAPIClientBase(APIClientBase):
     request_class: Type[Union[Request, RequestWrapper]] = Request
     response_class: Type[Union[Response, ResponseWrapper]] = Response
 
-    def __init__(self):
+    def __init__(self) -> None:
         super(APIClientBase, self).__init__()
         self.headers = {"Accept-Encoding": "gzip"}
 
@@ -166,9 +166,9 @@ class WebServiceAPIClientBase(APIClientBase):
         self,
         method: str,
         url: str = "/",
-        parameters: dict[str, Any] = {},
-        headers: dict[str, Any] = {},
-        files: dict[str, IOBase] = {},
+        parameters: Dict[str, Any] = {},
+        headers: Dict[str, Any] = {},
+        files: Dict[str, IOBase] = {},
         data: Any = {},
         **kwargs: Any,
     ) -> Union[Response, ResponseWrapper]:
@@ -245,9 +245,9 @@ class WebServiceAPIClientBase(APIClientBase):
         self,
         method: str,
         url: str = "/",
-        parameters: dict[str, Any] = {},
-        headers: dict[str, Any] = {},
-        files: dict[str, IOBase] = {},
+        parameters: Dict[str, Any] = {},
+        headers: Dict[str, Any] = {},
+        files: Dict[str, IOBase] = {},
         data: Any = {},
         filename: Optional[str] = None,
         directory: Optional[str] = None,
@@ -300,8 +300,8 @@ class WebServiceAPIClientBase(APIClientBase):
     def get(
         self,
         url: str = "/",
-        parameters: dict[str, Any] = {},
-        headers: dict[str, Any] = {},
+        parameters: Dict[str, Any] = {},
+        headers: Dict[str, Any] = {},
         **kwargs: Any,
     ) -> Union[Response, ResponseWrapper]:
         """
@@ -314,8 +314,8 @@ class WebServiceAPIClientBase(APIClientBase):
     def delete(
         self,
         url: str = "/",
-        parameters: dict[str, Any] = {},
-        headers: dict[str, Any] = {},
+        parameters: Dict[str, Any] = {},
+        headers: Dict[str, Any] = {},
         **kwargs: Any,
     ) -> Union[Response, ResponseWrapper]:
         """
@@ -328,8 +328,8 @@ class WebServiceAPIClientBase(APIClientBase):
     def head(
         self,
         url: str = "/",
-        parameters: dict[str, Any] = {},
-        headers: dict[str, Any] = {},
+        parameters: Dict[str, Any] = {},
+        headers: Dict[str, Any] = {},
         **kwargs: Any,
     ) -> Union[Response, ResponseWrapper]:
         """
@@ -342,8 +342,8 @@ class WebServiceAPIClientBase(APIClientBase):
     def options(
         self,
         url: str = "/",
-        parameters: dict[str, Any] = {},
-        headers: dict[str, Any] = {},
+        parameters: Dict[str, Any] = {},
+        headers: Dict[str, Any] = {},
         **kwargs: Any,
     ) -> Union[Response, ResponseWrapper]:
         """
@@ -356,9 +356,9 @@ class WebServiceAPIClientBase(APIClientBase):
     def post(
         self,
         url: str = "/",
-        parameters: dict[str, Any] = {},
-        headers: dict[str, Any] = {},
-        files: dict[str, IOBase] = {},
+        parameters: Dict[str, Any] = {},
+        headers: Dict[str, Any] = {},
+        files: Dict[str, IOBase] = {},
         data: Any = {},
         **kwargs: Any,
     ) -> Union[Response, ResponseWrapper]:
@@ -378,9 +378,9 @@ class WebServiceAPIClientBase(APIClientBase):
     def put(
         self,
         url: str = "/",
-        parameters: dict[str, Any] = {},
-        headers: dict[str, Any] = {},
-        files: dict[str, IOBase] = {},
+        parameters: Dict[str, Any] = {},
+        headers: Dict[str, Any] = {},
+        files: Dict[str, IOBase] = {},
         data: Any = {},
         **kwargs: Any,
     ) -> Union[Response, ResponseWrapper]:
@@ -400,9 +400,9 @@ class WebServiceAPIClientBase(APIClientBase):
     def patch(
         self,
         url: str = "/",
-        parameters: dict[str, Any] = {},
-        headers: dict[str, Any] = {},
-        files: dict[str, IOBase] = {},
+        parameters: Dict[str, Any] = {},
+        headers: Dict[str, Any] = {},
+        files: Dict[str, IOBase] = {},
         data: Any = {},
         **kwargs: Any,
     ) -> Union[Response, ResponseWrapper]:
@@ -413,7 +413,7 @@ class WebServiceAPIClientBase(APIClientBase):
             "PATCH", url=url, data=data, files=files, headers=headers, **kwargs
         )
 
-    def listMethods(self) -> list[str]:
+    def listMethods(self) -> List[str]:
         """
         Unless overridden, this will list the default functions.
         """

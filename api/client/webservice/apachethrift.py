@@ -1,5 +1,5 @@
 from functools import partial
-from typing import Callable, Any
+from typing import Callable, Any, List
 
 from pibble.util.log import logger
 from pibble.util.helpers import resolve
@@ -8,7 +8,7 @@ from pibble.api.helpers.apachethrift import (
     TTransitiveMemoryBuffer,
     ApacheThriftService,
 )
-from pibble.api.protocol.apachethrift import TJSONProtocol
+from pibble.api.protocol.apachethrift import TJSONProtocol  # type: ignore
 
 
 class ApacheThriftWebClient(WebServiceAPIClientBase):
@@ -32,7 +32,7 @@ class ApacheThriftWebClient(WebServiceAPIClientBase):
 
     BUFFER_SIZE = 2**15
 
-    def __init__(self):
+    def __init__(self) -> None:
         super(ApacheThriftWebClient, self).__init__()
 
         # Generate input and output protocols.
@@ -52,7 +52,7 @@ class ApacheThriftWebClient(WebServiceAPIClientBase):
         )
         self.interface = self.thrift.service.Iface()
 
-    def listMethods(self) -> list[str]:
+    def listMethods(self) -> List[str]:
         """
         Lists methods in the interface.
         """

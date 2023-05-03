@@ -1,14 +1,17 @@
 import os
-import yaml
-import json
 import ipaddress
 
+from typing import List, Union
+
 from pibble.util.log import logger
+from pibble.util.files import load_yaml, load_json
 from pibble.api.middleware.base import APIMiddlewareBase
 from pibble.api.configuration import APIConfiguration
 
 
-def ParseList(configuration: APIConfiguration, key: str) -> list[ipaddress.IPv4Network]:
+def parse_ip_list(
+    configuration: APIConfiguration, key: str
+) -> List[ipaddress.IPv4Network]:
     """
     Parses the list of IP addresses into valid ipaddress.IPv4Network's.
 
@@ -16,35 +19,45 @@ def ParseList(configuration: APIConfiguration, key: str) -> list[ipaddress.IPv4N
     :param key str: The configuration get to get out of the APIConfiguration.
     :returns list: The list of IP address network values.
     """
-    iplist = configuration.get(key, [])
+    ip_list_config: Union[List[str], str] = configuration.get(key, [])
+    ip_str_list: List[str] = []
+    ip_list: List[ipaddress.IPv4Network] = []
 
-    if isinstance(iplist, str):
-        if os.path.exists(iplist):
-            if iplist.endswith(".yml") or iplist.endswith(".yaml"):
-                iplist = yaml.load(open(iplist, "r"), Loader=yaml.BaseLoader)
-            elif iplist.endswith(".json"):
-                iplist = json.load(open(iplist, "r"))
+    if isinstance(ip_list_config, str):
+        if os.path.exists(ip_list_config):
+            if ip_list_config.endswith(".yml") or ip_list_config.endswith(".yaml"):
+                yaml_ip_list = load_yaml(ip_list_config)
+                if not isinstance(yaml_ip_list, list):
+                    raise ValueError(f"{ip_list_config} is not an array")
+                ip_str_list = [str(yaml_ip) for yaml_ip in yaml_ip_list]
+            elif ip_list_config.endswith(".json"):
+                json_ip_list = load_json(ip_list_config)
+                if not isinstance(json_ip_list, list):
+                    raise ValueError(f"{ip_list_config} is not an array")
+                ip_str_list = [str(json_ip) for json_ip in json_ip_list]
             else:
-                iplist = open(iplist, "r").readlines()
+                ip_str_list = open(ip_list_config, "r").readlines()
         else:
             logger.info(
                 "IPlist {0} ({1}) is a string and not a file pointer, defaulting to this as a list.".format(
-                    iplist, key
+                    ip_list_config, key
                 )
             )
-            iplist = [iplist]
+            ip_str_list = [ip_list_config]
+    elif isinstance(ip_list_config, list):
+        ip_str_list = [str(item) for item in ip_list_config]
 
-    for i, ipaddr in enumerate(iplist):
+    for ip_addr in ip_str_list:
         try:
-            iplist[i] = ipaddress.IPv4Network(ipaddr)
+            ip_list.append(ipaddress.IPv4Network(ip_addr))
         except Exception as ex:
             logger.error(
                 "Cannot parse IPv4 Address '{0}', skipping.\n{1}()\n{2}".format(
-                    ipaddr, type(ex).__name__, str(ex)
+                    ip_addr, type(ex).__name__, str(ex)
                 )
             )
-            iplist[i] = None
-    return [ipaddr for ipaddr in iplist if ipaddr is not None]
+
+    return ip_list
 
 
 class ScreeningAPIMiddlewareBase(APIMiddlewareBase):
@@ -61,9 +74,9 @@ class ScreeningAPIMiddlewareBase(APIMiddlewareBase):
     """
 
     def on_configure(self) -> None:
-        self.allowlist = ParseList(self.configuration, "server.allowlist")
+        self.allowlist = parse_ip_list(self.configuration, "server.allowlist")
         logger.debug("Allowlist set to {0}.".format(self.allowlist))
-        self.blocklist = ParseList(self.configuration, "server.blocklist")
+        self.blocklist = parse_ip_list(self.configuration, "server.blocklist")
         logger.debug("Blocklist set to {0}.".format(self.blocklist))
 
         self.offlist = self.configuration.get("server.offlist", "accept")

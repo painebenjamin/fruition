@@ -1,5 +1,5 @@
 import os
-from typing import Any
+from typing import Any, Union, List
 
 from pibble.api.configuration import APIConfiguration
 from pibble.api.helpers.store import APISessionStore, UnconfiguredAPISessionStore
@@ -13,7 +13,9 @@ class APIBase:
     A base class for servers and clients to inherit from.
     """
 
-    def __init__(self):
+    session: Union[UnconfiguredAPISessionStore, APISessionStore]
+
+    def __init__(self) -> None:
         logger.debug("Initializing API base.")
         self.configuration = APIConfiguration()
         self.configuration.put("session_key", get_uuid())
@@ -83,7 +85,7 @@ class APIBase:
                 except Exception as ex:
                     raise ConfigurationError(str(ex))
 
-    def listMethods(self) -> list[str]:
+    def listMethods(self) -> List[str]:
         """
         Should be extended for function-based servers or clients.
         """

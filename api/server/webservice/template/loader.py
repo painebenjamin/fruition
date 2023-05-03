@@ -2,7 +2,7 @@ import os
 import jinja2
 
 from jinja2.ext import Extension
-from typing import Optional, Callable, Any, Type, Union
+from typing import Optional, Callable, Any, Type, Union, Dict
 
 from pibble.api.exceptions import ConfigurationError
 from pibble.api.configuration import APIConfiguration
@@ -87,7 +87,7 @@ class TemplateLoader:
 
         # Add in Lambdas
 
-        lambdas: dict[str, Callable] = {}
+        lambdas: Dict[str, Callable] = {}
         lambdas["getServer"] = lambda *args: self.server
         lambdas["getConfiguration"] = lambda *args: self.configuration
 
@@ -145,7 +145,7 @@ class TemplateLoader:
 
         :param extensions list<Extension>: Either a jinja2.ext.Extension or any of the extensions in the template extension directory.
         """
-        lambdas: dict[str, Callable] = {}
+        lambdas: Dict[str, Callable] = {}
         lambdas["getServer"] = lambda *args: self.server
         lambdas["getConfiguration"] = lambda *args: self.configuration
         for extension in extensions:

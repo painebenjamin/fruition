@@ -6,7 +6,7 @@ from typing import Any
 
 from pibble.api.server.webservice.base import WebServiceAPIServerBase
 from pibble.api.server.webservice.handler import WebServiceAPIHandlerRegistry
-from pibble.api.protocol.apachethrift import TJSONProtocol
+from pibble.api.protocol.apachethrift import TJSONProtocol  # type: ignore
 from pibble.api.exceptions import ApacheThriftError
 from pibble.api.helpers.apachethrift import (
     ApacheThriftService,

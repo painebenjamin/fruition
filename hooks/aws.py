@@ -5,7 +5,7 @@ import yaml
 import logging
 import traceback
 
-from typing import Optional, Union
+from typing import Optional, Union, Any, cast
 
 from pibble.util.helpers import qualify, resolve, FlexibleJSONDecoder
 from pibble.resources.retriever import Retriever
@@ -41,7 +41,7 @@ def debug_mode() -> bool:
     return isinstance(debug_str, str) and debug_str.lower()[0] in ["t", "y", "1"]
 
 
-def get_config_from_file(config_file: str) -> dict:
+def get_config_from_file(config_file: str) -> Any:
     """
     Loads config from a file.
 
@@ -148,7 +148,9 @@ def lambda_api_handler(
     if service is not None:
         try:
             logger.debug("Service loaded, handling lambda request.")
-            return service.handle_lambda_request(event, context)
+            return cast(
+                LambdaResponseDict, service.handle_lambda_request(event, context)
+            )
         except Exception as ex:
             if debug_mode():
                 return {

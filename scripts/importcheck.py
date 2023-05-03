@@ -7,7 +7,8 @@ fails.
 import sys
 import io
 from importchecker.importchecker import main
-from typing import Any, Union
+from typing import Any, Union, List
+from typing_extensions import Self
 
 
 class OutputCatcher(io.TextIOWrapper):
@@ -17,18 +18,19 @@ class OutputCatcher(io.TextIOWrapper):
     buffer instead.
     """
 
-    flushed: list[bytes]
+    flushed: List[bytes]
     buf: bytes
 
     def __init__(self) -> None:
         self.flushed = []
         self.buf = b""
 
-    def __enter__(self):
+    def __enter__(self) -> Self:
         self.stdout = sys.stdout
         self.stderr = sys.stderr
         sys.stdout = self
         sys.stderr = self
+        return self
 
     def empty(self) -> bool:
         return len(self.flushed) == 0 and len(self.buf) == 0
@@ -38,10 +40,11 @@ class OutputCatcher(io.TextIOWrapper):
             [string.decode(sys.getdefaultencoding()) for string in self.flushed]
         )
 
-    def write(self, text: Union[str, bytes]):
+    def write(self, text: Union[str, bytes]) -> int:
         if isinstance(text, str):
             text = text.encode(sys.getdefaultencoding())
         self.buf += text
+        return len(text)
 
     def flush(self) -> None:
         if self.buf.strip():

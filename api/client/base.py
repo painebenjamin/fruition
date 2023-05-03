@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import Any
+from typing import Any, List
 
 from pibble.util.log import logger
 from pibble.api.base import APIBase
@@ -11,7 +11,7 @@ class APIClientBase(APIBase):
     A base client class, from which all implementing clients will inherit.
     """
 
-    def __init__(self):
+    def __init__(self) -> None:
         logger.debug("Initializing API Client Base.")
         super(APIClientBase, self).__init__()
 
@@ -39,7 +39,7 @@ class APIClientBase(APIBase):
         """
         pass
 
-    def listMethods(self) -> list[str]:
+    def listMethods(self) -> List[str]:
         """
         Lists methods, if available. Implementing clients should override these.
 

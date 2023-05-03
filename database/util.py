@@ -2,7 +2,7 @@ import sqlalchemy.types
 
 from sqlalchemy.sql.type_api import TypeEngine as SQLAlchemyType
 
-from typing import Type, Any
+from typing import Type, Any, Iterator
 from pandas import Timestamp
 from numpy import int64, float64
 from datetime import datetime, date, time, timedelta
@@ -57,7 +57,7 @@ class RowProxy(dict):
     :param kwargs dict: Any number of keywords arguments.
     """
 
-    def __iter__(self):
+    def __iter__(self) -> Iterator[Any]:
         return iter(self.values())
 
 

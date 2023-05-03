@@ -34,7 +34,7 @@ class RateLimitedWebServiceAPIMiddleware(WebServiceAPIMiddlewareBase):
     rate_limit: int
     rate_period: int
 
-    def on_configure(self):
+    def on_configure(self) -> None:
         """
         On configuration, initialize rate quotas.
         """

@@ -4,7 +4,7 @@ import datetime
 import uuid
 import hashlib
 
-from typing import Optional, Union
+from typing import Optional, Union, List
 
 from webob import (
     Request as WebobRequest,
@@ -265,7 +265,7 @@ class NonceList:
     :param max_uses int: The number of times a nonce can be used before a new one must be generated.
     """
 
-    nonces: list[NonceList.Nonce]
+    nonces: List[NonceList.Nonce]
 
     def __init__(self, ttl: int = 60 * 60 * 24, max_uses: int = 25):
         self.ttl = ttl

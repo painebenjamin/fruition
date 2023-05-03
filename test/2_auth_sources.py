@@ -162,7 +162,7 @@ def main() -> None:
                 }
             }
 
-            tests: list[dict] = [store_server]
+            tests: List[dict] = [store_server]
             names = ["database"]
 
             if os.name != "nt" and os.geteuid() == 0:

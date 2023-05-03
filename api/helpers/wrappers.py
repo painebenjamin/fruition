@@ -4,7 +4,7 @@ import zlib
 import tempfile
 import datetime
 
-from typing import Any, Union, Iterator, Optional, Literal
+from typing import Any, Union, Iterator, Optional, Literal, List
 from urllib.parse import urlencode
 from http.cookies import SimpleCookie
 
@@ -50,7 +50,7 @@ class POSTWrapper:
         else:
             self.decoded = parse_url_encoded(body)
 
-    def __getitem__(self, key: str) -> str:
+    def __getitem__(self, key: str) -> Any:
         """
         Allows for POST[x] calls.
         """
@@ -75,7 +75,7 @@ class POSTWrapper:
             raise ValueError("No key-value pairs present.")
         return key in self.decoded
 
-    def get(self, key: str, default: Any = NoDefault) -> str:
+    def get(self, key: str, default: Any = NoDefault) -> Any:
         """
         Allows a dict-list .get().
         """
@@ -254,7 +254,7 @@ class RequestWrapper:
         return self.url
 
     @property
-    def content_type(self) -> Optional[str]:
+    def content_type(self) -> Any:
         """
         Gets the content-type header.
         """
@@ -287,7 +287,7 @@ class ResponseWrapper:
     content_length: int
     app_iter: Iterator[bytes]  # server sending response
     body: bytes
-    content_cache: list[bytes]
+    content_cache: List[bytes]
 
     def __init__(self) -> None:
         self.headers = CaseInsensitiveDict()
@@ -391,7 +391,7 @@ class ResponseWrapper:
         return b""
 
     @property
-    def content_type(self) -> Optional[str]:
+    def content_type(self) -> Any:
         return self.headers.get("content-type", None)
 
     @content_type.setter
@@ -399,7 +399,7 @@ class ResponseWrapper:
         self.headers["content-type"] = new_content_type
 
     @property
-    def content_encoding(self) -> Optional[str]:
+    def content_encoding(self) -> Any:
         return self.headers.get("content-encoding", None)
 
     @content_encoding.setter
@@ -407,7 +407,7 @@ class ResponseWrapper:
         self.headers["content-encoding"] = new_content_encoding
 
     @property
-    def location(self) -> Optional[str]:
+    def location(self) -> Any:
         return self.headers.get("location", None)
 
     @location.setter

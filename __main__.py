@@ -84,7 +84,7 @@ def server(configuration: str, debug: bool = False, interactive: bool = False) -
 @click.option(
     "--debug", is_flag=True, help="Turn on debug unified logging.", default=False
 )
-def servers(configuration: list[str], debug: bool = False):
+def servers(configuration: List[str], debug: bool = False):
     """
     Starts servers, synchronously, using a configuration file.
 
@@ -94,7 +94,7 @@ def servers(configuration: list[str], debug: bool = False):
     The configuration file format is specified by its extension (.yml/.yaml being YAML, .json being JSON). No other formats are accepted.
     """
 
-    services: list[MetaServerProcess] = []
+    services: List[MetaServerProcess] = []
 
     for config in configuration:
         factory = MetaFactory.from_file(config)
@@ -167,7 +167,7 @@ def servers(configuration: list[str], debug: bool = False):
 def client(
     configuration: str,
     command: Optional[str] = None,
-    arg: Optional[list[str]] = None,
+    arg: Optional[List[str]] = None,
     json: Optional[str] = None,
     wrapper: bool = False,
     long: bool = False,

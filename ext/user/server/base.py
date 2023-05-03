@@ -45,8 +45,8 @@ class UserExtensionHandler(WebServiceAPIHandler):
         object_name: Optional[str] = None,
         action: Optional[str] = None,
         secondary_action: Optional[str] = None,
-        **kwargs,
-    ):
+        **kwargs: Any,
+    ) -> None:
         super(UserExtensionHandler, self).__init__(fn, **kwargs)
         self.secured = secured
         self.object_name = object_name
@@ -55,7 +55,7 @@ class UserExtensionHandler(WebServiceAPIHandler):
 
     def _check_permissions(
         self, server: UserExtensionServerBase, request: Request, **kwargs: Any
-    ):
+    ) -> None:
         if getattr(self, "secured", False):
             if not getattr(request, "token", None):
                 raise AuthenticationError("Invalid or no credentials supplied.")
@@ -92,7 +92,7 @@ class UserExtensionHandlerRegistry(WebServiceAPIHandlerRegistry):
         if type(object_name) is type:
             object_name = object_name.__name__
 
-        def wrap(fn: Callable):
+        def wrap(fn: Callable) -> Callable:
             self.create_or_modify_handler(
                 fn,
                 secured=True,
@@ -227,7 +227,7 @@ class UserExtensionServerBase(ORMWebServiceAPIServer):
     def check_user_permission(
         self,
         user: User,
-        object_name: str,
+        subject: Any,
         action: str,
         secondary_action: Optional[str] = None,
         **kwargs: Any,
@@ -246,8 +246,7 @@ class UserExtensionServerBase(ORMWebServiceAPIServer):
         if user.superuser:
             return True
 
-        if type(object_name) is type:
-            object_name = object_name.__name__
+        object_name = getattr(subject, "__name__", str(subject))
 
         logger.debug(
             "Checking permissions on user {0} for object {1}, action {2}, secondary action {3}".format(
@@ -259,7 +258,7 @@ class UserExtensionServerBase(ORMWebServiceAPIServer):
             user, object_name, action=action, secondary_action=secondary_action
         ):
             if self.check_permission(user, permission, **kwargs):
-                return permission
+                return True
         return False
 
     def assert_user_permission(
@@ -536,7 +535,7 @@ class UserExtensionServerBase(ORMWebServiceAPIServer):
         self.database.add(token)
         self.database.commit()
 
-        return token
+        return cast(AuthenticationToken, token)
 
     def bypass_login(self, request: Request, response: Response) -> AuthenticationToken:
         """
@@ -564,7 +563,7 @@ class UserExtensionServerBase(ORMWebServiceAPIServer):
         self.database.add(token)
         self.database.commit()
 
-        return token
+        return cast(AuthenticationToken, token)
 
 
 handlers = UserExtensionHandlerRegistry()
@@ -595,7 +594,7 @@ class UserExtensionServer(UserExtensionServerBase):
             .filter(self.orm.User.id == request.token.user_id)
             .one()
         )
-        return user
+        return cast(User, user)
 
 
 class UserExtensionTemplateServer(UserExtensionServerBase, TemplateServer):

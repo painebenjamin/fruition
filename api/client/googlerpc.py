@@ -1,6 +1,6 @@
 import grpc
 
-from typing import Callable, Any
+from typing import Callable, Any, List
 from functools import partial
 
 from pibble.api.client.base import APIClientBase
@@ -117,7 +117,7 @@ class GRPCAPIClient(APIClientBase):
         except KeyError:
             raise AttributeError(key)
 
-    def listMethods(self) -> list[str]:
+    def listMethods(self) -> List[str]:
         """
         Lists all methods present in the stub.
         """

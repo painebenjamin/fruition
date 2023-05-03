@@ -10,7 +10,7 @@ from pibble.util.strings import Serializer
 from pibble.util.helpers import resolve
 from pibble.util.log import logger
 
-from typing import Any, Callable
+from typing import Any, Callable, Optional, Dict
 
 
 class NoDefaultProvided:
@@ -195,7 +195,7 @@ class UnconfiguredAPISessionStore(APISessionStore):
     A session store for non-configured APIs.
     """
 
-    def __init__(self):
+    def __init__(self) -> None:
         self.driver = MemoryAPISessionStore(None, None)
 
 
@@ -209,11 +209,17 @@ class APISessionStoreDriver:
 
     DRIVERNAME = ""
 
-    def __init__(self, configuration_prefix: str, configuration: APIConfiguration):
+    def __init__(
+        self,
+        configuration_prefix: Optional[str],
+        configuration: Optional[APIConfiguration],
+    ) -> None:
         self.configuration_prefix = configuration_prefix
         self.configuration = configuration
 
     def get_configuration(self, key: str, default: Any = NoDefaultProvided()) -> Any:
+        if self.configuration is None:
+            raise KeyError("Unconfigured session store.")
         result = self.configuration.get(f"{self.configuration_prefix}.{key}", default)
         if isinstance(result, NoDefaultProvided):
             raise KeyError(key)
@@ -278,7 +284,11 @@ class APISessionStoreDriver:
 class DatabaseAPISessionStore(APISessionStoreDriver):
     DRIVERNAME = "database"
 
-    def __init__(self, configuration_prefix: str, configuration: APIConfiguration):
+    def __init__(
+        self,
+        configuration_prefix: Optional[str],
+        configuration: Optional[APIConfiguration],
+    ) -> None:
         """
         A driver for database-backed session stores.
 
@@ -323,7 +333,7 @@ class DatabaseAPISessionStore(APISessionStoreDriver):
             )
             self.metadata.create_all()
 
-    def _where(self, scope: str, key: str):
+    def _where(self, scope: str, key: str) -> Any:
         return sqlalchemy.and_(
             self.table.c[self.key] == key, self.table.c[self.scope] == scope
         )
@@ -366,9 +376,13 @@ class MemoryAPISessionStore(APISessionStoreDriver):
     """
 
     DRIVERNAME = "memory"
-    memory: dict[str, dict[str, Any]]
+    memory: Dict[str, Dict[str, Any]]
 
-    def __init__(self, configuration_prefix: str, configuration: APIConfiguration):
+    def __init__(
+        self,
+        configuration_prefix: Optional[str],
+        configuration: Optional[APIConfiguration],
+    ) -> None:
         super(MemoryAPISessionStore, self).__init__(configuration_prefix, configuration)
         self.memory = {}
 

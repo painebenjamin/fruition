@@ -7,7 +7,7 @@ except ImportError:
     TApplicationException: Type = Exception  # type: ignore[no-redef]
 
 
-class ApacheThriftError(TApplicationException):
+class ApacheThriftError(TApplicationException):  # type: ignore
     """
     An exception wrapping around TApplicationExceptions, to pass up to the thrift server layer.
 

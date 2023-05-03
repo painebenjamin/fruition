@@ -23,7 +23,8 @@ from pibble.util.helpers import find_executable, resolve
 from thrift.transport import TTransport, TSocket
 from thrift.protocol import TBinaryProtocol
 
-from typing import Type, Optional, Any, Union
+from typing import Type, Optional, Any, Union, List
+from types import ModuleType
 
 
 class ApacheThriftHandler:
@@ -40,7 +41,7 @@ class ApacheThriftHandler:
             self.configuration = configuration
 
 
-class ApacheThriftBufferedTransportFactory(TTransport.TBufferedTransportFactory):
+class ApacheThriftBufferedTransportFactory(TTransport.TBufferedTransportFactory):  # type: ignore
     """
     A small class that wraps around the buffered transport factory.
 
@@ -184,7 +185,7 @@ class ApacheThriftServerHandler:
         return response.response
 
 
-class TTransitiveMemoryBuffer(TTransport.TTransportBase):
+class TTransitiveMemoryBuffer(TTransport.TTransportBase):  # type: ignore
     """
     A class for holding thrift messages in memory until read.
 
@@ -329,7 +330,7 @@ class ApacheThriftCompiler:
                 sys.path.append(os.path.join(tmpdir, "gen-py"))
                 module = __import__(self.namespace, locals(), globals())
 
-                def recurse(module, fromlist=[]):
+                def recurse(module: ModuleType, fromlist: List[str] = []) -> None:
                     for submodule_name in getattr(module, "__all__", []):
                         logger.debug(
                             "Importing thrift IDL {0} namespace {1}".format(
@@ -441,6 +442,6 @@ class ApacheThriftService:
         Wraps around an error to keep track of when it happened.
         """
 
-        def __init__(self, error):
+        def __init__(self, error: str) -> None:
             self.error = error
             self.time = datetime.datetime.now()

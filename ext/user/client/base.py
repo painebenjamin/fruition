@@ -1,3 +1,4 @@
+from typing import Any
 from pibble.util.log import logger
 from pibble.api.client.webservice.base import WebServiceAPIClientBase
 
@@ -7,7 +8,7 @@ class UserExtensionClientBase(WebServiceAPIClientBase):
     A small class that adds the 'login' method to get a token and set authorization.
     """
 
-    def login(self, email: str, password: str) -> dict:
+    def login(self, email: str, password: str) -> Any:
         """
         Logs in, in accordance with the schema set by `UserExtensionServerBase`.
 

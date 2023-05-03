@@ -19,7 +19,7 @@ class JSONRPCClient(RPCClientBase):
     We can't do an all-encompassing doctest here, as it relies on an externally reachable server.
     """
 
-    def __init__(self):
+    def __init__(self) -> None:
         super(JSONRPCClient, self).__init__()
         self.headers["Content-Type"] = "application/json"
         self.request_id = 1

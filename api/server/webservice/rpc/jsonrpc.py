@@ -140,7 +140,7 @@ class JSONRPCServer(RPCServerBase):
 
     def format_exception(
         self, exception: Exception, request: Request, response: Response
-    ):
+    ) -> str:
         """
         Formats an exception into a dict.
 

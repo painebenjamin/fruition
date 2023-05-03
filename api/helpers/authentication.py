@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import sqlalchemy
 import binascii
 import os
@@ -134,7 +136,7 @@ class APIAuthenticationSource:
 
         Not all implementations will provide a means for this (nor should they).
         """
-        return self.driver._getPassword(username)
+        return str(self.driver._getPassword(username))
 
 
 class APIAuthenticationSourceDriver:
@@ -145,14 +147,14 @@ class APIAuthenticationSourceDriver:
     returns True if valid, or false otherwise.
     """
 
-    def __init__(self, encryption: str, configuration: APIConfiguration):
+    def __init__(self, encryption: str, configuration: APIConfiguration) -> None:
         self.encryption = encryption
         self.configuration = configuration
 
     @staticmethod
     def get_implementation(
         CONFIGURATION_PREFIX: str, encryption: str, configuration: APIConfiguration
-    ):
+    ) -> APIAuthenticationSourceDriver:
         drivername = configuration["{0}.driver".format(CONFIGURATION_PREFIX)]
         for cls in APIAuthenticationSourceDriver.__subclasses__():
             if getattr(cls, "AUTHENTICATION_DRIVERNAME", None) == drivername:
@@ -168,7 +170,7 @@ class APIAuthenticationSourceDriver:
                 raise ConfigurationError("Crypt is not supported on Windows.")
             return crypt.crypt(password, stored)  # type: ignore
         else:
-            return getattr(hashlib, self.encryption)(encode(password)).hexdigest()
+            return str(getattr(hashlib, self.encryption)(encode(password)).hexdigest())
 
     def _comparePassword(self, username: str, password: str) -> bool:
         """
@@ -243,13 +245,13 @@ class APIDatabaseAuthenticationSourceDriver(APIAuthenticationSourceDriver):
             self.tablename, self.metadata, autoload=True, autoload_with=self.engine
         )
 
-    def _getPassword(self, username):
+    def _getPassword(self, username: str) -> str:
         row = self.engine.execute(
             self.table.select().where(self.table.c[self.username] == username)
         ).first()
         if not row:
             raise KeyError(f"Cannot find password for username {username}")
-        return row[self.password]
+        return str(row[self.password])
 
 
 class RSAKeyAuthenticationSourceDriver(APIAuthenticationSourceDriver):

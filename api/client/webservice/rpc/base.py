@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import Callable, Any, Type, Optional
+from typing import Callable, Any, Type, Optional, List, Dict
 
 from pibble.util.log import logger
 from pibble.util.strings import pretty_print
@@ -17,7 +17,9 @@ class RPCClientBase(WebServiceAPIClientBase):
     the server to ask for its definition.
     """
 
-    def __init__(self):
+    methods: List[RPCClientBase.RPCMethod]
+
+    def __init__(self) -> None:
         super(RPCClientBase, self).__init__()
         if not self.configuration.has("client.path"):
             self.configuration["client.path"] = "/RPC2"
@@ -29,7 +31,7 @@ class RPCClientBase(WebServiceAPIClientBase):
         self.introspected = False
         self.introspection_failed = False
 
-    def listMethods(self) -> list[str]:
+    def listMethods(self) -> List[str]:
         """
         Lists the methods in the client.
         """
@@ -167,7 +169,7 @@ class RPCClientBase(WebServiceAPIClientBase):
             client: RPCClientBase,
             name: str,
             arguments: Optional[list] = None,
-            named_arguments: Optional[dict[str, Any]] = None,
+            named_arguments: Optional[Dict[str, Any]] = None,
         ):
             self.client = client
             self.name = name

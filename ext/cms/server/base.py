@@ -1,4 +1,7 @@
+from typing import Optional
+
 from pibble.util.log import logger
+from pibble.api.exceptions import ConfigurationError
 from pibble.api.server.webservice.template import (
     TemplateServer,
     TemplateServerHandlerRegistry,
@@ -6,21 +9,24 @@ from pibble.api.server.webservice.template import (
 from pibble.api.middleware.database.orm import ORMMiddlewareBase
 from pibble.ext.dam.server.base import DAMServerBase
 
-from pibble.ext.cms.database.base import CMSExtensionObjectBase
-from pibble.ext.cms.server.mixin import CMSExtensionContextMixin
+from pibble.ext.cms.middleware import CMSExtensionContextMiddleware
+from pibble.ext.cms.database import *
 
 
 handlers = TemplateServerHandlerRegistry()
 
 
 class CMSServerBase(
-    TemplateServer, DAMServerBase, CMSExtensionContextMixin, ORMMiddlewareBase
+    TemplateServer, DAMServerBase, CMSExtensionContextMiddleware, ORMMiddlewareBase
 ):
     @classmethod
     def get_handlers(cls) -> TemplateServerHandlerRegistry:
         return handlers
 
-    def migrate_taxonomies(self):
+    def migrate_taxonomies(self) -> None:
+        """
+        Updates configured taxonomies in database at runtime
+        """
         with self.orm.session() as session:
             taxonomies = session.query(self.orm.Taxonomy).all()
 
@@ -29,11 +35,15 @@ class CMSServerBase(
                     raise ConfigurationError("Taxonomies require a name.")
 
                 name = taxonomy["name"]
-                existing = [t for t in taxonomies if t.name == name]
+                existing_list: list[Taxonomy] = [
+                    t for t in taxonomies if t.name == name
+                ]
+                existing: Optional[Taxonomy] = (
+                    None if not existing_list else existing_list[0]
+                )
 
-                if existing:
+                if existing is not None:
                     logger.debug(f"Found existing taxonomy {name}, updating.")
-                    existing = existing[0]
                     existing.label = taxonomy.get("label", name)
                     existing.hierarchical = taxonomy.get("hierarchical", False)
                 else:
@@ -47,7 +57,10 @@ class CMSServerBase(
                     session.add(taxonomy_object)
                     session.commit()
 
-    def migrate_interfaces(self):
+    def migrate_interfaces(self) -> None:
+        """
+        Updates configured interfaces in database at runtime
+        """
         with self.orm.session() as session:
             interfaces = session.query(self.orm.Interface).all()
             for interface in self.configuration["cms.interfaces"]:
@@ -107,11 +120,9 @@ class CMSServerBase(
                     configured = [p for p in parameters if p.name == parameter["name"]]
 
                     if configured:
-                        parameter.ptype = configured[0]["ptype"]
-                        parameter.required = configured[0].get("required", False)
-                        parameter.label = configured[0].get(
-                            "label", configured[0]["name"]
-                        )
+                        parameter["ptype"] = configured[0].ptype  # type: ignore
+                        parameter["required"] = configured[0].required  # type: ignore
+                        parameter["label"] = configured[0].label  # type: ignore
                     else:
                         session.remove(parameter)
 
@@ -132,7 +143,7 @@ class CMSServerBase(
 
             session.commit()
 
-    def on_configure(self):
+    def on_configure(self) -> None:
         """
         Look for configured views, update database if necessary.
         """

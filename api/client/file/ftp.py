@@ -2,7 +2,7 @@ import ftplib
 import os
 import datetime
 
-from typing import Iterator, Iterable, Optional, Any, Union
+from typing import Iterator, Iterable, Optional, Any, Union, Mapping
 
 from pibble.api.exceptions import (
     NotFoundError,
@@ -53,7 +53,7 @@ class FTPClient(FileTransferAPIClientBase):
 
     # Helpers
 
-    def convertFacts(self, path, facts) -> RemoteObject:
+    def convertFacts(self, path: str, facts: Mapping) -> RemoteObject:
         """
         Converts an MLSx response to a RemoteObject.
 

@@ -7,7 +7,7 @@ import hashlib
 import email.parser
 
 from re import compile, sub, split
-from typing import Any, TypedDict, Optional, Union, Tuple, cast
+from typing import Any, TypedDict, Optional, Union, Tuple, Dict, List, cast
 from random import choice, shuffle
 from uuid import uuid4, UUID
 from json import dumps, loads, JSONDecodeError
@@ -189,7 +189,7 @@ class Serializer:
                 test_parameter = parameter.strip().replace("\n", "")
                 for pattern in cls.PARSE_FORMATS:
                     if bool(pattern.match(test_parameter)):
-                        return cls.PARSE_FORMATS[pattern](test_parameter)
+                        return cls.PARSE_FORMATS[pattern](test_parameter)  # type: ignore
         except Exception as ex:
             if permissive:
                 logger.warning(
@@ -206,7 +206,7 @@ class Serializer:
     def serialize(cls, parameter: Any, **kwargs: Any) -> str:
         for typename in cls.SERIALIZE_FORMATS:
             if type(parameter) is typename:
-                return cls.SERIALIZE_FORMATS[typename](parameter, **kwargs)
+                return cls.SERIALIZE_FORMATS[typename](parameter, **kwargs)  # type: ignore
         return str(parameter)
 
 
@@ -422,7 +422,7 @@ def guess_case(string: str) -> str:
     return "UNKNOWN"
 
 
-def guess_string_parts(string: str) -> list[str]:
+def guess_string_parts(string: str) -> List[str]:
     """
     Using guess_case, splits a string into it's constituent parts.
 
@@ -442,7 +442,7 @@ def guess_string_parts(string: str) -> list[str]:
     string = sub(r"[^A-Za-z0-9_\-\ ]", "", string.strip())
     case = guess_case(string)
 
-    def _regex_split_capture(_regex: str, _string: str) -> list[str]:
+    def _regex_split_capture(_regex: str, _string: str) -> List[str]:
         _split = split(_regex, _string)
         parts = []
         for i in range(len(_split)):
@@ -557,7 +557,7 @@ def safe_name(string: Any, permissive: Optional[bool] = True) -> str:
     """
     if not isinstance(string, str):
         if permissive:
-            return string
+            return string  # type: ignore
         raise ValueError("save_name called on {0}".format(type(string)))
     return sub(r"\W+", "_", string).strip("_")
 
@@ -567,7 +567,7 @@ class Encoding(TypedDict):
     encoding: str
 
 
-def detect_encoding(obj: Union[bytes, list, dict]) -> list[Encoding]:
+def detect_encoding(obj: Union[bytes, list, dict]) -> List[Encoding]:
     """
     Detects the encoding of a bytestring based upon the characters present in it. Uses chardet to achieve this.
 
@@ -650,7 +650,7 @@ def decode(
     if isinstance(obj, str):
         return obj
     try:
-        return _decode(obj, encoding)
+        return _decode(obj, encoding)  # type: ignore
     except UnicodeDecodeError:
         detected_encodings = detect_encoding(obj)
         for detected_encoding in sorted(
@@ -658,7 +658,7 @@ def decode(
             key=lambda detected_encoding: detected_encoding["confidence"],
         ):
             try:
-                return _decode(obj, detected_encoding["encoding"])
+                return _decode(obj, detected_encoding["encoding"])  # type: ignore
             except UnicodeDecodeError:
                 continue
         try:
@@ -714,7 +714,7 @@ def encode(
         )
 
     try:
-        return _encode(obj, encoding)
+        return _encode(obj, encoding)  # type: ignore
     except UnicodeEncodeError:
         if isinstance(obj, str):
             raise ValueError("Cannot encode as {0}".format(encoding))
@@ -725,7 +725,7 @@ def encode(
             key=lambda detected_encoding: detected_encoding["confidence"],
         ):
             try:
-                return _encode(obj, detected_encoding["encoding"])
+                return _encode(obj, detected_encoding["encoding"])  # type: ignore
             except UnicodeEncodeError:
                 continue
         try:
@@ -787,7 +787,7 @@ def pretty_print_sentence(*args: Any, **kwargs: Any) -> str:
         return "{0} and {1}".format(", ".join(lst[:-1]), lst[-1])
 
 
-def parse_url_encoded(encoded: str) -> Union[str, dict[str, Any]]:
+def parse_url_encoded(encoded: str) -> Union[str, Dict[str, Any]]:
     """
     Parses a urlencoded string and returns either the string, or a dictionary of parameters.
 
@@ -822,7 +822,7 @@ class MultipartFile:
         return io.BytesIO(self.content)
 
 
-def parse_multipart(encoded: Union[str, bytes]) -> dict[str, Union[str, MultipartFile]]:
+def parse_multipart(encoded: Union[str, bytes]) -> Dict[str, Union[str, MultipartFile]]:
     """
     Parses a multipart payload.
     """
@@ -834,7 +834,7 @@ def parse_multipart(encoded: Union[str, bytes]) -> dict[str, Union[str, Multipar
         message = parser.parsebytes(encoded.strip())
     if not message.is_multipart():
         return {}
-    parsed: dict[str, Union[str, MultipartFile]] = {}
+    parsed: Dict[str, Union[str, MultipartFile]] = {}
     for part in message.get_payload():
         name = str(part.get_param("name", header="content-disposition"))
         value = part.get_payload(decode=True)

@@ -1,3 +1,5 @@
+import sys
+import base64
 import datetime
 import lxml.etree as ET
 from lxml.builder import E
@@ -8,7 +10,7 @@ from pibble.api.exceptions import (
     UnknownError,
     UnsupportedMethodError,
 )
-from typing import Type, Any
+from typing import Type, Any, Optional
 
 
 class XMLRPCClient(RPCClientBase):
@@ -40,8 +42,8 @@ class XMLRPCClient(RPCClientBase):
         :raises pibble.api.exceptions.BadRequestError: When the parameter is not a known RPC type.
         """
 
-        def _format_parameter(value, name=None):
-            def _format_value(p):
+        def _format_parameter(value: Any, name: Optional[str] = None) -> ET._Element:
+            def _format_value(p: Any) -> ET._Element:
                 if isinstance(p, bool):
                     return E.value(E.boolean("1" if p else "0"))
                 elif isinstance(p, int):
@@ -72,7 +74,7 @@ class XMLRPCClient(RPCClientBase):
                     )
                 )
 
-            def _format_name(n):
+            def _format_name(n: Any) -> ET._Element:
                 return E.name(str(n))
 
             if name is not None:
@@ -175,7 +177,7 @@ class XMLRPCClient(RPCClientBase):
             value = param_node.find("value")
             value_node = value[0]
 
-            def _parse_value(value_node):
+            def _parse_value(value_node: ET._Element) -> Any:
                 if value_node.tag == "value":
                     return _parse_value(value_node[0])
                 elif value_node.tag == "int" or value_node.tag == "i4":

@@ -1,6 +1,6 @@
 import datetime
 
-from typing import Any, Optional
+from typing import Any, Optional, cast
 
 from webob import Request, Response
 
@@ -34,8 +34,11 @@ class SessionHelper:
                 raise
             return default
 
-    def _get_session_datum(self, key: str) -> SessionDatum:
-        return (
+    def _get_session_datum(self, key: str) -> Optional[SessionDatum]:
+        """
+        Gets the underlying session datum
+        """
+        result = (
             self.database.query(self.orm.SessionDatum)
             .filter(
                 self.orm.SessionDatum.session_token == self.cookie,
@@ -43,6 +46,9 @@ class SessionHelper:
             )
             .one_or_none()
         )
+        if result is None:
+            return None
+        return cast(SessionDatum, result)
 
     def __getitem__(self, key: str) -> Any:
         result = self._get_session_datum(key)
@@ -96,7 +102,7 @@ class SessionExtensionServerBase(ORMWebServiceAPIServer):
 
     def parse(
         self, request: Optional[Request] = None, response: Optional[Response] = None
-    ):
+    ) -> None:
         if request is not None and not hasattr(request, "session"):
             cookie = request.cookies.get(self.session_cookie_name, None)
 

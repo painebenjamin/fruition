@@ -45,7 +45,7 @@ class CMSExtensionResolveStatementExtension(StatementExtensionBase):
 
     tags = {"resolve"}
 
-    def __call__(self, *args: Any):
+    def __call__(self, *args: Any) -> str:
         if not args:
             raise ValueError("View name is required.")
         view = str(args[0])
@@ -79,7 +79,7 @@ class CMSExtensionResolveFunctionExtension(FunctionExtensionBase):
 
     name = "resolve"
 
-    def __call__(self, *args: Any):
+    def __call__(self, *args: Any) -> str:
         if not args:
             raise ValueError("View name is required.")
         view = str(args[0])

@@ -35,7 +35,7 @@ import shutil
 import jinja2
 
 
-def main(path: str, *args: str):
+def main(path: str, *args: str) -> None:
     template = jinja2.Template(open(path, "r").read())
     context: Dict[str, Union[str, List[str]]] = {}
     i = 0

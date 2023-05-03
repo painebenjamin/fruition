@@ -12,7 +12,7 @@ except ImportError:
 from multiprocessing import Process, Pipe
 from multiprocessing.connection import Connection
 
-from typing import Callable, Optional, Iterable, Any
+from typing import Callable, Optional, Iterable, Any, cast
 
 from pibble.api.client.file.base import (
     FileTransferAPIClientBase,
@@ -30,7 +30,7 @@ from pibble.util.helpers import is_binary_file
 from pibble.util.numeric import r8d2o, o2r8d
 
 
-def UserContext(fn) -> Callable:
+def UserContext(fn: Callable) -> Callable:
     """
     Executes a function under the context of a user (or no user.)
 
@@ -41,7 +41,7 @@ def UserContext(fn) -> Callable:
         # No user context available for windows.
         return lambda *args, **kwargs: fn(*args, **kwargs)
 
-    def callable(*args: Any, **kwargs: Any) -> None:
+    def callable(*args: Any, **kwargs: Any) -> Any:
         user = kwargs.get("user", None)
         demote = False
         uid = None
@@ -120,7 +120,12 @@ class LocalFileTransferAPIClient(FileTransferAPIClientBase):
         :returns RemoteObject: The new directory.
         """
         path = self.absPath(path)
-        os.makedirs(path, r8d2o(permission))
+        if permission:
+            permission = r8d2o(permission)
+        else:
+            permission = 0o700
+
+        os.makedirs(path, permission)
 
         if os.name != "nt":
             if owner is not None:
@@ -133,7 +138,7 @@ class LocalFileTransferAPIClient(FileTransferAPIClientBase):
                 gid = -1
 
             os.chown(path, uid, gid)  # type: ignore
-        return self.getPath(path)
+        return cast(RemoteObject, self.getPath(path))
 
     @UserContext
     def listDirectory(self, path: str, **kwargs: Any) -> Iterable[RemoteObject]:
@@ -175,7 +180,7 @@ class LocalFileTransferAPIClient(FileTransferAPIClientBase):
         """
         path = self.absPath(path)
         if os.path.exists(path) and not overwrite:
-            return self.getPath(path)
+            return cast(RemoteObject, self.getPath(path))
         else:
             with open(path, "wb") as fp:
                 for part in ContentIterator(contents):
@@ -184,7 +189,7 @@ class LocalFileTransferAPIClient(FileTransferAPIClientBase):
                 self.setPathPermission(path, permission)
             if owner is not None or group is not None:
                 self.setPathOwner(path, owner, group)
-        return self.getPath(path)
+        return cast(RemoteObject, self.getPath(path))
 
     @UserContext
     def appendFile(self, path: str, contents: Any, **kwargs: Any) -> RemoteObject:
@@ -200,7 +205,7 @@ class LocalFileTransferAPIClient(FileTransferAPIClientBase):
         with open(path, "ab") as fp:
             for part in ContentIterator(contents):
                 fp.write(encode(part))
-        return self.getPath(path)
+        return cast(RemoteObject, self.getPath(path))
 
     @UserContext
     def readFile(self, path: str, **kwargs: Any) -> Iterable[bytes]:
@@ -280,11 +285,11 @@ class LocalFileTransferAPIClient(FileTransferAPIClientBase):
         src = self.absPath(src)
         dest = self.absPath(dest)
         if os.path.exists(dest) and not overwrite:
-            return self.getPath(dest)
+            return cast(RemoteObject, self.getPath(dest))
         if not os.path.exists(src):
             raise NotFoundError("Cannot find file {0}".format(src))
         os.rename(src, dest)
-        return self.getPath(dest)
+        return cast(RemoteObject, self.getPath(dest))
 
     @UserContext
     def deletePath(self, path: str, **kwargs: Any) -> bool:
@@ -315,7 +320,7 @@ class LocalFileTransferAPIClient(FileTransferAPIClientBase):
         """
         node = self.getPath(path)
         os.chmod(node.path, r8d2o(permission))
-        return self.getPath(path)
+        return cast(RemoteObject, self.getPath(path))
 
     @UserContext
     def copyPath(
@@ -332,14 +337,14 @@ class LocalFileTransferAPIClient(FileTransferAPIClientBase):
         """
         dest = self.absPath(dest)
         if os.path.exists(dest) and not overwrite:
-            return self.getPath(dest)
+            return cast(RemoteObject, self.getPath(dest))
 
         node = self.getPath(src)
         if node.otype == RemoteObject.DIRECTORY:
             shutil.copytree(node.path, dest)
         else:
             shutil.copy(node.path, dest)
-        return self.getPath(dest)
+        return cast(RemoteObject, self.getPath(dest))
 
     def setPathOwner(
         self,
@@ -373,4 +378,4 @@ class LocalFileTransferAPIClient(FileTransferAPIClientBase):
                 else:
                     gid = -1
                 os.chown(path, uid, gid)  # type: ignore
-        return self.getPath(path)
+        return cast(RemoteObject, self.getPath(path))

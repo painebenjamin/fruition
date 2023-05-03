@@ -16,7 +16,7 @@ from pibble.util.encryption import AESCipher
 
 from pibble.database.engine import EngineFactory
 
-from typing import Optional, Type, Iterator, Any, Callable, Union, cast
+from typing import Optional, Type, Iterator, Any, Callable, Union, List, Dict, cast
 
 from sqlalchemy import Column, Integer, String, Sequence, ForeignKey
 
@@ -28,17 +28,10 @@ from sqlalchemy.orm.state import InstanceState
 from sqlalchemy.orm.attributes import InstrumentedAttribute
 from sqlalchemy.orm.collections import InstrumentedList
 
-from sqlalchemy.schema import DropTable
 from sqlalchemy.engine import Dialect, Engine
-from sqlalchemy.ext.compiler import compiles
 from sqlalchemy.ext.declarative import declarative_base
 
 FILE_CHUNK_SIZE = 1000
-
-
-@compiles(DropTable, "postgresql")
-def _compile_drop_table(element, compiler, **kwargs):
-    return compiler.visit_drop_table(element) + " CASCADE"
 
 
 class ORMSession:
@@ -133,9 +126,9 @@ class ORMObjectBase:
     """
 
     __tablename__: str
-    __hidden_columns__: list[str]
-    __hidden_relationships__: list[str]
-    __default_hidden_columns__: list[str]
+    __hidden_columns__: List[str]
+    __hidden_relationships__: List[str]
+    __default_hidden_columns__: List[str]
 
     @classmethod
     def Relationship(cls, **kwargs: Any) -> InstrumentedAttribute:
@@ -193,34 +186,34 @@ class ORMObjectBase:
     @classmethod
     def Hide(
         cls,
-        columns: Optional[Union[list[str], str]] = [],
-        relationships: Optional[Union[list[str], str]] = [],
+        columns: Optional[Union[List[str], str]] = [],
+        relationships: Optional[Union[List[str], str]] = [],
     ) -> None:
         """
         Configures columns and relationships that will
         not be passed through in a format() call.
         """
-        existing_columns: list[str] = []
+        existing_columns: List[str] = []
         existing_columns.extend(getattr(cls, "__hidden_columns__", []))
         if not isinstance(columns, list):
-            columns = cast(list[str], [columns])
+            columns = cast(List[str], [columns])
         existing_columns.extend(columns)
         setattr(cls, "__hidden_columns__", existing_columns)
 
-        existing_relationships: list[str] = []
+        existing_relationships: List[str] = []
         existing_relationships.extend(getattr(cls, "__hidden_relationships__", []))
         if not isinstance(relationships, list):
-            relationships = cast(list[str], [relationships])
+            relationships = cast(List[str], [relationships])
         existing_relationships.extend(relationships)
         setattr(cls, "__hidden_relationships__", existing_relationships)
 
     @classmethod
-    def DefaultHide(cls, *columns: str):
+    def DefaultHide(cls, *columns: str) -> None:
         """
         Configures columns that will, by default, not be passed through
         in a format() call, but can be requested.
         """
-        existing_columns: list[str] = []
+        existing_columns: List[str] = []
         existing_columns.extend(getattr(cls, "__default_hidden_columns__", []))
         existing_columns.extend(columns)
         setattr(cls, "__default_hidden_columns__", existing_columns)
@@ -284,7 +277,7 @@ class ORMObjectBase:
         }
 
         if "include" in kwargs and kwargs["include"]:
-            include: dict[str, Optional[list[Optional[ORMObjectBase]]]] = {}
+            include: Dict[str, Optional[List[Optional[ORMObjectBase]]]] = {}
             include_paths = kwargs["include"]
             hidden_relationships = getattr(self, "__hidden_relationships__", [])
 
@@ -333,7 +326,7 @@ class ORMObjectBase:
                     include[include_path] = None
                 else:
                     include[include_path] = [
-                        None if item is None else formatter(item)
+                        None if item is None else formatter(item)  # type: ignore
                         for item in included_item
                     ]
             response["include"] = include
@@ -355,7 +348,7 @@ class ORMObjectBase:
         return ORMSolidifiedObject(**self.get_attributes())
 
     @classmethod
-    def _declared_functions(cls) -> dict[str, Callable]:
+    def _declared_functions(cls) -> Dict[str, Callable]:
         """
         Gets the functions that will pass through into the results of the session queries.
         """
@@ -367,12 +360,12 @@ class ORMObjectBase:
         }
 
     @classmethod
-    def _declared_dict(cls, orm) -> dict[str, Any]:
+    def _declared_dict(cls, orm: ORM) -> Dict[str, Any]:
         """
         Gets class variables necessary to declare an object inherited a declarative base.
         """
         _declared = cls._declared_functions()
-        _declared["__orm__"] = orm
+        _declared["__orm__"] = orm  # type: ignore
         _vars = vars(cls)
         for mapped in _vars:
             if isinstance(_vars[mapped], sqlalchemy.Column):
@@ -397,7 +390,7 @@ class ORMObjectBase:
                 )
 
 
-class ORMEncryptedStringType(sqlalchemy.types.TypeDecorator):
+class ORMEncryptedStringType(sqlalchemy.types.TypeDecorator):  # type: ignore
     """
     Using `pibble.util.AESCipher`, encrypt values on their way into the database,
     and decrypt values on their way out of the database. Use the same way you'd use sqlalchemy.String.
@@ -419,7 +412,7 @@ class ORMEncryptedStringType(sqlalchemy.types.TypeDecorator):
         return decode(self.__orm__.cipher.decrypt(value))
 
 
-class ORMEncryptedTextType(sqlalchemy.types.TypeDecorator):
+class ORMEncryptedTextType(sqlalchemy.types.TypeDecorator):  # type: ignore
     """
     Using `pibble.util.AESCipher`, encrypt values on their way into the database,
     and decrypt values on their way out of the database. Use the same way you'd use sqlalchemy.String.
@@ -441,7 +434,7 @@ class ORMEncryptedTextType(sqlalchemy.types.TypeDecorator):
         return decode(self.__orm__.cipher.decrypt(value))
 
 
-class ORMVariadicType(sqlalchemy.types.TypeDecorator):
+class ORMVariadicType(sqlalchemy.types.TypeDecorator):  # type: ignore
     """
     Using `pibble.util.Serializer` and `pibble.util.Serializer`, serialize values
     on their way into the databased, and deserialize them on their way out.
@@ -456,7 +449,7 @@ class ORMVariadicType(sqlalchemy.types.TypeDecorator):
         return Serializer.deserialize(value)
 
 
-class ORMEncryptedVariadicType(sqlalchemy.types.TypeDecorator):
+class ORMEncryptedVariadicType(sqlalchemy.types.TypeDecorator):  # type: ignore
     """
     Combines the encrypted and variadic types.
     """
@@ -509,15 +502,15 @@ class ORM:
     :param base type: The type to check for subclasses of. Note that subclass checking is not recursive.
     """
 
-    bases: list[Type[ORMObjectBase]]
-    models: dict[str, Type]
+    bases: List[Type[ORMObjectBase]]
+    models: Dict[str, Type]
 
     def __init__(
         self,
         engine: Engine,
         migrate: bool = False,
         force: bool = False,
-        base: Union[Type[ORMObjectBase], list[Type[ORMObjectBase]]] = ORMObjectBase,
+        base: Union[Type[ORMObjectBase], List[Type[ORMObjectBase]]] = ORMObjectBase,
         cipher: Optional[AESCipher] = AESCipher(),
     ):
         self.engine = engine
@@ -525,7 +518,7 @@ class ORM:
         self.models = {}
 
         if type(base) is not list:
-            base = cast(list[Type[ORMObjectBase]], [base])
+            base = cast(List[Type[ORMObjectBase]], [base])
 
         for object_base in base:
             if type(object_base) is not type:
@@ -569,19 +562,19 @@ class ORM:
         except sqlalchemy.exc.NoSuchTableError:
             pass
 
-    def __getattr__(self, name) -> Type:
+    def __getattr__(self, name: str) -> Type:
         if name in self.models:
-            return self.models[name]
+            return self.models[name]  # type: ignore
         raise AttributeError(f"Model {name} not defined.")
 
     def extend(
         self,
         name: str,
-        clsdict: dict[str, Any],
+        clsdict: Dict[str, Any],
         cls: Type = ORMObject,
         force: bool = False,
         create: bool = True,
-    ):
+    ) -> Type:
         """
         Extends the underlying ORM layer with the object itself. Likely won't be
         called directly by implementing applications. If the ORM was instantiated
@@ -687,7 +680,7 @@ class ORMBuilder(ORM):
     """
 
     def __init__(
-        self, engine_type: str, engine_kwargs: dict[str, Any] = {}, **kwargs: Any
+        self, engine_type: str, engine_kwargs: Dict[str, Any] = {}, **kwargs: Any
     ):
         self.engine_type = engine_type
         self.engine_kwargs = engine_kwargs

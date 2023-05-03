@@ -380,7 +380,7 @@ class OAuthAuthenticationMiddleware(WebServiceAPIMiddlewareBase):
 
     def OAuth2ClientLegacyAuthentication(
         self, request: RequestsRequest, response: RequestsResponse
-    ):
+    ) -> None:
         """
         OAuth2 Legacy (password) authentication flow.
 
@@ -405,7 +405,7 @@ class OAuthAuthenticationMiddleware(WebServiceAPIMiddlewareBase):
 
     def OAuth2ClientBackendAuthentication(
         self, request: RequestsRequest, response: RequestsResponse
-    ):
+    ) -> None:
         """
         OAuth Backend (client_credentials) authentication flow.
         """

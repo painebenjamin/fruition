@@ -16,7 +16,7 @@ class ContentIterator:
     A simple wrapper to make sure contents are properly iterable.
     """
 
-    def __init__(self, contents: Any):
+    def __init__(self, contents: Any) -> None:
         if any(
             [
                 isinstance(contents, cls)
@@ -75,7 +75,7 @@ class FileTransferAPIClientBase(APIClientBase):
     A base class for file transfer clients.
     """
 
-    def __init__(self):
+    def __init__(self) -> None:
         logger.debug("Initializing File Transfer API Client Base.")
         super(FileTransferAPIClientBase, self).__init__()
         self.cwd = ""
@@ -209,10 +209,10 @@ class FileTransferAPIClientBase(APIClientBase):
             fmt = lambda part: bytearray(part)
             buf = bytearray()  # type: ignore
 
-        buf += fmt(start)
+        buf += fmt(start)  # type: ignore
 
         for chunk in iterator:
-            buf += fmt(chunk)
+            buf += fmt(chunk)  # type: ignore
         return buf
 
     def checksumFile(self, path: str, **kwargs: Any) -> str:

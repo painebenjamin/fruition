@@ -12,10 +12,11 @@ from typing import (
     Optional,
     Any,
     Callable,
-    Iterable,
     Type,
     Tuple,
     Union,
+    List,
+    Dict,
     cast,
     TYPE_CHECKING,
 )
@@ -27,11 +28,12 @@ from pibble.util.log import logger
 from pibble.util.helpers import CompressedIterator
 from pibble.util.files import FileIterator
 from pibble.api.server.base import APIServerBase
-from pibble.api.server.webservice.mixin.base import WebServiceAPIServerMixinBase
 from pibble.api.server.webservice.handler import (
     WebServiceAPIHandlerRegistry,
     WebServiceAPIHandler,
+    WebServiceAPIBoundHandler,
 )
+from pibble.api.middleware.webservice.base import WebServiceAPIMiddlewareBase
 
 from pibble.api.exceptions import (
     BadRequestError,
@@ -87,9 +89,9 @@ class WebServiceAPIServerBase(APIServerBase):
         NotImplementedError: 501,
     }
 
-    class_handlers: list[WebServiceAPIHandlerRegistry]
+    class_handlers: List[WebServiceAPIHandlerRegistry]
 
-    def __init__(self):
+    def __init__(self) -> None:
         super(WebServiceAPIServerBase, self).__init__()
         self.class_handlers = []
         self.register_all_handlers()
@@ -130,7 +132,7 @@ class WebServiceAPIServerBase(APIServerBase):
             if (
                 (
                     WebServiceAPIServerBase in cls.mro()
-                    or WebServiceAPIServerMixinBase in cls.mro()
+                    or WebServiceAPIMiddlewareBase in cls.mro()
                 )
                 and hasattr(cls, "get_handlers")
                 and "get_handlers" in cls.__dict__
@@ -142,7 +144,9 @@ class WebServiceAPIServerBase(APIServerBase):
         self,
         request: Optional[Union[Request, RequestWrapper]] = None,
         response: Optional[Union[Response, ResponseWrapper]] = None,
-        handler: Optional[WebServiceAPIHandler] = None,
+        handler: Optional[
+            Union[WebServiceAPIHandler, WebServiceAPIBoundHandler]
+        ] = None,
     ) -> None:
         """
         Runs all ``prepare()`` methods.
@@ -164,7 +168,9 @@ class WebServiceAPIServerBase(APIServerBase):
         self,
         request: Optional[Union[Request, RequestWrapper]] = None,
         response: Optional[Union[Response, ResponseWrapper]] = None,
-        handler: Optional[WebServiceAPIHandler] = None,
+        handler: Optional[
+            Union[WebServiceAPIHandler, WebServiceAPIBoundHandler]
+        ] = None,
     ) -> None:
         """
         Runs all ``parse()`` methods.
@@ -211,7 +217,7 @@ class WebServiceAPIServerBase(APIServerBase):
 
     def _find_handler_by_request(
         self, request: Union[Request, RequestWrapper]
-    ) -> WebServiceAPIHandler:
+    ) -> Union[WebServiceAPIHandler, WebServiceAPIBoundHandler]:
         """
         Finds a handler by the request object.
 
@@ -414,9 +420,7 @@ class WebServiceAPIServerBase(APIServerBase):
         :return function: The application to pass into your wsgi server of choice.
         """
 
-        def application(
-            environ: WSGIEnvironment, start_response: StartResponse
-        ) -> Iterable[bytes]:
+        def application(environ: WSGIEnvironment, start_response: StartResponse) -> Any:
             try:
                 request = Request(environ)
                 response = Response()
@@ -495,7 +499,9 @@ class MethodBasedWebServiceAPIServerBase(WebServiceAPIServerBase):
     implementing servers.
     """
 
-    def __init__(self):
+    methods: List[MethodBasedWebServiceAPIServerBase.WebServiceMethod]
+
+    def __init__(self) -> None:
         super(MethodBasedWebServiceAPIServerBase, self).__init__()
         self.methods = []
 
@@ -890,15 +896,15 @@ class MethodBasedWebServiceAPIServerBase(WebServiceAPIServerBase):
 
         def __init__(
             self,
-            method,
-            name: Optional[str] = None,
+            method: Callable,
+            name: str,
             docstring: Optional[str] = None,
-            signature: Optional[list[list[Type]]] = [],
+            signature: Optional[List[List[Type]]] = [],
             response_signature: Optional[Type] = None,
             registered: bool = False,
-            named_signature: Optional[dict[str, Type]] = None,
-            response_named_signature: Optional[dict[str, Type]] = None,
-        ):
+            named_signature: Optional[Dict[str, Type]] = None,
+            response_named_signature: Optional[Dict[str, Type]] = None,
+        ) -> None:
             self.method = method
             self.name = name
             self.docstring = docstring

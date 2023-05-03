@@ -8,7 +8,8 @@ try:
 except ImportError:
     pyodbc = None
 
-from typing import Any
+from typing import Any, List, Dict, cast
+from typing_extensions import Self
 
 from sqlalchemy.engine.url import URL
 from sqlalchemy.engine.base import Engine as EngineBase
@@ -20,8 +21,8 @@ from sqlalchemy.ext.compiler import compiles
 os.environ["TDSVER"] = "8.0"
 
 
-@compiles(DropTable, "postgresql")
-def _compile_drop_table(element, compiler, **kwargs):
+@compiles(DropTable, "postgresql")  # type: ignore
+def _compile_drop_table(element: Any, compiler: Any, **kwargs: Any) -> Any:
     return compiler.visit_drop_table(element) + " CASCADE"
 
 
@@ -43,7 +44,7 @@ class Engine:
 
     KNOWN_KEYS = ["drivername", "username", "password", "host", "port", "database"]
 
-    engines: dict[str, EngineBase]
+    engines: Dict[str, EngineBase]
 
     def __init__(self, name: str, **connection_params: Any):
         self.name = name
@@ -66,7 +67,7 @@ class Engine:
             self._default_database = "default"
         self._create_engine(self._default_database)
 
-    def __iter__(self):
+    def __iter__(self) -> Self:
         self._iterkeys = list(self.engines.keys())
         self._iterindex = 0
         return self
@@ -108,7 +109,7 @@ class Engine:
                     "Failed to import PyODBC. This server/container likely needs ODBC configuration."
                 )
 
-            def decode_sketchy_utf16(raw_bytes):
+            def decode_sketchy_utf16(raw_bytes: bytes) -> str:
                 s = raw_bytes.decode("utf-16le", "ignore")
                 try:
                     n = s.index("\u0000")
@@ -148,7 +149,7 @@ class NoEngine:
     def __init__(self, name: str):
         self.name = name
 
-    def __getattr__(self, key):
+    def __getattr__(self, key: str) -> Any:
         raise NotImplementedError(
             "The engine for database type {0} is not configured.".format(self.name)
         )
@@ -161,7 +162,7 @@ class EngineFactory:
     :param kwargs dict: A dictionary containing "key" => "configuration" pairs, where "configuration" is a dictionary containing necessary configuration keys.
     """
 
-    DEFAULTS: dict[str, dict[str, Any]] = {
+    DEFAULTS: Dict[str, Dict[str, Any]] = {
         "postgres": {
             "drivername": "postgresql+psycopg2",
             "database": "default",
@@ -188,10 +189,10 @@ class EngineFactory:
         },
     }
 
-    configuration: dict[str, dict[str, Any]]
-    stores: list[EngineStore]
+    configuration: Dict[str, Dict[str, Any]]
+    stores: List[EngineStore]
 
-    def __init__(self, **kwargs: dict[str, Any]):
+    def __init__(self, **kwargs: Dict[str, Any]):
         self.configuration = {}
         for key in EngineFactory.DEFAULTS:
             self.configuration[key] = {**EngineFactory.DEFAULTS[key]}
@@ -246,16 +247,13 @@ class EngineFactory:
         engine.dispose()
 
     def __getitem__(self, key: str) -> Engine:
-        return getattr(self, key)
+        return cast(Engine, getattr(self, key))
 
-    def __delitem__(self, key) -> None:
+    def __delitem__(self, key: str) -> None:
         return delattr(self, key)
 
-    def __getattr__(self, key) -> Engine:
+    def __getattr__(self, key: str) -> Engine:
         return self.get(key)
-
-    def __delattr__(self, key) -> None:
-        self.dispose(key)
 
     def __enter__(self) -> EngineFactory:
         return self

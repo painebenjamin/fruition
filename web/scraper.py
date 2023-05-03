@@ -1,5 +1,7 @@
 import os
 
+from typing import List, Any
+
 from pibble.util.log import logger
 from pibble.util.strings import pretty_print
 from pibble.util.helpers import find_executable
@@ -44,11 +46,11 @@ class WebScraper:
             )
             options = Options()
             for argument in self.arguments:
-                options.add_argument(argument)
+                options.add_argument(argument)  # type: ignore
             self._driver = Chrome(chrome_options=options)
         return self._driver
 
-    def crawl(self, url: str) -> list[str]:
+    def crawl(self, url: str) -> List[str]:
         """
         Starting from one URL, find all internal links on that URL. Then recursively
         find the URLs on those internal links, and return the set of all found URLs.
@@ -60,11 +62,11 @@ class WebScraper:
         crawled_domain = urlparse(url).netloc
         driver = self.driver()
 
-        def crawl_url(url):
+        def crawl_url(url: str) -> None:
             urls_crawled.add(url)
             logger.debug("Crawling URL {0}".format(url))
             driver.get(url)
-            for link in driver.find_elements_by_tag_name("a"):
+            for link in driver.find_elements_by_tag_name("a"):  # type: ignore
                 href = link.get_attribute("href")
                 if href:
                     parsed = urlparse(href)
@@ -81,10 +83,10 @@ class WebScraper:
         crawled.sort()
         return crawled
 
-    def __enter__(self):
+    def __enter__(self) -> Chrome:
         return self.driver()
 
-    def __exit__(self, *args):
+    def __exit__(self, *args: Any) -> None:
         if hasattr(self, "_driver"):
             try:
                 self._driver.close()

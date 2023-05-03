@@ -9,7 +9,7 @@ if TYPE_CHECKING:
     from _typeshed.wsgi import WSGIApplication
 
 
-class PibbleGunicornApplication(Application):
+class PibbleGunicornApplication(Application):  # type: ignore
     """
     A simple extension of the gunicorn application base to work with the webservice.
     """

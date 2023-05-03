@@ -3,7 +3,7 @@ import datetime
 from lxml import etree as ET
 from lxml.builder import ElementMaker
 
-from typing import Type, Optional, Any, Iterator, Tuple
+from typing import Type, Optional, Any, Iterator, Tuple, List, Dict, cast
 
 from webob import Request, Response
 
@@ -98,14 +98,14 @@ class SOAPServer(MethodBasedWebServiceAPIServerBase):
         E = MultiNamespaceElementBuilder(**nsmap)
 
         def _get_types() -> Iterator[ET._Element]:
-            def _list_node(name: str, lst: list[Type]) -> Iterator[ET._Element]:
+            def _list_node(name: str, lst: List[Type]) -> Iterator[ET._Element]:
                 for node in _dict_node(
                     name,
                     dict(zip(["listIndex{0}".format(i) for i in range(len(lst))], lst)),
                 ):
                     yield node
 
-            def _dict_node(name: str, dct: dict[str, Type]) -> Iterator[ET._Element]:
+            def _dict_node(name: str, dct: Dict[str, Type]) -> Iterator[ET._Element]:
                 if len(dct.keys()) == 1:
                     key = list(dct.keys())[0]
                     yield E.xsd.element(
@@ -355,6 +355,8 @@ class SOAPServer(MethodBasedWebServiceAPIServerBase):
         """
         method = request.soap_method
         fn = self._find_method_by_name(method)
+        if not fn or not fn.registered:
+            raise UnsupportedMethodError("{0} does not exist.".format(method))
         ssl = self.configuration.get("server.secure", False)
         name = self.configuration.get("server.name", "SOAPServer")
         hostname = self.configuration.get("server.hostname", "127.0.0.1")
@@ -376,9 +378,9 @@ class SOAPServer(MethodBasedWebServiceAPIServerBase):
 
         E = MultiNamespaceElementBuilder(**nsmap)
 
-        def _get_node(method, result):
-            if fn.response_signature:
-                if fn.response_signature is not list:
+        def _get_node(method: str, result: Any) -> ET._Element:
+            if fn.response_signature:  # type: ignore
+                if fn.response_signature is not list:  # type: ignore
                     result = [result]
                 return E.xsd1(
                     "{0}Response".format(method),
@@ -387,14 +389,15 @@ class SOAPServer(MethodBasedWebServiceAPIServerBase):
                         for i, part in enumerate(result)
                     ],
                 )
-            elif fn.response_named_signature:
+            elif fn.response_named_signature:  # type: ignore
                 return E.xsd1(
                     "{0}Response".format(method),
                     *[E.xsd1(key, str(result[key])) for key in result],
                 )
 
-        return ET.tostring(
-            E.soapenv.Envelope(E.soapenv.Body(_get_node(method, result)))
+        return cast(
+            str,
+            ET.tostring(E.soapenv.Envelope(E.soapenv.Body(_get_node(method, result)))),
         )
 
     @handlers.path("/(?P<service_name>\w*)\.(?P<request_type>\w*)")

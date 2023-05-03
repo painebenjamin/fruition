@@ -4,7 +4,7 @@ import io
 import logging
 import traceback
 
-from typing import Optional, Callable, Any
+from typing import Optional, Callable, Any, List
 from webob import Request, Response
 
 from pibble.util.helpers import CompressedIterator
@@ -29,7 +29,7 @@ class TemplateHandler(WebServiceAPIHandler):
         self,
         function: Callable,
         template: Optional[str] = None,
-        errors: Optional[list[int]] = [],
+        errors: Optional[List[int]] = [],
         **kwargs: Any,
     ):
         super(TemplateHandler, self).__init__(function, **kwargs)
@@ -43,7 +43,7 @@ class TemplateHandler(WebServiceAPIHandler):
         response: Response,
         *args: Any,
         **kwargs: Any,
-    ) -> str:
+    ) -> Any:
         if self.template is not None and isinstance(server, TemplateServer):
             response.content_type = (
                 "text/html"  # Push default now, this could be changed in handler
@@ -95,7 +95,7 @@ class TemplateServerHandlerRegistry(WebServiceAPIHandlerRegistry):
         - Templates are **always** given a variable of `csrf_token`. They can be ignored if so desired.
         """
 
-        def wrap(fn):
+        def wrap(fn: Callable) -> Callable:
             self.create_or_modify_handler(fn, template=filename)
             return fn
 
@@ -111,7 +111,7 @@ class TemplateServerHandlerRegistry(WebServiceAPIHandlerRegistry):
         :param codes tuple: Any number of error codes to handle.
         """
 
-        def wrap(fn):
+        def wrap(fn: Callable) -> Callable:
             self.create_or_modify_handler(fn, errors=[int(code) for code in codes])
             return fn
 
@@ -133,7 +133,7 @@ class TemplateServer(WebServiceAPIServerBase):
     This is a small extension on the base server to add error handlers and template loaders.
     """
 
-    class_handlers: list[WebServiceAPIHandlerRegistry]
+    class_handlers: List[WebServiceAPIHandlerRegistry]
 
     def on_configure(self) -> None:
         """

@@ -1,3 +1,5 @@
+from typing import Dict
+
 from pibble.api.server.webservice.rpc.jsonrpc import JSONRPCServer
 from pibble.api.client.webservice.rpc.jsonrpc import JSONRPCClient
 from pibble.api.client.webservice.wrapper import WebServiceAPIClientWrapper
@@ -26,7 +28,7 @@ def add(a: int, b: int) -> int:
 @server.register
 @server.sign_named_request(base=int, exponent=2)
 @server.sign_named_response(result=int)
-def pow(base: int, exponent: int = 2) -> dict[str, int]:
+def pow(base: int, exponent: int = 2) -> Dict[str, int]:
     """
     Raises base to the power of exponent.
     """

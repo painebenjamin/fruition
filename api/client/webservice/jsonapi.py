@@ -2,7 +2,7 @@ import json
 
 from io import IOBase
 from requests import Response
-from typing import Any, Union
+from typing import Any, Union, Dict
 
 from pibble.util.strings import Serializer
 from pibble.api.helpers.wrappers import ResponseWrapper
@@ -15,9 +15,9 @@ class JSONWebServiceAPIClient(WebServiceAPIClientBase):
     def post(
         self,
         url: str = "/",
-        parameters: dict[str, Any] = {},
-        headers: dict[str, Any] = {},
-        files: dict[str, IOBase] = {},
+        parameters: Dict[str, Any] = {},
+        headers: Dict[str, Any] = {},
+        files: Dict[str, IOBase] = {},
         data: Any = {},
         **kwargs: Any,
     ) -> Union[Response, ResponseWrapper]:
@@ -36,9 +36,9 @@ class JSONWebServiceAPIClient(WebServiceAPIClientBase):
     def put(
         self,
         url: str = "/",
-        parameters: dict[str, Any] = {},
-        headers: dict[str, Any] = {},
-        files: dict[str, IOBase] = {},
+        parameters: Dict[str, Any] = {},
+        headers: Dict[str, Any] = {},
+        files: Dict[str, IOBase] = {},
         data: Any = {},
         **kwargs: Any,
     ) -> Union[Response, ResponseWrapper]:
@@ -54,9 +54,9 @@ class JSONWebServiceAPIClient(WebServiceAPIClientBase):
     def patch(
         self,
         url: str = "/",
-        parameters: dict[str, Any] = {},
-        headers: dict[str, Any] = {},
-        files: dict[str, IOBase] = {},
+        parameters: Dict[str, Any] = {},
+        headers: Dict[str, Any] = {},
+        files: Dict[str, IOBase] = {},
         data: Any = {},
         **kwargs: Any,
     ) -> Union[Response, ResponseWrapper]:

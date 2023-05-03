@@ -38,6 +38,7 @@ __all__ = [
     "SpreadsheetParser",
     "IncludeLoader",
     "load_yaml",
+    "load_json",
 ]
 
 
@@ -89,7 +90,7 @@ class IncludeLoader(yaml.SafeLoader):
         if not filename.startswith("/"):
             filename = os.path.join(self._root, filename)
         with open(filename, "r") as fp:
-            return yaml.load(fp, Loader=IncludeLoader)
+            return yaml.load(fp, Loader=IncludeLoader)  # type: ignore
 
 
 IncludeLoader.add_constructor("!include", IncludeLoader.include)
@@ -145,7 +146,7 @@ def load_json(path: str) -> Union[dict, list, str, int, float, bool, None]:
 
     """
     with open(path, "r") as fp:
-        return json.loads(fp.read(), cls=FlexibleJSONDecoder)
+        return json.loads(fp.read(), cls=FlexibleJSONDecoder)  # type: ignore
 
 
 def dump_json(path: str, to_dump: Union[dict, list]) -> None:
@@ -415,7 +416,7 @@ class SpreadsheetParser:
         Iterates over the spreadsheet in a list.
 
         :param include_columns bool: Whether or not to include columns (i.e. yield them first.). Default false.
-        :returns Iterator[list[Any]]: The iterator over the contents.
+        :returns Iterator[List[Any]]: The iterator over the contents.
         """
         data = self.read(self.path, **self.kwargs)
         if include_columns:
@@ -428,7 +429,7 @@ class SpreadsheetParser:
         Iterates over the spreadsheet in a dict.
 
         :param safe_names bool: Whether ot not to rename column keys to their 'safe' versions. Default false.
-        :returns Iterator[dict[Any]]: The iterator over the contents.
+        :returns Iterator[Dict[Any]]: The iterator over the contents.
         """
         data = self.read(self.path, **self.kwargs)
         columns = data.columns
@@ -446,7 +447,7 @@ class SpreadsheetParser:
         can't be read iteratively.
 
         :param chunk_size int: The number of rows to get at once. Default 100.
-        :returns Iterator[list[Any]]: The iterator over the contents.
+        :returns Iterator[List[Any]]: The iterator over the contents.
         """
         for chunk in self.read(self.path, chunksize=chunk_size, **self.kwargs):
             for row in chunk.values:
@@ -462,7 +463,7 @@ class SpreadsheetParser:
         can't be read iteratively.
 
         :param chunk_size int: The number of rows to get at once. Default 100.
-        :returns Iterator[dict[Any]]: The iterator over the contents.
+        :returns Iterator[Dict[Any]]: The iterator over the contents.
         """
         if self.read is pd.read_excel:
             # Can't do it

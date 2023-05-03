@@ -6,7 +6,7 @@ from pibble.api.exceptions import (
     UnsupportedMethodError,
     ConfigurationError,
 )
-from typing import Type, Optional, Union
+from typing import Type, Optional, Union, List, Dict
 
 
 handlers = WebServiceAPIHandlerRegistry()
@@ -19,7 +19,7 @@ class RPCServerBase(MethodBasedWebServiceAPIServerBase):
     This will handle function registration and dispatching. Inherited classes are responsible for parsing and formatting requests and responses.
     """
 
-    def __init__(self):
+    def __init__(self) -> None:
         super(RPCServerBase, self).__init__()
         self.register_introspection_functions()
 
@@ -50,17 +50,17 @@ class RPCServerBase(MethodBasedWebServiceAPIServerBase):
         self.sign_request(str)(fn3)
         self.sign_response(str)(fn3)
 
-    def list_methods(self) -> list[str]:
+    def list_methods(self) -> List[str]:
         """
         Returns a list of all methods.
 
         :returns list: A list of function names.
         """
-        return [method.name for method in self.methods]
+        return [method.name for method in self.methods if method.name]
 
     def method_signature(
         self, fn_name: str
-    ) -> Optional[Union[list[list[Type]], list[dict[str, Type]]]]:
+    ) -> Optional[Union[List[List[Type]], List[Dict[str, Type]]]]:
         """
         Returns the signature of a method.
 
@@ -79,7 +79,7 @@ class RPCServerBase(MethodBasedWebServiceAPIServerBase):
             raise ConfigurationError(
                 "Method {0} is missing a signature.".format(fn_name)
             )
-        signatures: list[list[Type]] = []
+        signatures: List[List[Type]] = []
         for signature in fn.signature:
             if fn.response_signature is not None:
                 signatures.append([fn.response_signature] + signature)

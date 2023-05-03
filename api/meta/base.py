@@ -1,6 +1,19 @@
+from __future__ import annotations
+
 from re import sub
 from functools import partial
-from typing import Type, Callable, Any, Optional, Sequence, Mapping, Union, cast
+from typing import (
+    Type,
+    Callable,
+    Any,
+    Optional,
+    Sequence,
+    Mapping,
+    Union,
+    Dict,
+    List,
+    cast,
+)
 
 from pibble.api.base import APIBase
 from pibble.api.server.webservice.base import MethodBasedWebServiceAPIServerBase
@@ -138,7 +151,7 @@ class MetaService:
             self._class_instance.destroy()
             self._class_instance = None
 
-    def listMethods(self) -> list[str]:
+    def listMethods(self) -> List[str]:
         """
         Lists methods in the underlying layer.
         """
@@ -202,7 +215,9 @@ class MetaServiceFactory:
     See :class:`pibble.api.meta.base.MetaService` for more information.
     """
 
-    def __init__(self):
+    services: Dict[str, MetaService]
+
+    def __init__(self) -> None:
         self.services = {}
 
     def __getattr__(self, name: str) -> MetaService:
@@ -222,9 +237,9 @@ class MetaServiceFactory:
     def define(
         self,
         name: str,
-        classes: list[Union[Type, str]],
+        classes: List[Union[Type, str]],
         configuration: dict = {},
-        functions: dict[str, Callable] = {},
+        functions: Dict[str, Callable] = {},
     ) -> MetaService:
         """
         Defines a service.

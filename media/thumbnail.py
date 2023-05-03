@@ -3,6 +3,7 @@ import re
 import subprocess
 
 from typing import Optional, Any
+from pibble.util.strings import decode
 from pibble.util.log import logger
 
 try:
@@ -85,7 +86,7 @@ def CallProcess(*args: Any, **kwargs: Any) -> str:
     out, err = p.communicate()
     if p.returncode != 0:
         raise Exception(err)
-    return out
+    return str(decode(out))
 
 
 def TrimImage(image: Image.Image) -> Image.Image:
@@ -120,9 +121,13 @@ class ThumbnailBuilder:
         supports photoshop uses PSDFile.
     """
 
-    EXECUTABLES = ["ffmpeg", "libreoffice", "chromedrivert"]
+    EXECUTABLES = ["ffmpeg", "libreoffice", "chromedriver"]
 
-    def __init__(self, filename):
+    ffmpeg: Optional[str]
+    libreoffice: Optional[str]
+    chromedriver: Optional[str]
+
+    def __init__(self, filename: str) -> None:
         self.filename = filename
         self.ffmpeg = None
         self.libreoffice = None

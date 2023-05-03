@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from re import compile, Pattern
 from urllib.parse import unquote
-from typing import Optional, Callable, Any, Type, Iterable, Union
+from typing import Optional, Callable, Any, Type, Iterable, Union, List
 from webob import Request, Response
 
 from collections import defaultdict
@@ -23,8 +23,8 @@ class WebServiceAPIHandler:
         self,
         function: Callable,
         pattern: Optional[Union[str, Pattern]] = None,
-        methods: list[str] = [],
-        bypass: list[Union[str, Type]] = [],
+        methods: List[str] = [],
+        bypass: List[Union[str, Type]] = [],
         reverse: Optional[tuple[str, str]] = None,
         format_response: bool = False,
         download_response: bool = False,
@@ -40,6 +40,11 @@ class WebServiceAPIHandler:
         self.format_response = format_response
         self.download_response = download_response
         self.cache_response = cache_response
+
+    def get_pattern(self) -> Optional[Pattern]:
+        if isinstance(self.pattern, str):
+            return compile(self.pattern)
+        return self.pattern
 
     def bind(self, **kwargs: Any) -> WebServiceAPIBoundHandler:
         return WebServiceAPIBoundHandler(self, **kwargs)
@@ -116,7 +121,9 @@ class WebServiceAPIHandlerRegistry:
           pass
     """
 
-    def __init__(self):
+    handlers: List[WebServiceAPIHandler]
+
+    def __init__(self) -> None:
         self.handlers = []
 
     def _find_handler_by_function(self, fn: Callable) -> WebServiceAPIHandler:
@@ -131,7 +138,9 @@ class WebServiceAPIHandlerRegistry:
                 return handler
         raise NotFoundError(f"Cannot find function {fn}")
 
-    def _find_handler_by_request(self, method: str, path: str) -> WebServiceAPIHandler:
+    def _find_handler_by_request(
+        self, method: str, path: str
+    ) -> Union[WebServiceAPIHandler, WebServiceAPIBoundHandler]:
         """
         Retrieves the handler matching a method and path.
 
@@ -140,8 +149,9 @@ class WebServiceAPIHandlerRegistry:
         :returns WebServiceAPIHandler: The method that handles the request.
         """
         for handler in self.handlers:
-            if handler.pattern is not None:
-                match = handler.pattern.match(path)
+            handler_pattern = handler.get_pattern()
+            if handler_pattern is not None:
+                match = handler_pattern.match(path)
                 if match and method.upper() in handler.methods:
                     logger.debug(
                         "Handler {0} matched on path {1} and method {2}".format(
@@ -229,7 +239,7 @@ class WebServiceAPIHandlerRegistry:
         :returns function: Returns the wrapper function. The inner wrapper function returns the function itself, so they can be composed.
         """
 
-        def wrap(fn):
+        def wrap(fn: Callable) -> Callable:
             self.create_or_modify_handler(
                 fn,
                 pattern=pattern if isinstance(pattern, Pattern) else compile(pattern),
@@ -254,7 +264,7 @@ class WebServiceAPIHandlerRegistry:
         :returns function: Returns the wrapper function. The inner wrapper function returns the function itself, so they can be composed.
         """
 
-        def wrap(fn):
+        def wrap(fn: Callable) -> Callable:
             self.create_or_modify_handler(
                 fn, methods=[method.upper() for method in methods]
             )
@@ -268,7 +278,7 @@ class WebServiceAPIHandlerRegistry:
         handler. This, by default, is false.
         """
 
-        def wrap(fn):
+        def wrap(fn: Callable) -> Callable:
             self.create_or_modify_handler(fn, format_response=True)
             return fn
 
@@ -280,7 +290,7 @@ class WebServiceAPIHandlerRegistry:
         over for the response in a streaming fashion.
         """
 
-        def wrap(fn):
+        def wrap(fn: Callable) -> Callable:
             self.create_or_modify_handler(fn, download_response=True)
             return fn
 
@@ -291,7 +301,7 @@ class WebServiceAPIHandlerRegistry:
         Indicates that the results of the request should be compressed (using zlib.)
         """
 
-        def wrap(fn):
+        def wrap(fn: Callable) -> Callable:
             self.create_or_modify_handler(fn, compress_response=True)
             return fn
 
@@ -304,7 +314,7 @@ class WebServiceAPIHandlerRegistry:
         Indicates that the results of the request should be cacheed (using http headers.)
         """
 
-        def wrap(fn):
+        def wrap(fn: Callable) -> Callable:
             self.create_or_modify_handler(fn, cache_response=cache_time)
             return fn
 
@@ -357,8 +367,32 @@ class WebServiceAPIHandlerRegistry:
         :param path str: A formatting string.
         """
 
-        def wrap(fn):
+        def wrap(fn: Callable) -> Callable:
             self.create_or_modify_handler(fn, reverse=(name, path))
+            return fn
+
+        return wrap
+
+    def bypass(self, *classes: Union[str, Type]) -> Callable[[Callable], Callable]:
+        """
+        Marks a handler to pybass parsing or preparing requests/responses.
+
+        Example usage::
+
+          handler = WebServiceAPIHandlerRegistry()
+
+          @handler.path("/insecure")
+          @handler.bypass("BasicAuthenticationMiddleware")
+          def insecure_endpoint(self, request, response):
+            # Handle an insecure request
+
+        :param classes tuple: Any number of class names to ignore. These can be fully qualified strings, like `pibble.api.middleware.webservice.authentication.basic.BasicAuthenticationMiddleware` or an actual class.
+        :returns function: Returns the wrapper function.
+        """
+        classlist = [cls if isinstance(cls, type) else resolve(cls) for cls in classes]
+
+        def wrap(fn: Callable) -> Callable:
+            self.create_or_modify_handler(fn, bypass=classlist)
             return fn
 
         return wrap
@@ -385,30 +419,6 @@ class WebServiceAPIHandlerRegistry:
                     return "/"
                 return resolved
         raise NotFoundError("No view with name {0}".format(view_name))
-
-    def bypass(self, *classes: Union[str, Type]) -> Callable[[Callable], Callable]:
-        """
-        Marks a handler to pybass parsing or preparing requests/responses.
-
-        Example usage::
-
-          handler = WebServiceAPIHandlerRegistry()
-
-          @handler.path("/insecure")
-          @handler.bypass("BasicAuthenticationMiddleware")
-          def insecure_endpoint(self, request, response):
-            # Handle an insecure request
-
-        :param classes tuple: Any number of class names to ignore. These can be fully qualified strings, like `pibble.api.middleware.webservice.authentication.basic.BasicAuthenticationMiddleware` or an actual class.
-        :returns function: Returns the wrapper function.
-        """
-        classlist = [cls if isinstance(cls, type) else resolve(cls) for cls in classes]
-
-        def wrap(fn):
-            self.create_or_modify_handler(fn, bypass=classlist)
-            return fn
-
-        return wrap
 
     def __iter__(self) -> Iterable[WebServiceAPIHandler]:
         self.index = 0

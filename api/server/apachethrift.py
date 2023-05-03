@@ -30,7 +30,7 @@ class ApacheThriftServer(APIServerBase):
     THREADED = 1
     FORKING = 2
 
-    def __init__(self):
+    def __init__(self) -> None:
         super(ApacheThriftServer, self).__init__()
 
     def on_configure(self) -> None:

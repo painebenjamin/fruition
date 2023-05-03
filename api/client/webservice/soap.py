@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import lxml.etree as ET
 
-from typing import Callable, Any, Optional, Union
+from typing import Callable, Any, Optional, Union, Dict, List, cast
 from functools import partial
 from requests import Request, Response
 
@@ -16,7 +16,7 @@ from pibble.util.helpers import url_join
 
 
 class SOAPError(Exception):
-    def __init__(self, response: Any):
+    def __init__(self, response: Union[Response, ResponseWrapper]) -> None:
         self.response = response
         super(Exception, self).__init__(self.response.text)
 
@@ -33,7 +33,7 @@ class SOAPClient(WebServiceAPIClientBase):
 
     soap: Client
 
-    def __init__(self):
+    def __init__(self) -> None:
         super(SOAPClient, self).__init__()
 
     def on_configure(self) -> None:
@@ -44,7 +44,7 @@ class SOAPClient(WebServiceAPIClientBase):
         )
         path = self.configuration.get("client.path", "/")
         url = url_join("{0}://{1}:{2}/".format(scheme, host, port), path)
-        self.soap = Client(url, transport=SOAPClient.ZeepTransport(self))
+        self.soap = Client(url, transport=SOAPClient.ZeepTransport(self))  # type: ignore
 
     def _get_operation(self, method: str) -> Operation:
         """
@@ -59,10 +59,10 @@ class SOAPClient(WebServiceAPIClientBase):
             for port in service.ports.values():
                 for operation in port.binding._operations.values():
                     if operation.name == method:
-                        return operation
+                        return cast(Operation, operation)
         raise KeyError("Unknown or disallowed method {0}".format(method))
 
-    def listMethods(self) -> list[str]:
+    def listMethods(self) -> List[str]:
         """
         Lists methods in the service.
         """
@@ -81,7 +81,7 @@ class SOAPClient(WebServiceAPIClientBase):
         :raises KeyError: When the operation is undefined.
         """
 
-        def elementHelp(name, element: ET._Element) -> str:
+        def elementHelp(name: str, element: ET._Element) -> str:
             if hasattr(element.type, "elements"):
                 return "{0} - {1}\n{2}".format(
                     name, element.type.name, elementsHelp(element.type.elements)
@@ -89,7 +89,7 @@ class SOAPClient(WebServiceAPIClientBase):
             else:
                 return "{0} - {1}".format(name, element.type)
 
-        def elementsHelp(elements: list[ET._Element], indent: int = 2) -> str:
+        def elementsHelp(elements: List[ET._Element], indent: int = 2) -> str:
             return "\n".join(
                 [
                     "\n".join(
@@ -162,12 +162,12 @@ class SOAPClient(WebServiceAPIClientBase):
         A small extension of the zeep transport which includes middleware processing.
         """
 
-        def __init__(self, client: SOAPClient):
-            super(SOAPClient.ZeepTransport, self).__init__()
+        def __init__(self, client: SOAPClient) -> None:
+            super(SOAPClient.ZeepTransport, self).__init__()  # type: ignore
             self.client = client
 
         def get(
-            self, address: str, params: dict[str, Any], headers: dict[str, Any]
+            self, address: str, params: Dict[str, Any], headers: Dict[str, Any]
         ) -> Union[Response, ResponseWrapper]:
             try:
                 return self.client.get(address, parameters=params, headers=headers)
@@ -175,7 +175,7 @@ class SOAPClient(WebServiceAPIClientBase):
                 return ex.response
 
         def post(
-            self, address: str, message: AbstractMessage, headers: dict[str, Any]
+            self, address: str, message: AbstractMessage, headers: Dict[str, Any]
         ) -> Union[Response, ResponseWrapper]:
             try:
                 return self.client.post(address, data=message, headers=headers)

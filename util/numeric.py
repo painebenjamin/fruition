@@ -1,9 +1,10 @@
 from math import log, ceil
+from typing import Union
 
-__all__ = ["r8d2o", "o2r8d"]
+__all__ = ["r8d2o", "o2r8d", "human_size"]
 
 
-def r8d2o(value):
+def r8d2o(value: int) -> int:
     """
     Converts a radix-8 decimal value to a proper octal value.
 
@@ -27,7 +28,7 @@ def r8d2o(value):
     return o
 
 
-def o2r8d(value):
+def o2r8d(value: int) -> int:
     """
     Converts an octal integer to its radix-8 decimal value.
 
@@ -49,7 +50,7 @@ def o2r8d(value):
     return r8d
 
 
-def human_size(size):
+def human_size(size: Union[int, float]) -> str:
     """
     Returns a human-readable size, based on a number of bytes.
 
@@ -65,6 +66,6 @@ def human_size(size):
         size /= 1000.0
         suffix_index += 1
     if suffix_index == 0:
-        return "{0:d} {1:s}".format(size, suffixes[suffix_index])
+        return "{0:.0f} {1:s}".format(size, suffixes[suffix_index])
     else:
         return "{0:.2f} {1:s}".format(size, suffixes[suffix_index])

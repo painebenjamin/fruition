@@ -122,7 +122,7 @@ class WebServiceAPILambdaClientSessionWrapper(SessionWrapper):
     This session actually issues a lambda request to a docker container running a lambda app.
     """
 
-    def on_configure(self):
+    def on_configure(self) -> None:
         """
         On configure, build a client to the docker image.
         """

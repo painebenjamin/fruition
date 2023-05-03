@@ -1,6 +1,6 @@
 import functools
 
-from typing import Callable, Any
+from typing import Callable, Any, List
 
 from thrift.transport import TSocket
 from thrift.transport import TTransport
@@ -31,7 +31,7 @@ class ApacheThriftClientBase(APIClientBase):
         """
         self.thrift = ApacheThriftService(self.configuration)
 
-    def listMethods(self) -> list[str]:
+    def listMethods(self) -> List[str]:
         """
         List methods in the interface.
         """

@@ -6,7 +6,7 @@ from jinja2 import nodes
 from jinja2.ext import Extension
 from jinja2.parser import Parser
 
-from typing import Callable, Any, Union
+from typing import Callable, Any, Union, List
 
 from pibble.api.base import APIBase
 from pibble.api.configuration import APIConfiguration
@@ -42,7 +42,7 @@ class ContextExtensionBase(ExtensionBase, Extension):
     def parse(self, parser: Parser) -> nodes.Node:
         line = next(parser.stream).lineno
         context = nodes.ContextReference()
-        args: list[Any] = [context]
+        args: List[Any] = [context]
 
         while True:
             try:

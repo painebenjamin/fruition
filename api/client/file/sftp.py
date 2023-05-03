@@ -121,7 +121,7 @@ class SFTPClient(FileTransferAPIClientBase):
             paramiko.SFTPClient, paramiko.SFTPClient.from_transport(self.transport)
         )
 
-    def close(self):
+    def close(self) -> None:
         """
         Closes the active SFTP connection.
         """

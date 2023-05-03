@@ -20,7 +20,18 @@ except ImportError:
 from logging import DEBUG
 from distutils import spawn
 
-from typing import Type, Callable, Optional, Iterable, Iterator, Any, Tuple, Union
+from typing import (
+    Type,
+    Callable,
+    Optional,
+    Iterable,
+    Iterator,
+    Any,
+    Tuple,
+    Union,
+    Dict,
+    List,
+)
 from types import FunctionType
 
 from pandas import DataFrame
@@ -124,7 +135,7 @@ def qualify(obj: Any) -> str:
         return f"{obj.__module__}.{obj.__name__}"
     module = obj.__module__ if hasattr(obj, "__module__") else obj.__class__.__module__
     if module is None or module == str.__class__.__module__:
-        return obj.__class__.__name__
+        return str(obj.__class__.__name__)
     return f"{module}.{obj.__class__.__name__}"
 
 
@@ -642,7 +653,7 @@ class Pause:
         sleep(n / 1000)
 
     @staticmethod
-    def until(dt: Union[date, datetime]):
+    def until(dt: Union[date, datetime]) -> None:
         """
         Allows for sleeping until a certain datetime.
 
@@ -677,7 +688,7 @@ class OutputCatcher:
         self.stdout = StringIO()
         self.stderr = StringIO()
 
-    def __enter__(self):
+    def __enter__(self) -> None:
         """
         When entering context, steal system streams.
         """
@@ -686,7 +697,7 @@ class OutputCatcher:
         sys.stdout = self.stdout
         sys.stderr = self.stderr
 
-    def __exit__(self, *args):
+    def __exit__(self, *args: Any) -> None:
         """
         When exiting context, return system streams.
         """
@@ -735,7 +746,7 @@ class ProcessRunner:
         >>> p.returncode
         0
         """
-        subprocess_kwargs: dict[str, Any] = {
+        subprocess_kwargs: Dict[str, Any] = {
             "stdout": subprocess.PIPE,
             "stderr": subprocess.PIPE,
         }
@@ -758,8 +769,8 @@ class ProcessRunner:
             subprocess_kwargs["env"] = env
 
             # Generate a demote function as pre-executable
-            def demote(user_id, group_id):
-                def wrapper():
+            def demote(user_id: int, group_id: int) -> Callable[[], None]:
+                def wrapper() -> None:
                     os.setsid()
                     os.setgid(group_id)
                     os.setuid(user_id)
@@ -770,7 +781,7 @@ class ProcessRunner:
         if cwd:
             subprocess_kwargs["cwd"] = cwd
 
-        subprocess_command: Union[list[str], str] = [self.executable] + list(args)
+        subprocess_command: Union[List[str], str] = [self.executable] + list(args)
         if shell:
             subprocess_command = shlex.join(subprocess_command)
             subprocess_kwargs["shell"] = True
@@ -895,7 +906,7 @@ class PythonRunner(ProcessRunner):
     or scripts from within python itself.
     """
 
-    def __init__(self):
+    def __init__(self) -> None:
         super(PythonRunner, self).__init__(sys.executable)
 
     def module(
@@ -1043,7 +1054,7 @@ class FlexibleJSONDecoder(json.JSONDecoder):
         :returns Any: The decoded value - see the flexible stringer for more details.
         :see: class:`pibble.helpers.strings.Serializer`
         """
-        return Serializer.deserialize(string)
+        return Serializer.deserialize(string)  # type: ignore
 
 
 class FlexibleJSONEncoder(json.JSONEncoder):

@@ -6,7 +6,18 @@ import tempfile
 import shutil
 import copy
 
-from typing import Optional, Type, Callable, Any, Iterator, Iterable, Union
+from typing import (
+    Optional,
+    Type,
+    Callable,
+    Any,
+    Iterator,
+    Iterable,
+    Union,
+    List,
+    Dict,
+    cast,
+)
 from types import ModuleType
 
 from google.protobuf import symbol_database as SDB
@@ -16,12 +27,13 @@ from grpc_tools import protoc
 
 from pibble.util.log import logger
 from pibble.api.exceptions import ConfigurationError, UnsupportedMethodError
+from pibble.api.configuration import APIConfiguration
 
 
 class GRPCRequest:
-    fields: dict[str, Any]
+    fields: Dict[str, Any]
 
-    def __init__(self, service: GRPCService, method: str, **kwargs: Any):
+    def __init__(self, service: GRPCService, method: str, **kwargs: Any) -> None:
         self.service = service
         self.method = method
         for descriptor_method in self.service.descriptor.methods:
@@ -36,22 +48,22 @@ class GRPCRequest:
         self.fields = {}
 
     def __call__(self) -> Message:
-        return self.input._concrete_class(**self.fields)
+        return cast(Message, self.input._concrete_class(**self.fields))
 
 
 class GRPCResponse:
-    fields: dict[str, Any]
+    fields: Dict[str, Any]
 
-    def __init__(self, request: GRPCRequest):
+    def __init__(self, request: GRPCRequest) -> None:
         self.request = request
         self.fields = {}
 
-    def load(self, message):
+    def load(self, message: Any) -> None:
         for field in self.request.output.fields:
             self.fields[field.name] = getattr(message, field.name)
 
     def __call__(self) -> Message:
-        return self.request.output._concrete_class(**self.fields)
+        return cast(Message, self.request.output._concrete_class(**self.fields))
 
 
 class GRPCConfiguration:
@@ -72,7 +84,7 @@ class GRPCConfiguration:
     :param configuration pibble.api.configuration.APIConfiguration: The API configuration.
     """
 
-    def __init__(self, configuration):
+    def __init__(self, configuration: APIConfiguration) -> None:
         self.configuration = configuration
 
         compile_directory = configuration.get("grpc.compile", None)
@@ -125,7 +137,7 @@ class GRPCService:
         servicer: Type,
         stub: Type,
         assigner: Callable,
-    ):
+    ) -> None:
         self.qualified_name = qualified_name
         self.name = name
         self.namespace = namespace
@@ -133,16 +145,16 @@ class GRPCService:
         self.servicer = servicer
         self.assigner = assigner
         self.stub = stub
-        self.messages = GRPCService.GRPCMessages()
+        self.messages = GRPCService.GRPCMessages()  # type: ignore
 
-    def addMessage(self, message: Any) -> None:
+    def addMessage(self, message: Any) -> Any:
         """
         Adds messages to the message list after inspecting the descriptor for them.
 
         :param message `google.protobuf.pyext._message.MessageDescriptor`: the message description, compiled by protoc.
         """
         try:
-            added = self.messages.add(message)
+            added = self.messages.add(message)  # type: ignore
         except Exception as ex:
             raise AttributeError(
                 "Error adding message {0} to {1}: {2}".format(
@@ -160,10 +172,12 @@ class GRPCService:
         This class holds the message objects added to a service.
         """
 
-        def __init__(self):
+        messages: List[GRPCMessage]
+
+        def __init__(self) -> None:
             self.messages = []
 
-        def _find_by_name(self, name):
+        def _find_by_name(self, name: str) -> List[GRPCMessage]:
             """
             Finds by a name.
 
@@ -176,7 +190,7 @@ class GRPCService:
                 raise KeyError(name)
             return messages
 
-        def _find_by_qualified_name(self, qualified_name):
+        def _find_by_qualified_name(self, qualified_name: str) -> GRPCMessage:
             """
             Finds by a qualified name. Unlike `_find_by_name`, this can only have one result.
 
@@ -188,7 +202,7 @@ class GRPCService:
                     return message
             raise KeyError(qualified_name)
 
-        def get(self, name, namespace=None):
+        def get(self, name: str, namespace: Optional[str] = None) -> GRPCMessage:
             """
             Retrieves an item by name or qualified name.
 
@@ -200,7 +214,7 @@ class GRPCService:
             else:
                 return self._find_by_qualified_name("{0}.{1}".format(namespace, name))
 
-        def __getitem__(self, item):
+        def __getitem__(self, item: str) -> GRPCMessage:
             """
             Retrieves an unqualified message name.
 
@@ -216,7 +230,7 @@ class GRPCService:
                 )
             return message[0]
 
-        def __getattr__(self, item):
+        def __getattr__(self, item: str) -> GRPCMessage:
             """
             A wrapper around self[item].
             """
@@ -225,11 +239,11 @@ class GRPCService:
             except KeyError as ex:
                 raise AttributeError(str(ex))
 
-        def add(self, message):
+        def add(self, message: Any) -> bool:
             """
             Adds a message to this list. Called by the parent class.
             """
-            namespace = ".".join(os.path.splitext(message.file.name)[0].split("/"))
+            namespace = ".".join(os.path.splitext(message.file.name)[0].split("/"))  # type: ignore
             qualified_name = "{0}.{1}".format(namespace, message.name)
             try:
                 existing = self._find_by_qualified_name(qualified_name)
@@ -294,7 +308,7 @@ class GRPCService:
                     ),
                 )
 
-            def __call__(self, *args, **kwargs) -> Any:
+            def __call__(self, *args: Any, **kwargs: Any) -> Any:
                 return self.cls(*args, **kwargs)
 
 
@@ -307,9 +321,9 @@ class GRPCServiceExplorer:
     :param module `pibble.api.helpers.googlerpc.GRPCModuleExplorer`: the module to search through.
     """
 
-    services: list[GRPCService]
+    services: List[GRPCService]
 
-    def __init__(self, module: GRPCModuleExplorer):
+    def __init__(self, module: GRPCModuleExplorer) -> None:
         self.module = module
         self.services = []
 
@@ -318,7 +332,7 @@ class GRPCServiceExplorer:
         service_name: str,
         namespace: Optional[str] = "",
         proto: Optional[str] = None,
-    ):
+    ) -> GRPCService:
         """
         Finds a service by name.
 
@@ -369,7 +383,7 @@ class GRPCServiceExplorer:
                         getattr(imported, "add_{0}Servicer_to_server".format(name)),
                     )
 
-                    def inspect_message(message):
+                    def inspect_message(message: Any) -> None:
                         if grpc_service.addMessage(message):
                             for field in message.fields:
                                 if field.message_type:
@@ -400,7 +414,7 @@ class GRPCModule:
     It is not actually imported until the `.module()` function is called.
     """
 
-    def __init__(self, name: str, fromlist: list[str]):
+    def __init__(self, name: str, fromlist: List[str]):
         self.name = name
         self.fromlist = fromlist
 
@@ -442,10 +456,10 @@ class GRPCModuleExplorer:
     Submodules are, in turn, also GRPCModules, allowing for chaining of __getattr__ calls.
     """
 
-    modules: dict[str, GRPCModule]
-    submodules: dict[str, GRPCModuleExplorer]
+    modules: Dict[str, GRPCModule]
+    submodules: Dict[str, GRPCModuleExplorer]
 
-    def __init__(self):
+    def __init__(self) -> None:
         self.modules = {}
         self.submodules = {}
 
@@ -463,7 +477,7 @@ class GRPCModuleExplorer:
             raise TypeError(f"{path} is a module, not a submodule.")
         return result.find(".".join(path_parts[1:]))
 
-    def add(self, path: str, fromlist: list[str] = []):
+    def add(self, path: str, fromlist: List[str] = []) -> None:
         """
         This adds a .py file from the module into this object.
 
@@ -565,7 +579,9 @@ class GRPCImporter:
 
         module = GRPCModuleExplorer()
 
-        def recurse(module, path, fromlist=[]):
+        def recurse(
+            module: GRPCModuleExplorer, path: str, fromlist: List[str] = []
+        ) -> None:
             for subpath in os.listdir(path):
                 if os.path.isdir(os.path.join(path, subpath)):
                     recurse(

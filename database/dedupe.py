@@ -10,7 +10,7 @@ except ImportError:
 
 import sqlalchemy
 
-from typing import Any
+from typing import Any, List, Dict
 from statistics import median
 from pibble.util.log import logger
 from pibble.database.engine import EngineFactory
@@ -35,12 +35,12 @@ class DeDuplicator:
     def __init__(
         self,
         database_type: str,
-        database_params: dict[str, Any],
+        database_params: Dict[str, Any],
         tablename: str,
         unique_key: str,
         unique_key_type: SQLAlchemyType,
-        fields: list[str],
-    ):
+        fields: List[str],
+    ) -> None:
         self.settings_file = os.path.join(os.getcwd(), "{0}.settings".format(tablename))
         self.training_file = os.path.join(os.getcwd(), "{0}.training".format(tablename))
 
@@ -61,7 +61,7 @@ class DeDuplicator:
         self.train()
         self.cluster()
 
-    def sample(self, row) -> dict[str, Any]:
+    def sample(self, row: Any) -> Dict[str, Any]:
         """
         A helper method to turn a row into a "sample", expected by dedupe.
 

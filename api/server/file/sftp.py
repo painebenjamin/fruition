@@ -18,7 +18,7 @@ from paramiko import (  # type: ignore
     Transport,
 )
 
-from typing import Callable, Any, Union
+from typing import Callable, Any, Union, Optional, List
 
 from pibble.util.log import logger
 from pibble.api.server.base import APIServerBase
@@ -32,7 +32,7 @@ class SFTPRequest:
     A wrapper around each request for processing.
     """
 
-    def __init__(self, server: APIServerBase, fn: Callable, *args: Any):
+    def __init__(self, server: APIServerBase, fn: Callable, *args: Any) -> None:
         self.server = server
         self.fn = fn
         self.args = args
@@ -46,11 +46,11 @@ class SFTPResponse:
     A wrapper around each response for processing.
     """
 
-    def __init__(self, request, response):
+    def __init__(self, request: Any, response: Any) -> None:
         self.request = request
         self.response = response
 
-    def __call__(self):
+    def __call__(self) -> Any:
         return self.response
 
 
@@ -60,7 +60,7 @@ class SFTPProcessor:
     """
 
     def wrap(self, fn: Callable) -> Callable:
-        def wrapper(stub, *args: Any):
+        def wrapper(stub: Any, *args: Any) -> Any:
             request = SFTPRequest(stub, fn, *args)
             stub.server.server.parse_all(request)
             response = SFTPResponse(request, request())
@@ -79,7 +79,10 @@ class StubServer(ParamikoServerInterface):
     See :class:pibble.api.server.file.sftp.ParamikoSFTPServer for more information.
     """
 
-    def __init__(self, server):
+    publickey: Optional[APIAuthenticationSource]
+    password: Optional[APIAuthenticationSource]
+
+    def __init__(self, server: Any) -> None:
         super(StubServer, self).__init__()
         self.server = server
         self.configuration = self.server.configuration
@@ -116,7 +119,7 @@ class StubServer(ParamikoServerInterface):
             allowed.append("password")
         return ",".join(allowed)
 
-    def check_auth_publickey(self, username: str, key) -> int:
+    def check_auth_publickey(self, username: str, key: Any) -> Any:
         if self.publickey is not None:
             try:
                 self.publickey.validate(username, key)
@@ -125,7 +128,7 @@ class StubServer(ParamikoServerInterface):
                 pass
         return AUTH_FAILED
 
-    def check_auth_password(self, username: str, password: str) -> int:
+    def check_auth_password(self, username: str, password: str) -> Any:
         if self.password is not None:
             try:
                 self.password.validate(username, password)
@@ -134,7 +137,7 @@ class StubServer(ParamikoServerInterface):
                 pass
         return AUTH_FAILED
 
-    def check_channel_request(self, kind: Any, chanid: int) -> int:
+    def check_channel_request(self, kind: Any, chanid: int) -> Any:
         return OPEN_SUCCEEDED
 
 
@@ -153,7 +156,7 @@ class SFTPStubHandler(ParamikoSFTPHandle):
         except OSError as e:
             return ParamikoSFTPServer.convert_errno(e.errno)
 
-    def chattr(self, attr: Union[SFTPAttributes, int]) -> int:
+    def chattr(self, attr: Union[SFTPAttributes, int]) -> Any:
         try:
             ParamikoSFTPServer.set_file_attr(self.filename, attr)  # type: ignore
             return SFTP_OK
@@ -173,7 +176,7 @@ class SFTPStubServer(ParamikoSFTPParamikoServerInterface):
     processor = SFTPProcessor()
     _root = os.getcwd()
 
-    def __init__(self, server):
+    def __init__(self, server: Any) -> None:
         super(SFTPStubServer, self).__init__(server)
         self.server = server
         self._root = server.configuration.get("server.sftp.root.directory", os.getcwd())
@@ -189,7 +192,7 @@ class SFTPStubServer(ParamikoSFTPParamikoServerInterface):
         return _path
 
     @processor.wrap
-    def list_folder(self, path: str) -> Union[list[SFTPAttributes], int]:
+    def list_folder(self, path: str) -> Union[List[SFTPAttributes], int]:
         try:
             path = self._realpath(path)
             out = []
@@ -259,7 +262,7 @@ class SFTPStubServer(ParamikoSFTPParamikoServerInterface):
         return fobj
 
     @processor.wrap
-    def remove(self, path: str) -> int:
+    def remove(self, path: str) -> Any:
         try:
             path = self._realpath(path)
             os.remove(path)
@@ -268,7 +271,7 @@ class SFTPStubServer(ParamikoSFTPParamikoServerInterface):
         return SFTP_OK
 
     @processor.wrap
-    def rename(self, oldpath: str, newpath: str) -> int:
+    def rename(self, oldpath: str, newpath: str) -> Any:
         try:
             oldpath = self._realpath(oldpath)
             newpath = self._realpath(newpath)
@@ -278,7 +281,7 @@ class SFTPStubServer(ParamikoSFTPParamikoServerInterface):
         return SFTP_OK
 
     @processor.wrap
-    def mkdir(self, path: str, attr: SFTPAttributes) -> int:
+    def mkdir(self, path: str, attr: SFTPAttributes) -> Any:
         try:
             path = self._realpath(path)
             os.mkdir(path)
@@ -289,7 +292,7 @@ class SFTPStubServer(ParamikoSFTPParamikoServerInterface):
         return SFTP_OK
 
     @processor.wrap
-    def rmdir(self, path: str) -> int:
+    def rmdir(self, path: str) -> Any:
         try:
             path = self._realpath(path)
             os.rmdir(path)
@@ -298,7 +301,7 @@ class SFTPStubServer(ParamikoSFTPParamikoServerInterface):
         return SFTP_OK
 
     @processor.wrap
-    def chattr(self, path: str, attr: SFTPAttributes) -> int:
+    def chattr(self, path: str, attr: SFTPAttributes) -> Any:
         try:
             path = self._realpath(path)
             ParamikoSFTPServer.set_file_attr(path, attr)
@@ -307,7 +310,7 @@ class SFTPStubServer(ParamikoSFTPParamikoServerInterface):
         return SFTP_OK
 
     @processor.wrap
-    def symlink(self, target_path: str, path: str) -> int:
+    def symlink(self, target_path: str, path: str) -> Any:
         try:
             path = self._realpath(path)
             if (len(target_path) > 0) and (target_path[0] == "/"):
