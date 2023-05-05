@@ -204,8 +204,13 @@ class Serializer:
 
     @classmethod
     def serialize(cls, parameter: Any, **kwargs: Any) -> str:
+        # Strict pass
         for typename in cls.SERIALIZE_FORMATS:
             if type(parameter) is typename:
+                return cls.SERIALIZE_FORMATS[typename](parameter, **kwargs)  # type: ignore
+        # Lenient pass
+        for typename in cls.SERIALIZE_FORMATS:
+            if isinstance(parameter, typename):
                 return cls.SERIALIZE_FORMATS[typename](parameter, **kwargs)  # type: ignore
         return str(parameter)
 
