@@ -22,7 +22,7 @@ from sqlalchemy import Column, Integer, String, Sequence, ForeignKey
 
 from sqlalchemy.exc import InvalidRequestError
 
-from sqlalchemy.orm import sessionmaker, relationship
+from sqlalchemy.orm import sessionmaker, relationship, Query
 from sqlalchemy.orm.session import Session
 from sqlalchemy.orm.state import InstanceState
 from sqlalchemy.orm.attributes import InstrumentedAttribute
@@ -32,6 +32,46 @@ from sqlalchemy.engine import Dialect, Engine
 from sqlalchemy.ext.declarative import declarative_base
 
 FILE_CHUNK_SIZE = 1000
+
+class ORMQuery(Query): # type: ignore
+    """
+    A wrapper around a query which permits retrying.
+    """
+    def __init__(self, orm_session: ORMSession, arg: Any) -> None:
+        self.orm_session = orm_session
+        super(ORMQuery, self).__init__(arg, session = orm_session.session)
+
+    def reset_retry(self) -> None:
+        """
+        Resets the retry counter.
+        """
+        if hasattr(self, "_retried"):
+            del self._retried
+
+    def can_retry(self) -> bool:
+        """
+        Gets if this query has been retried.
+        """
+        if not hasattr(self, "_retried"):
+            self._retried = True
+            return True
+        return not getattr(self, "_retried", False)
+
+    def _iter(self) -> Any:
+        """
+        Overrides the base _iter(), which all results-producing methods call.
+        """
+        try:
+            result = super(ORMQuery, self)._iter()
+            return result
+        except Exception as ex:
+            if not self.can_retry():
+                raise
+            logger.info("Received exception {0}, retrying query.".format(type(ex).__name__))
+            logger.debug(str(ex))
+            self.orm_session.reset()
+            self.session = self.orm_session.session
+            return self._iter()
 
 
 class ORMSession:
@@ -47,14 +87,16 @@ class ORMSession:
     """
 
     def __init__(
-        self, session: Session, autocommit: Optional[bool] = False, **kwargs: Any
+        self, orm: ORM, session: Session, autocommit: Optional[bool] = False, **kwargs: Any
     ):
+        self.orm = orm
         self.session = session
         self.autocommit = autocommit
 
     def commit(self) -> None:
         """
-        Commits the session. Permissive.
+        Commits the session. Permissive over InvalidRequestError, which occurs when there
+        is nothing to commit.
         """
         try:
             self.session.commit()
@@ -63,15 +105,23 @@ class ORMSession:
 
     def close(self) -> None:
         """
-        Closes the session, raises errors.
+        Closes the session, logs and ignores errors.
         """
-        self.session.close()
+        try:
+            self.session.close()
+        except Exception as ex:
+            logger.warning("Received {0} during close, ignoring.".format(type(ex).__name__))
+            logger.debug(str(ex))
 
     def rollback(self) -> None:
         """
-        Rolls back the session, raises errors.
+        Rolls back the session, logs and ignores errors.
         """
-        self.session.rollback()
+        try:
+            self.session.rollback()
+        except Exception as ex:
+            logger.warning("Received {0} during rollback, ignoring.".format(type(ex).__name__))
+            logger.debug(str(ex))
 
     def get(self) -> Session:
         """
@@ -87,6 +137,18 @@ class ORMSession:
         if len(objects) == 1:
             return objects[0]
         return objects
+
+    def query(self, arg: Any) -> ORMQuery:
+        """
+        Returns a wrapper around a query which permits retrying.
+        """
+        return ORMQuery(self, arg)
+
+    def reset(self) -> None:
+        """
+        Resets the session.
+        """
+        self.session = self.orm.session()
 
     def __getattr__(self, attr: str) -> Any:
         return getattr(self.session, attr)
@@ -548,7 +610,7 @@ class ORM:
                     return self.session(test=True, retry=False, **kwargs)
                 else:
                     raise
-        return ORMSession(session, **kwargs)
+        return ORMSession(self, session, **kwargs)
 
     def _remove_if_exists(self, tablename: str) -> None:
         """
