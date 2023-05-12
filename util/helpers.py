@@ -176,18 +176,18 @@ def resolve(qualified_name: Any, local: dict = {}) -> Any:
             except ImportError:
                 try:
                     module = __import__(module_name, locals(), globals())
-                except ImportError:
+                except ImportError as ex:
                     checked_paths = "; ".join(sys.path)
                     cwd = os.getcwd()
                     raise ImportError(
-                        f"Cannot resolve module {module_name}. Tried {checked_paths} from {cwd}"
+                        f"Cannot import module {module_name}. Tried {checked_paths} from {cwd}. {ex}"
                     )
             active = module
             for qualified_part in qualified_split[1:]:
                 active = getattr(active, qualified_part)
             return active
         else:
-            return local[qualified_name]
+            return local.get(qualified_name, getattr(sys.modules[__name__], qualified_name))
     except (KeyError, AttributeError) as ex:
         raise ImportError(
             "Cannot resolve name '{0}': {1}({2})".format(

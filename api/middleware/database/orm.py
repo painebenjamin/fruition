@@ -28,6 +28,29 @@ class ORMMiddlewareBase(APIMiddlewareBase):
                 "No ORM configuration present, cannot create client/server ORM."
             )
 
+    @property
+    def database(self) -> ORMSession:
+        """
+        Getter for the database ensures we only instantiate when we need it.
+        """
+        if not hasattr(self, "_database"):
+            logger.debug("Database requested, connecting to ORM")
+            self._database = self.orm.session(expire_on_commit=False)
+        return self._database
+
+    @database.deleter
+    def database(self) -> None:
+        """
+        Only remove the database if necessary.
+        """
+        if hasattr(self, "_database"):
+            try:
+                logger.debug("Closing ORM session")
+                self._database.close()
+                del self._database
+            except Exception as ex:
+                logger.warning(f"Ignoring exception during database close: {ex}")
+
     def on_destroy(self) -> None:
         """
         On destruction, close ORM.
@@ -46,25 +69,8 @@ class ORMMiddlewareBase(APIMiddlewareBase):
         """
         Either open or a close a database session, depending on client or server.
         """
-        if hasattr(self, "orm"):
-            if isinstance(request, RequestsRequest):
-                # Client parsing a response, close database
-                if hasattr(self, "database"):
-                    logger.debug("Closing client ORM session.")
-                    try:
-                        self.database.close()
-                    except Exception as ex:
-                        logger.debug(
-                            "Ignoring exception during database close {0}: {1}".format(
-                                type(ex).__name__, ex
-                            )
-                        )
-            elif isinstance(request, WebobRequest) or isinstance(
-                request, RequestWrapper
-            ):
-                # Server parsing a request, open database
-                logger.debug("Opening server ORM session.")
-                self.database = self.orm.session(expire_on_commit=False)
+        if isinstance(request, RequestsRequest) or isinstance(request, RequestWrapper):
+            del self.database
 
     def prepare(
         self,
@@ -74,24 +80,7 @@ class ORMMiddlewareBase(APIMiddlewareBase):
         ] = None,
     ) -> None:
         """
-        Either open or a close a database session, depending on client or server.
+        If server, close database session after responding.
         """
-        if hasattr(self, "orm"):
-            if isinstance(request, RequestsRequest):
-                # Client preparing a request, open database
-                logger.debug("Opening client ORM session.")
-                self.database = self.orm.session(expire_on_commit=False)
-            elif isinstance(request, WebobRequest) or isinstance(
-                request, RequestWrapper
-            ):
-                # Server preparing a response, close database
-                if hasattr(self, "database"):
-                    logger.debug("Closing server ORM session.")
-                    try:
-                        self.database.close()
-                    except Exception as ex:
-                        logger.debug(
-                            "Ignoring exception during database close {0}: {1}".format(
-                                type(ex).__name__, ex
-                            )
-                        )
+        if isinstance(request, WebobRequest) or isinstance(request, RequestWrapper):
+            del self.database

@@ -281,5 +281,7 @@ try:
     main()
 except Exception as ex:
     print(termcolor.colored(str(ex), "red"))
+    if "--debug" in sys.argv:
+        print(termcolor.colored(traceback.format_exc(), "red"))
     sys.exit(5)
 sys.exit(0)

@@ -210,8 +210,11 @@ class Serializer:
                 return cls.SERIALIZE_FORMATS[typename](parameter, **kwargs)  # type: ignore
         # Lenient pass
         for typename in cls.SERIALIZE_FORMATS:
-            if isinstance(parameter, typename):
-                return cls.SERIALIZE_FORMATS[typename](parameter, **kwargs)  # type: ignore
+            try:
+                if isinstance(parameter, typename):
+                    return cls.SERIALIZE_FORMATS[typename](parameter, **kwargs)  # type: ignore
+            except TypeError:
+                pass
         return str(parameter)
 
 
