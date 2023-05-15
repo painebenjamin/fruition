@@ -9,15 +9,14 @@ from pibble.api.exceptions import (
 from typing import Type, Optional, Union, List, Dict
 
 
-
 class RPCServerBase(MethodBasedWebServiceAPIServerBase):
     """
     A base server for RPC classes.
 
     This will handle function registration and dispatching. Inherited classes are responsible for parsing and formatting requests and responses.
     """
-    handlers = WebServiceAPIHandlerRegistry()
 
+    handlers = WebServiceAPIHandlerRegistry()
 
     def __init__(self) -> None:
         super(RPCServerBase, self).__init__()

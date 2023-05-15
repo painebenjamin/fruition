@@ -11,6 +11,7 @@ from pibble.ext.user.server.base import (
 from pibble.ext.rest.server.base import RESTExtensionServerBase
 from pibble.ext.user.database import *
 
+
 class UserRESTExtensionServerBase(UserExtensionServer, RESTExtensionServerBase):
     handlers = UserExtensionHandlerRegistry()
 

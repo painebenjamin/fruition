@@ -570,6 +570,7 @@ class UserExtensionServer(UserExtensionServerBase):
     """
     This base class defines default handlers, if desired.
     """
+
     handlers = UserExtensionHandlerRegistry()
 
     @handlers.format()

@@ -130,12 +130,23 @@ class WebServiceAPIServerBase(APIServerBase):
         """
         for cls in reversed(type(self).mro()):
             cls_mro = cls.mro()
-            if WebServiceAPIServerBase in cls_mro or WebServiceAPIMiddlewareBase in cls_mro:
+            if (
+                WebServiceAPIServerBase in cls_mro
+                or WebServiceAPIMiddlewareBase in cls_mro
+            ):
                 if hasattr(cls, "get_handlers") and "get_handlers" in cls.__dict__:
-                    logger.debug("Registering handlers in class {0} with 'get_handlers()'".format(cls.__name__))
+                    logger.debug(
+                        "Registering handlers in class {0} with 'get_handlers()'".format(
+                            cls.__name__
+                        )
+                    )
                     self.class_handlers.append(cls.get_handlers())
                 elif hasattr(cls, "handlers") and "handlers" in cls.__dict__:
-                    logger.debug("Registering handlers in class {0} with 'handlers'".format(cls.__name__))
+                    logger.debug(
+                        "Registering handlers in class {0} with 'handlers'".format(
+                            cls.__name__
+                        )
+                    )
                     self.class_handlers.append(cls.handlers)
 
     def prepare_all(

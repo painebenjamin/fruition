@@ -54,7 +54,7 @@ def run_gunicorn(
     options = {
         "bind": f"{host:s}:{port:d}",
         "workers": cpu_count() * 2 + 1 if workers is None else workers,
-        "worker_class": "gthread"
+        "worker_class": "gthread",
     }
 
     if secure and cert is not None and key is not None:

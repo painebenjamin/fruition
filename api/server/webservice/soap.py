@@ -53,6 +53,7 @@ class SOAPServer(MethodBasedWebServiceAPIServerBase):
       - `server.hostname`: The hostname of the server. Defaults to loopback - '127.0.0.1'.
       - `server.name`: The name of the service. Defaults to "SOAPServer".
     """
+
     handlers = WebServiceAPIHandlerRegistry()
 
     @staticmethod

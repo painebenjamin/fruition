@@ -14,7 +14,6 @@ class ORMMiddlewareBase(APIMiddlewareBase):
     """
 
     orm: ORM
-    database: ORMSession
 
     def on_configure(self) -> None:
         """
@@ -35,7 +34,7 @@ class ORMMiddlewareBase(APIMiddlewareBase):
         """
         if not hasattr(self, "_database"):
             logger.debug("Database requested, connecting to ORM")
-            self._database = self.orm.session(expire_on_commit=False)
+            self._database = self.orm.session()
         return self._database
 
     @database.deleter

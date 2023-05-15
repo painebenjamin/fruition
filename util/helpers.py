@@ -187,7 +187,9 @@ def resolve(qualified_name: Any, local: dict = {}) -> Any:
                 active = getattr(active, qualified_part)
             return active
         else:
-            return local.get(qualified_name, getattr(sys.modules[__name__], qualified_name))
+            return local.get(
+                qualified_name, getattr(sys.modules[__name__], qualified_name)
+            )
     except (KeyError, AttributeError) as ex:
         raise ImportError(
             "Cannot resolve name '{0}': {1}({2})".format(

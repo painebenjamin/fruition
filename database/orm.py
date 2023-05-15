@@ -22,24 +22,24 @@ from sqlalchemy import Column, Integer, String, Sequence, ForeignKey
 
 from sqlalchemy.exc import InvalidRequestError
 
-from sqlalchemy.orm import sessionmaker, relationship, Query
+from sqlalchemy.orm import sessionmaker, scoped_session, relationship, Query
 from sqlalchemy.orm.session import Session
-from sqlalchemy.orm.state import InstanceState
-from sqlalchemy.orm.attributes import InstrumentedAttribute
-from sqlalchemy.orm.collections import InstrumentedList
+from sqlalchemy.orm.attributes import InstrumentedAttribute, ScalarAttributeImpl
 
 from sqlalchemy.engine import Dialect, Engine
 from sqlalchemy.ext.declarative import declarative_base
 
 FILE_CHUNK_SIZE = 1000
 
-class ORMQuery(Query): # type: ignore
+
+class ORMQuery(Query):  # type: ignore
     """
     A wrapper around a query which permits retrying.
     """
+
     def __init__(self, orm_session: ORMSession, arg: Any) -> None:
         self.orm_session = orm_session
-        super(ORMQuery, self).__init__(arg, session = orm_session.session)
+        super(ORMQuery, self).__init__(arg, session=orm_session.session)
 
     def reset_retry(self) -> None:
         """
@@ -67,7 +67,9 @@ class ORMQuery(Query): # type: ignore
         except Exception as ex:
             if not self.can_retry():
                 raise
-            logger.info("Received exception {0}, retrying query.".format(type(ex).__name__))
+            logger.info(
+                "Received exception {0}, retrying query.".format(type(ex).__name__)
+            )
             logger.debug(str(ex))
             self.orm_session.reset()
             self.session = self.orm_session.session
@@ -87,7 +89,11 @@ class ORMSession:
     """
 
     def __init__(
-        self, orm: ORM, session: Session, autocommit: Optional[bool] = False, **kwargs: Any
+        self,
+        orm: ORM,
+        session: Session,
+        autocommit: Optional[bool] = False,
+        **kwargs: Any,
     ):
         self.orm = orm
         self.session = session
@@ -110,7 +116,9 @@ class ORMSession:
         try:
             self.session.close()
         except Exception as ex:
-            logger.warning("Received {0} during close, ignoring.".format(type(ex).__name__))
+            logger.warning(
+                "Received {0} during close, ignoring.".format(type(ex).__name__)
+            )
             logger.debug(str(ex))
 
     def rollback(self) -> None:
@@ -120,7 +128,9 @@ class ORMSession:
         try:
             self.session.rollback()
         except Exception as ex:
-            logger.warning("Received {0} during rollback, ignoring.".format(type(ex).__name__))
+            logger.warning(
+                "Received {0} during rollback, ignoring.".format(type(ex).__name__)
+            )
             logger.debug(str(ex))
 
     def get(self) -> Session:
@@ -160,8 +170,6 @@ class ORMSession:
         try:
             if self.autocommit:
                 self.commit()
-            else:
-                self.rollback()
         finally:
             self.close()
 
@@ -281,25 +289,36 @@ class ORMObjectBase:
         setattr(cls, "__default_hidden_columns__", existing_columns)
 
     @staticmethod
-    def _is_sqlalchemy_data(value: Any) -> bool:
+    def _is_simple_data(value: Any) -> bool:
         """
-        A way to differentiate between sqlalchemy metadata and columnar data.
+        A way to differentiate between columnar data and other data.
+        Actually reads inheritence to ensure the object inherits from a 'primitive' type.
         """
-        return isinstance(value, InstrumentedList) or isinstance(value, InstanceState)
+        return type(value).mro()[-2] in [
+            str,
+            int,
+            float,
+            complex,
+            bool,
+            bytes,
+            bytearray,
+            memoryview,
+            type(None),
+        ]
 
-    def get_attributes(self) -> dict:
+    def get_attributes(self) -> Dict[str, Any]:
         """
         Returns the dictionary of columns (attributes) for formatting.
         """
-        return dict(
-            [
-                (k, self.__dict__[k])
-                for k in self.__dict__
-                if not k.startswith("__")
-                and not ORMObjectBase._is_sqlalchemy_data(self.__dict__[k])
-                and type(self).mro()[1] != type(self.__dict__[k]).mro()[1]
-            ]
-        )
+        attribute_dict: Dict[str, Any] = {}
+        for k in dir(self):
+            v = getattr(self, k, None)
+            v_static = getattr(type(self), k, None)
+            v_impl_type = type(getattr(v_static, "impl", None))
+            if v_impl_type is ScalarAttributeImpl:
+                attribute_dict[k] = v
+
+        return attribute_dict
 
     def see(self, *args: ORMObjectBase) -> None:
         """
@@ -600,7 +619,7 @@ class ORM:
         """
         Gets a SQLAlchemy session, and wraps it in an ORMSession.
         """
-        session = self.sessionmaker(**kwargs)
+        session = scoped_session(self.sessionmaker, **kwargs)
         if test:
             try:
                 assert session.execute("SELECT 1").fetchone()[0] == 1
