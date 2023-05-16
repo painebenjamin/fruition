@@ -62,8 +62,6 @@ if TYPE_CHECKING:
     # type to notate, and will be appropriately checked when necessary. Neat!
     from _typeshed.wsgi import StartResponse, WSGIEnvironment, WSGIApplication
 
-TEXT_CONTENT_TYPE = re.compile(r"^(text|application).*$")
-
 
 class WebServiceAPIServerBase(APIServerBase):
     """
@@ -411,14 +409,6 @@ class WebServiceAPIServerBase(APIServerBase):
             for header_name in response.headers:
                 logger.debug(
                     "{0}: {1}".format(header_name, response.headers[header_name])
-                )
-            if response.headers.get(
-                "Content-Encoding", None
-            ) is None and TEXT_CONTENT_TYPE.match(
-                str(response.headers.get("Content-Type", "text"))
-            ):
-                logger.debug(
-                    "Sending text: {0}".format(truncate(response.text, length=100))
                 )
         return response
 
