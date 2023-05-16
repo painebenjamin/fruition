@@ -464,6 +464,7 @@ class WebServiceAPIServerBase(APIServerBase):
                     run_cherrypy,
                 )
 
+                destroy_on_stop = False
                 run_driver = run_cherrypy
             elif driver == "werkzeug":
                 from pibble.api.server.webservice.drivers.driver_werkzeug import (
@@ -482,7 +483,7 @@ class WebServiceAPIServerBase(APIServerBase):
                 raise ConfigurationError(
                     "Server driver {0} not supported.".format(driver)
                 )
-            run_driver(self.wsgi(), host, port, secure, cert, key, workers)
+            run_driver(self, host, port, secure, cert, key, workers)
         except KeyError as ex:
             raise ConfigurationError(str(ex))
         finally:

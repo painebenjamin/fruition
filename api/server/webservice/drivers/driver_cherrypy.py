@@ -6,11 +6,11 @@ from multiprocessing import cpu_count
 from pibble.util.log import logger
 
 if TYPE_CHECKING:
-    from _typeshed.wsgi import WSGIApplication
+    from pibble.api.server.webservice.base import WebServiceAPIServerBase
 
 
 def run_cherrypy(
-    application: WSGIApplication,
+    application: WebServiceAPIServerBase,
     host: str,
     port: int,
     secure: bool = False,
@@ -21,7 +21,7 @@ def run_cherrypy(
     """
     Runs the cherrypy engine synchronously.
     """
-    cherrypy.tree.graft(application, "/")
+    cherrypy.tree.graft(application.wsgi(), "/")
     cherrypy.server.unsubscribe()
     cherrypy.config.update(
         {"global": {"environment": "production"}}
@@ -45,5 +45,6 @@ def run_cherrypy(
         )
 
     server.subscribe()
+    cherrypy.engine.subscribe("exit", lambda: application.destroy())
     cherrypy.engine.start()
     cherrypy.engine.block()

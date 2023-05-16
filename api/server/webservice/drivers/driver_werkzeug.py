@@ -6,11 +6,11 @@ from werkzeug.serving import run_simple
 from pibble.util.log import logger
 
 if TYPE_CHECKING:
-    from _typeshed.wsgi import WSGIApplication
+    from pibble.api.server.webservice.base import WebServiceAPIServerBase
 
 
 def run_werkzeug(
-    application: WSGIApplication,
+    application: WebServiceAPIServerBase,
     host: str,
     port: int,
     secure: bool = False,
@@ -31,4 +31,4 @@ def run_werkzeug(
         logger.warning(
             "No SSL keyfile/certfile specific, but SSL enabled. If this server is being proxied through another service that provides SSL context this is okay, otherwise connections will fail."
         )
-    run_simple(host, port, application, ssl_context=ssl_context)
+    run_simple(host, port, application.wsgi(), ssl_context=ssl_context)

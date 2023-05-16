@@ -6,7 +6,7 @@ from gunicorn.app.base import Application
 from pibble.util.log import logger
 
 if TYPE_CHECKING:
-    from _typeshed.wsgi import WSGIApplication
+    from pibble.api.server.webservice.base import WebServiceAPIServerBase
 
 
 class PibbleGunicornApplication(Application):  # type: ignore
@@ -40,7 +40,7 @@ class PibbleGunicornApplication(Application):  # type: ignore
 
 
 def run_gunicorn(
-    application: WSGIApplication,
+    application: WebServiceAPIServerBase,
     host: str,
     port: int,
     secure: bool = False,
@@ -68,5 +68,5 @@ def run_gunicorn(
             "No SSL keyfile/certfile specific, but SSL enabled. If this server is being proxied through another service that provides SSL context this is okay, otherwise connections will fail."
         )
 
-    application = PibbleGunicornApplication(application, options)
+    application = PibbleGunicornApplication(application.wsgi(), options)
     application.run()
