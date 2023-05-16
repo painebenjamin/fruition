@@ -2,7 +2,6 @@ from __future__ import annotations
 
 import io
 import os
-import re
 import logging
 import mimetypes
 
@@ -23,7 +22,7 @@ from typing import (
 
 from webob import Request, Response
 
-from pibble.util.strings import decode, truncate
+from pibble.util.strings import decode
 from pibble.util.log import logger
 from pibble.util.helpers import CompressedIterator
 from pibble.util.files import FileIterator
