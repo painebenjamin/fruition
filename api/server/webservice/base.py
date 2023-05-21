@@ -42,6 +42,7 @@ from pibble.api.exceptions import (
     AuthenticationError,
     PermissionError,
     ConfigurationError,
+    StateConflictError,
     TooManyRequestsError,
 )
 
@@ -82,6 +83,7 @@ class WebServiceAPIServerBase(APIServerBase):
         PermissionError: 403,
         NotFoundError: 404,
         UnsupportedMethodError: 405,
+        StateConflictError: 409,
         TooManyRequestsError: 429,
         NotImplementedError: 501,
     }

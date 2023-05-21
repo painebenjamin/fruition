@@ -169,7 +169,7 @@ class ConfigurationLoggingContext(UnifiedLoggingContext):
             else:
                 self.handler = StreamHandler(stream)
         elif handler_class == "file":
-            self.handler = FileHandler(configuration["file"])
+            self.handler = FileHandler(configuration[f"{prefix}file"])
         elif handler_class == "syslog":
             self.handler = SysLogHandler(
                 address=(

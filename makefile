@@ -2,7 +2,7 @@
 ## CONFIGURATION ##
 ###################
 
-PYTHON=python3
+PYTHON=python
 BUILD_DIR=build
 TEST_DIR=test
 DOCS_DIR=docs

@@ -128,6 +128,15 @@ class TooManyRequestsError(Exception):
         super(TooManyRequestsError, self).__init__(msg)
 
 
+class StateConflictError(Exception):
+    """
+    An exception indicating something about the users request cannot
+    be fulfilled because it violates domain logic.
+    """
+    def __init__(self, msg: str = "The request cannot be fulfilled."):
+        super(StateConflictError, self).__init__(msg)
+
+
 class UnknownError(Exception):
     """
     An exception indicating somethign went wrong that was unexpected.
