@@ -10,6 +10,7 @@ from pibble.ext.user.server.base import (
 )
 from pibble.ext.rest.server.base import RESTExtensionServerBase
 from pibble.ext.user.database import *
+from pibble.util.log import logger
 
 
 class UserRESTExtensionServerBase(UserExtensionServer, RESTExtensionServerBase):
@@ -180,6 +181,10 @@ class UserRESTExtensionServerBase(UserExtensionServer, RESTExtensionServerBase):
                             request.token.user.email, action, handler_classname
                         )
                     )
+            
+            scope_user_fields = scope.get("user", {})
+            for field in scope_user_fields:
+                kwargs[scope_user_fields[field]] = getattr(request.token.user, field, None)
 
             handler_result = handler(self, request, response, **kwargs)
 

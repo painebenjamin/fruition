@@ -377,6 +377,7 @@ class WebServiceAPIServerBase(APIServerBase):
                 NotImplementedError,
                 BadRequestError,
                 TooManyRequestsError,
+                StateConflictError,
             ) as ex:
                 logger.warning(
                     "Received exception in handler: {0}({1})".format(

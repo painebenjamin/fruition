@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import re
+import logging
 
 from sqlalchemy import and_, or_, not_
 from sqlalchemy.orm.query import Query
@@ -230,9 +231,9 @@ class RESTExtensionServerBase(ORMWebServiceAPIServer):
 
             filter_kwargs = {}
             for key in kwargs:
-                if kwargs[key]:
-                    filter_kwargs[key] = kwargs[key]
-
+                if kwargs[key] is not None and kwargs[key] != "":
+                    filter_kwargs[key] = str(kwargs[key])
+            
             input_dict = {}
             if method in ["POST", "PUT", "PATCH"]:
                 input_dict = request.parsed
@@ -364,7 +365,7 @@ class RESTExtensionServerBase(ORMWebServiceAPIServer):
                 logger.error(
                     "REST server scope configuration missing. No handlers will be registered."
                 )
-
+            logger.debug("REST server adding {0} scoped handlers".format(len(scopes)))
             for scope in scopes:
                 handler_classname = scope["class"]
                 handler_scope = scope["scope"]
@@ -384,6 +385,10 @@ class RESTExtensionServerBase(ORMWebServiceAPIServer):
                 for handler_parent_part in handler_parent:
                     handler_regex += f"/(?P<{handler_parent_part:s}>[a-zA-Z0-9_\-]+)"
                 handler_regex += f"(/(?P<{handler_scope:s}>[a-zA-Z0-9_\-]+))?$"
+
+                if logger.isEnabledFor(logging.DEBUG):
+                    handler_parent_string = ",".join(handler_parent)
+                    logger.debug(f"REST server registering scoped handler for class {handler_classname}, handler root '{handler_root}', parent(s) '{handler_parent_string}', scope(s) '{handler_scope}', regex {handler_regex}")
 
                 self.bind_rest_handler(
                     handler_classname,
