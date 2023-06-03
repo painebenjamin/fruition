@@ -7,6 +7,7 @@ from pibble.util.log import logger
 
 if TYPE_CHECKING:
     from pibble.api.server.webservice.base import WebServiceAPIServerBase
+    from typeshed._wsgi import WSGIApplication
 
 
 class PibbleGunicornApplication(Application):  # type: ignore

@@ -16,7 +16,7 @@ from logging import (
     getLogger,
     DEBUG,
 )
-from typing import Any
+from typing import Any, List
 from logging.handlers import SysLogHandler
 from termcolor import colored
 
@@ -71,17 +71,17 @@ class UnifiedLoggingContext:
 
     :param handler: The handler to set the root logger to.
     :param level: The log level.
-    :param others: Any other loggers to create contexts for.
+    :param silenced: A list of any loggers to silence.
     """
 
     DEFAULT_FORMAT = (
         "%(asctime)s [%(name)s] %(levelname)s (%(filename)s:%(lineno)s) %(message)s"
     )
 
-    def __init__(self, handler: Handler, level: int, *others: str):
+    def __init__(self, handler: Handler, level: int, silenced: List[str] = []):
         self.level = level
         self.handler = handler
-        self.others = others
+        self.silenced = silenced
 
     def __enter__(self) -> None:
         self.start()
@@ -107,7 +107,10 @@ class UnifiedLoggingContext:
             self.levels[loggerName] = getLogger(loggerName).level
 
             getLogger(loggerName).handlers = []
-            getLogger(loggerName).setLevel(self.level)
+            if loggerName in self.silenced:
+                getLogger(loggerName).setLevel(99)
+            else:
+                getLogger(loggerName).setLevel(self.level)
 
         getLogger().addHandler(self.handler)
 
@@ -137,10 +140,11 @@ class LevelUnifiedLoggingContext(UnifiedLoggingContext):
     :param level int: The log level.
     """
 
-    def __init__(self, level: int) -> None:
+    def __init__(self, level: int, silenced: List[str] = []) -> None:
         self.level = level
         self.handler = StreamHandler(sys.stdout)
         self.handler.setFormatter(ColoredLoggingFormatter(self.DEFAULT_FORMAT))
+        self.silenced = silenced
 
 
 class DebugUnifiedLoggingContext(LevelUnifiedLoggingContext):
@@ -148,8 +152,8 @@ class DebugUnifiedLoggingContext(LevelUnifiedLoggingContext):
     A shortand for LevelUnifiedLoggingContext(DEBUG)
     """
 
-    def __init__(self) -> None:
-        super(DebugUnifiedLoggingContext, self).__init__(DEBUG)
+    def __init__(self, silenced: List[str] = []) -> None:
+        super(DebugUnifiedLoggingContext, self).__init__(DEBUG, silenced)
 
 
 class ConfigurationLoggingContext(UnifiedLoggingContext):
@@ -159,6 +163,7 @@ class ConfigurationLoggingContext(UnifiedLoggingContext):
 
     def __init__(self, configuration: APIConfiguration, prefix: str = "logging."):
         self.level = configuration.get(f"{prefix}level", "CRITICAL").upper()
+        self.silenced = configuration.get(f"{prefix}silenced", [])
         handler_class = configuration.get(f"{prefix}handler", "stream")
         if handler_class == "stream":
             stream = configuration.get(f"{prefix}stream", "stderr")
