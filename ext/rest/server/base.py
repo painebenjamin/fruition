@@ -82,22 +82,22 @@ class RESTExtensionServerBase(ORMWebServiceAPIServer):
 
         limit = request.GET.get("limit", DEFAULT_LIMIT)
         offset = request.GET.get("offset", 0)
-        order = request.GET.get("order", None)
-        direction = request.GET.get("direction", None)
+        sort = request.GET.getall("sort")
         filters = request.GET.getall("filter")
         ilikes = request.GET.getall("ilike")
 
         query = session.query(obj)
-
-        if order:
-            query = query.order_by(
-                getattr(
-                    getattr(obj, order),
-                    "desc"
-                    if direction is not None and direction.lower() == "desc"
-                    else "asc",
-                )()
-            )
+        
+        if sort:
+            for sort_column in sort:
+                if ":" in sort_column:
+                    column, direction = sort_column.split(":")
+                else:
+                    column = sort_column
+                    direction = "asc"
+                query = query.order_by(
+                    getattr(getattr(obj, column), direction)()
+                )
 
         def apply_filters(
             query: Query,
@@ -383,8 +383,8 @@ class RESTExtensionServerBase(ORMWebServiceAPIServer):
                 handler_regex = f"^{root:s}/{handler_root:s}"
 
                 for handler_parent_part in handler_parent:
-                    handler_regex += f"/(?P<{handler_parent_part:s}>[a-zA-Z0-9_\-]+)"
-                handler_regex += f"(/(?P<{handler_scope:s}>[a-zA-Z0-9_\-]+))?$"
+                    handler_regex += f"/(?P<{handler_parent_part:s}>[^\/]+)"
+                handler_regex += f"(/(?P<{handler_scope:s}>[^\/]+))?$"
 
                 if logger.isEnabledFor(logging.DEBUG):
                     handler_parent_string = ",".join(handler_parent)
