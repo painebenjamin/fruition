@@ -103,8 +103,8 @@ class Engine:
             "Creating SQLAlchemy engine using connection string {0}".format(conn_string)
         )
         self.engines[database_name] = sqlalchemy.create_engine(
-            conn_string, 
-            pool_reset_on_return=None, 
+            conn_string,
+            pool_reset_on_return=None,
         )
         if "pyodbc" in self.connection_params["drivername"]:
             if pyodbc is None:

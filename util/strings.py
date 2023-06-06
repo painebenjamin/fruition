@@ -102,8 +102,8 @@ class Serializer:
 
     PARSE_FORMATS = {
         compile(r"^data:image/.+;base64,.+$"): lambda p: deserialize_image(p),
-        compile(r"^[0-9\,]+$"): lambda p: int(p.replace(",", "")),
-        compile(r"^[0-9\,]+\.[0-9\,]+$"): lambda p: float(p.replace(",", "")),
+        compile(r"^[0-9][0-9\,]*$"): lambda p: int(p.replace(",", "")),
+        compile(r"^[0-9][0-9\,]*\.[0-9]*$"): lambda p: float(p.replace(",", "")),
         compile(r"^(null|Null|NULL|none|None|NONE)$"): lambda p: None,
         compile(
             r"^(y|Y|yes|Yes|YES|t|T|true|True|TRUE|n|N|no|No|NO|f|F|false|False|FALSE)$"

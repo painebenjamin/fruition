@@ -133,6 +133,7 @@ class StateConflictError(Exception):
     An exception indicating something about the users request cannot
     be fulfilled because it violates domain logic.
     """
+
     def __init__(self, msg: str = "The request cannot be fulfilled."):
         super(StateConflictError, self).__init__(msg)
 
