@@ -47,7 +47,7 @@ class WebScraper:
             options = Options()
             for argument in self.arguments:
                 options.add_argument(argument)  # type: ignore
-            self._driver = Chrome(chrome_options=options)
+            self._driver = Chrome(options=options)
         return self._driver
 
     def crawl(self, url: str) -> List[str]:
