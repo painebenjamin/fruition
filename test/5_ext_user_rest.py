@@ -66,12 +66,12 @@ class GrandchildTestObject(TestObjectBase):
 ChildTestObject.Relate(GrandchildTestObject, name="children", backref="parent")
 
 USER_1 = {
-    "email": "user@test.com",
+    "username": "user@test.com",
     "password": random_string(),
     "groups": ["Pibble Creators"],
 }
 
-USER_2 = {"email": "user2@test.com", "password": random_string()}
+USER_2 = {"username": "user2@test.com", "password": random_string()}
 
 CONFIGURATION = {
     "server": {"host": "0.0.0.0", "port": "9090", "driver": "werkzeug"},
@@ -223,7 +223,7 @@ def main():
                 expect_exception(PermissionError)(
                     lambda: client.get(TestObject.__name__)
                 )
-                client.login(USER_1["email"], USER_1["password"])
+                client.login(USER_1["username"], USER_1["password"])
 
                 Assertion(Assertion.EQ)(
                     [], client.get(TestObject.__name__).json()["data"]
@@ -327,7 +327,7 @@ def main():
                     ).json()["data"],
                 )
 
-                client.login(USER_2["email"], USER_2["password"])
+                client.login(USER_2["username"], USER_2["password"])
 
                 expect_exception(PermissionError)(
                     lambda: client.delete(

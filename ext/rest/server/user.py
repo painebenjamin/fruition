@@ -177,7 +177,7 @@ class UserRESTExtensionServerBase(UserExtensionServer, RESTExtensionServerBase):
                 if not permission:
                     raise PermissionError(
                         "User {0} is not authorized to {1} on {2}.".format(
-                            request.token.user.email, action, handler_classname
+                            request.token.user.username, action, handler_classname
                         )
                     )
 

@@ -8,7 +8,7 @@ class User(UserExtensionObjectBase):
 
     id = Column(Integer, autoincrement=True, primary_key=True)
 
-    email = Column(String, nullable=False, unique=True)
+    username = Column(String, nullable=False, unique=True)
     verified = Column(Boolean, default=False)
 
     superuser = Column(Boolean, default=False)

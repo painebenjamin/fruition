@@ -250,7 +250,7 @@ class UserExtensionServerBase(ORMWebServiceAPIServer):
 
         logger.debug(
             "Checking permissions on user {0} for object {1}, action {2}, secondary action {3}".format(
-                user.email, object_name, action, secondary_action
+                user.username, object_name, action, secondary_action
             )
         )
 
@@ -289,7 +289,7 @@ class UserExtensionServerBase(ORMWebServiceAPIServer):
         ):
             raise PermissionError(
                 "User {0} is not authorized to {1} on {2}.".format(
-                    request.token.user.email,
+                    request.token.user.username,
                     action
                     if not secondary_action
                     else "{0} - {1}".format(action, secondary_action),
@@ -422,14 +422,14 @@ class UserExtensionServerBase(ORMWebServiceAPIServer):
         with self.orm.session() as session:
             for user in self.configuration["user.users"]:
                 user = {**user}
-                email = user.pop("email")
+                username = user.pop("username")
                 password = user.pop("password", None)
                 permissions = user.pop("permissions", [])
                 groups = user.pop("groups", [])
 
                 existing = (
                     session.query(self.orm.User)
-                    .filter(func.lower(self.orm.User.email) == email.lower())
+                    .filter(func.lower(self.orm.User.username) == username.lower())
                     .one_or_none()
                 )
 
@@ -440,7 +440,7 @@ class UserExtensionServerBase(ORMWebServiceAPIServer):
                 else:
                     if password:
                         password = Password.hash(password)
-                    existing = self.orm.User(password=password, email=email, **user)
+                    existing = self.orm.User(password=password, username=username, **user)
                     session.add(existing)
 
                 for permission in permissions:
@@ -498,30 +498,30 @@ class UserExtensionServerBase(ORMWebServiceAPIServer):
         The main login handler.
         """
         if hasattr(request, "parsed") and request.parsed:
-            if "email" not in request.parsed or "password" not in request.parsed:
-                raise AuthenticationError("Missing email or password.")
+            if "username" not in request.parsed or "password" not in request.parsed:
+                raise AuthenticationError("Missing username or password.")
             else:
-                email = request.parsed["email"]
+                username = request.parsed["username"]
                 password = request.parsed["password"]
-        elif "email" not in request.POST or "password" not in request.POST:
-            raise AuthenticationError("Missing email or password.")
+        elif "username" not in request.POST or "password" not in request.POST:
+            raise AuthenticationError("Missing username or password.")
         else:
-            email = request.POST["email"]
+            username = request.POST["username"]
             password = request.POST["password"]
 
         user = (
             self.database.query(self.orm.User)
-            .filter(func.lower(self.orm.User.email) == email.lower())
+            .filter(func.lower(self.orm.User.username) == username.lower())
             .one_or_none()
         )
         if not user:
-            raise AuthenticationError("Incorrect email or password.")
+            raise AuthenticationError("Incorrect username or password.")
         if not user.password:
             raise AuthenticationError(
-                "Account for user '{0}' not activated.".format(email)
+                "Account for user '{0}' not activated.".format(username)
             )
         if not Password.verify(user.password, password):
-            raise AuthenticationError("Incorrect email or password.")
+            raise AuthenticationError("Incorrect username or password.")
 
         token = self.orm.AuthenticationToken(
             access_token=get_uuid(),
@@ -547,7 +547,7 @@ class UserExtensionServerBase(ORMWebServiceAPIServer):
             .one_or_none()
         )
         if not user:
-            user = self.orm.User(id=0, email="noauth", superuser=True)
+            user = self.orm.User(id=0, username="noauth", superuser=True)
             self.database.add(user)
             self.database.commit()
 

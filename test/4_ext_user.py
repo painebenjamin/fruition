@@ -55,9 +55,9 @@ orm_configuration = {
     "migrate": True,
 }
 
-user_1_data = {"email": "admin@localhost", "password": "password"}
+user_1_data = {"username": "admin@localhost", "password": "password"}
 
-user_2_data = {"email": "user@localhost", "password": "password"}
+user_2_data = {"username": "user@localhost", "password": "password"}
 
 user_configuration = {
     "permissions": [
@@ -275,7 +275,7 @@ def main():
 
                 other_client = JSONUserClient()
                 other_client.configure(client=client_configuration)
-                other_client.login(user_1_data["email"], user_1_data["password"])
+                other_client.login(user_1_data["username"], user_1_data["password"])
                 other_client.get("self")
 
             finally:
