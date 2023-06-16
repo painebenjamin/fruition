@@ -85,14 +85,14 @@ class Permission(UserExtensionObjectBase):
 
 
 class PermissionGroup(UserExtensionObjectBase):
-    __tablename__ = "permission_group"
+    __tablename__ = "pibble_permission_group"
 
     id = Column(Integer, autoincrement=True, primary_key=True)
     label = Column(String)
 
 
 class PermissionGroupPermission(UserExtensionObjectBase):
-    __tablename__ = "permission_group_permission"
+    __tablename__ = "pibble_permission_group_permission"
 
     group_id = Column(
         Integer,
@@ -110,7 +110,7 @@ class PermissionGroupPermission(UserExtensionObjectBase):
 
 
 class UserPermission(UserExtensionObjectBase):
-    __tablename__ = "user_permission"
+    __tablename__ = "pibble_user_permission"
 
     permission_id = Column(
         Integer,
@@ -130,7 +130,7 @@ User.Relate(UserPermission, name="permissions", backref="user")
 
 
 class GlobalPermission(UserExtensionObjectBase):
-    __tablename__ = "global_permission"
+    __tablename__ = "pibble_global_permission"
 
     permission_id = Column(
         Integer,
@@ -141,7 +141,7 @@ class GlobalPermission(UserExtensionObjectBase):
 
 
 class UserPermissionGroup(UserExtensionObjectBase):
-    __tablename__ = "user_permission_group"
+    __tablename__ = "pibble_user_permission_group"
 
     group_id = Column(
         Integer,
@@ -161,7 +161,7 @@ User.Relate(UserPermissionGroup, name="permission_groups", backref="user")
 
 
 class GlobalPermissionGroup(UserExtensionObjectBase):
-    __tablename__ = "global_permission_group"
+    __tablename__ = "pibble_global_permission_group"
 
     group_id = Column(
         Integer,

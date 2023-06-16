@@ -16,6 +16,7 @@ from pibble.api.helpers.wrappers import (
 
 from pibble.api.exceptions import AuthenticationError
 from pibble.api.middleware.webservice.base import WebServiceAPIMiddlewareBase
+from pibble.util.log import logger
 
 
 class CrossOriginWebServiceAPIMiddleware(WebServiceAPIMiddlewareBase):
@@ -37,7 +38,7 @@ class CrossOriginWebServiceAPIMiddleware(WebServiceAPIMiddlewareBase):
         if isinstance(request, WebobRequest) or isinstance(request, RequestWrapper):
             origin: Optional[str] = None
             if "Origin" in request.headers:
-                origin = request.headers["Origin"]
+                origin = urlparse(request.headers["Origin"]).netloc
             elif "Referer" in request.headers:
                 origin = urlparse(request.headers["Referer"]).netloc
             elif not self.allow_missing:
@@ -48,6 +49,7 @@ class CrossOriginWebServiceAPIMiddleware(WebServiceAPIMiddlewareBase):
                 for allowed_origin in self.origins:
                     if re.match(allowed_origin, origin):
                         return
+                logger.warning(f"Request received from {origin}, but this is not in the list of allowed origins. Screening request.")
                 raise AuthenticationError(
                     "Your request was screened by network policy."
                 )
