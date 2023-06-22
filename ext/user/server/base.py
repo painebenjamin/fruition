@@ -367,55 +367,61 @@ class UserExtensionServerBase(ORMWebServiceAPIServer):
         with self.orm.session() as session:
             for permission in self.configuration["user.permissions"]:
                 permission = {**permission}
+                actions = permission.pop("action")
+                if not isinstance(actions, list):
+                    actions = [actions]
                 is_global = permission.pop("global", False)
                 group = permission.pop("group", None)
-                existing = (
-                    session.query(self.orm.Permission)
-                    .filter_by(**permission)
-                    .one_or_none()
-                )
-                if not existing:
-                    existing = self.orm.Permission(**permission)
-                    session.add(existing)
-                    session.commit()
-                if is_global:
-                    existing_global = (
-                        session.query(self.orm.GlobalPermission)
-                        .filter(self.orm.GlobalPermission.permission_id == existing.id)
+
+                for action in actions:
+                    existing = (
+                        session.query(self.orm.Permission)
+                        .filter(self.orm.Permission.action == action)
+                        .filter_by(**permission)
                         .one_or_none()
                     )
-                    if not existing_global:
-                        session.add(
-                            self.orm.GlobalPermission(permission_id=existing.id)
-                        )
-                if group:
-                    existing_group = (
-                        session.query(self.orm.PermissionGroup)
-                        .filter(self.orm.PermissionGroup.label == group)
-                        .one_or_none()
-                    )
-                    if not existing_group:
-                        existing_group = self.orm.PermissionGroup(label=group)
-                        session.add(existing_group)
+                    if not existing:
+                        existing = self.orm.Permission(action=action, **permission)
+                        session.add(existing)
                         session.commit()
-                    existing_group_permission = (
-                        session.query(self.orm.PermissionGroupPermission)
-                        .filter(
-                            self.orm.PermissionGroupPermission.permission_id
-                            == existing.id
+                    if is_global:
+                        existing_global = (
+                            session.query(self.orm.GlobalPermission)
+                            .filter(self.orm.GlobalPermission.permission_id == existing.id)
+                            .one_or_none()
                         )
-                        .filter(
-                            self.orm.PermissionGroupPermission.group_id
-                            == existing_group.id
-                        )
-                        .one_or_none()
-                    )
-                    if not existing_group_permission:
-                        session.add(
-                            self.orm.PermissionGroupPermission(
-                                permission_id=existing.id, group_id=existing_group.id
+                        if not existing_global:
+                            session.add(
+                                self.orm.GlobalPermission(permission_id=existing.id)
                             )
+                    if group:
+                        existing_group = (
+                            session.query(self.orm.PermissionGroup)
+                            .filter(self.orm.PermissionGroup.label == group)
+                            .one_or_none()
                         )
+                        if not existing_group:
+                            existing_group = self.orm.PermissionGroup(label=group)
+                            session.add(existing_group)
+                            session.commit()
+                        existing_group_permission = (
+                            session.query(self.orm.PermissionGroupPermission)
+                            .filter(
+                                self.orm.PermissionGroupPermission.permission_id
+                                == existing.id
+                            )
+                            .filter(
+                                self.orm.PermissionGroupPermission.group_id
+                                == existing_group.id
+                            )
+                            .one_or_none()
+                        )
+                        if not existing_group_permission:
+                            session.add(
+                                self.orm.PermissionGroupPermission(
+                                    permission_id=existing.id, group_id=existing_group.id
+                                )
+                            )
             session.commit()
 
     def migrate_users(self) -> None:

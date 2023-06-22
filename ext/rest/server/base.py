@@ -146,15 +146,11 @@ class RESTExtensionServerBase(ORMWebServiceAPIServer):
             return query
 
         if ilikes:
+            conditions = []
             for ilike_string in ilikes:
                 column, _, value = ilike_string.partition(":")
-                query = apply_filters(
-                    query,
-                    obj,
-                    column,
-                    value,
-                    lambda column, value: column.ilike("%{:s}%".format(value.lower())),
-                )
+                conditions.append(getattr(obj, column).ilike("%{:s}%".format(value.lower())))
+            query = query.filter(or_(*conditions))
 
         if filters:
             for filter_string in filters:
