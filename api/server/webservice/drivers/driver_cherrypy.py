@@ -31,6 +31,8 @@ def run_cherrypy(
     server.socket_host = host
     server.socket_port = port
     server.thread_pool = workers if workers is not None else cpu_count() * 2 - 1
+    server.max_request_body_size = 0 # No limit
+    server.socket_timeout = 300 # 5 minutes for large uploads
 
     if secure and cert is not None and key is not None:
         server.ssl_model = "pyopenssl"
