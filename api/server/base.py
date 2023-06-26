@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+from typing import Optional, Dict, Any
+
 from multiprocessing import Process
 from pibble.api.base import APIBase
 from pibble.util.helpers import Pause
@@ -11,11 +13,14 @@ class APIServerProcess(Process):
     A small class that will run the server process in the background.
     """
 
-    def __init__(self, server: APIServerBase) -> None:
+    def __init__(self, server: APIServerBase, configuration: Optional[Dict[str, Any]] = None) -> None:
         super(APIServerProcess, self).__init__()
         self.server = server
+        self.configuration = configuration
 
     def run(self) -> None:
+        if self.configuration is not None:
+            self.server.configure(**self.configuration)
         try:
             self.server.serve()
         except Exception as ex:
@@ -46,6 +51,21 @@ class APIServerBase(APIBase):
         Determines if the server is currently running (when used asynchronously.)
         """
         return hasattr(self, "_process") and self._process.is_alive()
+
+    def configure_start(self, **configuration: Any) -> None:
+        """
+        Starts the server, configuring itself after.
+        """
+        if hasattr(self, "_process"):
+            if self._process.is_alive():
+                logger.warning(
+                    "start() was called while process is still alive. Ignoring."
+                )
+                return
+            del self._process
+        self._process = APIServerProcess(self, configuration)
+        self._process.start()
+        Pause.milliseconds(250)
 
     def start(self) -> None:
         """

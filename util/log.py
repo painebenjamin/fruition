@@ -1,7 +1,7 @@
 """
 Utilities for logging - the global logger, and contexts for debugging.
 """
-
+import os
 import sys
 import http.client
 import socket
@@ -9,7 +9,6 @@ import socket
 from logging import (
     Handler,
     StreamHandler,
-    FileHandler,
     Formatter,
     LogRecord,
     Logger,
@@ -17,7 +16,10 @@ from logging import (
     DEBUG,
 )
 from typing import Any, List
-from logging.handlers import SysLogHandler
+from logging.handlers import (
+    SysLogHandler,
+    RotatingFileHandler
+)
 from termcolor import colored
 
 from pibble.api.configuration import APIConfiguration
@@ -174,7 +176,26 @@ class ConfigurationLoggingContext(UnifiedLoggingContext):
             else:
                 self.handler = StreamHandler(stream)
         elif handler_class == "file":
-            self.handler = FileHandler(configuration[f"{prefix}file"])
+            file_path = configuration.get(f"{prefix}file", None)
+            if file_path is None:
+                raise ValueError(f"Can't use 'file' handler without file - set {prefix}file")
+            if file_path.startswith("~"):
+                file_path = os.path.expanduser(file_path)
+            file_path = os.path.abspath(file_path)
+            backup_count = configuration.get(f"{prefix}backups", 2)
+            max_bytes = configuration.get(f"{prefix}maxbytes", 5*1024*1024)
+            if not isinstance(backup_count, int):
+                backup_count = 2
+            if not isinstance(max_bytes, int):
+                max_bytes = 5*1024*1024
+            self.handler = RotatingFileHandler(
+                file_path,
+                mode='a',
+                maxBytes=max_bytes,
+                backupCount=backup_count,
+                encoding=None,
+                delay=0
+            )
         elif handler_class == "syslog":
             self.handler = SysLogHandler(
                 address=(

@@ -93,6 +93,11 @@ class WebServiceAPIServerBase(APIServerBase):
     def __init__(self) -> None:
         super(WebServiceAPIServerBase, self).__init__()
         self.class_handlers = []
+    
+    def on_configure(self):
+        """
+        On configuration, register handlers.
+        """
         self.register_all_handlers()
 
     def format_exception(

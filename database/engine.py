@@ -63,6 +63,13 @@ class Engine:
                 "sqlite"
             ) and self._default_database.startswith("~"):
                 self._default_database = os.path.expanduser(self._default_database)
+                database_dir = os.path.dirname(self._default_database)
+                if not os.path.exists(database_dir):
+                    try:
+                        os.makedirs(database_dir)
+                    except:
+                        logger.error(f"Database directory {database_dir} does not exist, and it could not be created.")
+                        raise
         else:
             self._default_database = "default"
         self._create_engine(self._default_database)

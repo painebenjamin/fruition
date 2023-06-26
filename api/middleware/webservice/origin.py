@@ -38,14 +38,16 @@ class CrossOriginWebServiceAPIMiddleware(WebServiceAPIMiddlewareBase):
         if isinstance(request, WebobRequest) or isinstance(request, RequestWrapper):
             origin: Optional[str] = None
             if "Origin" in request.headers:
-                origin = urlparse(request.headers["Origin"]).netloc
+                origin = request.headers["Origin"]
             elif "Referer" in request.headers:
-                origin = urlparse(request.headers["Referer"]).netloc
+                origin = request.headers["Referer"]
             elif not self.allow_missing:
                 raise AuthenticationError(
                     "Your request does not indicate where it came from, and network policy rejects unknown origins."
                 )
             if origin is not None:
+                if "/" in origin:
+                    origin = urlparse(origin).netloc
                 for allowed_origin in self.origins:
                     if re.match(allowed_origin, origin):
                         return
