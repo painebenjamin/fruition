@@ -93,8 +93,8 @@ class WebServiceAPIServerBase(APIServerBase):
     def __init__(self) -> None:
         super(WebServiceAPIServerBase, self).__init__()
         self.class_handlers = []
-    
-    def on_configure(self):
+
+    def on_configure(self) -> None:
         """
         On configuration, register handlers.
         """
@@ -456,6 +456,7 @@ class WebServiceAPIServerBase(APIServerBase):
             secure = self.configuration.get("server.secure", False)
             cert = self.configuration.get("server.cert", None)
             key = self.configuration.get("server.key", None)
+            chain = self.configuration.get("server.chain", None)
             workers = self.configuration.get("server.workers", None)
 
             logger.debug(
@@ -490,7 +491,7 @@ class WebServiceAPIServerBase(APIServerBase):
                 raise ConfigurationError(
                     "Server driver {0} not supported.".format(driver)
                 )
-            run_driver(self, host, port, secure, cert, key, workers)
+            run_driver(self, host, port, secure, cert, key, chain, workers)
         except KeyError as ex:
             raise ConfigurationError(str(ex))
         finally:

@@ -87,7 +87,7 @@ class RESTExtensionServerBase(ORMWebServiceAPIServer):
         ilikes = request.GET.getall("ilike")
 
         query = session.query(obj)
-        
+
         if sort:
             for sort_column in sort:
                 if ":" in sort_column:
@@ -95,9 +95,7 @@ class RESTExtensionServerBase(ORMWebServiceAPIServer):
                 else:
                     column = sort_column
                     direction = "asc"
-                query = query.order_by(
-                    getattr(getattr(obj, column), direction)()
-                )
+                query = query.order_by(getattr(getattr(obj, column), direction)())
 
         def apply_filters(
             query: Query,
@@ -149,7 +147,9 @@ class RESTExtensionServerBase(ORMWebServiceAPIServer):
             conditions = []
             for ilike_string in ilikes:
                 column, _, value = ilike_string.partition(":")
-                conditions.append(getattr(obj, column).ilike("%{:s}%".format(value.lower())))
+                conditions.append(
+                    getattr(obj, column).ilike("%{:s}%".format(value.lower()))
+                )
             query = query.filter(or_(*conditions))
 
         if filters:

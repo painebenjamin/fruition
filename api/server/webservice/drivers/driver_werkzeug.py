@@ -16,6 +16,7 @@ def run_werkzeug(
     secure: bool = False,
     cert: Optional[str] = None,
     key: Optional[str] = None,
+    chain: Optional[str] = None,
     workers: Optional[int] = None,
 ) -> None:
     """

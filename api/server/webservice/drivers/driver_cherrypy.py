@@ -16,6 +16,7 @@ def run_cherrypy(
     secure: bool = False,
     cert: Optional[str] = None,
     key: Optional[str] = None,
+    chain: Optional[str] = None,
     workers: Optional[int] = None,
 ) -> None:
     """
@@ -31,15 +32,17 @@ def run_cherrypy(
     server.socket_host = host
     server.socket_port = port
     server.thread_pool = workers if workers is not None else cpu_count() * 2 - 1
-    server.max_request_body_size = 0 # No limit
-    server.socket_timeout = 300 # 5 minutes for large uploads
+    server.max_request_body_size = 0  # No limit
+    server.socket_timeout = 300  # 5 minutes for large uploads
 
     if secure and cert is not None and key is not None:
         server.ssl_model = "pyopenssl"
         server.ssl_certificate = cert
         server.ssl_private_key = key
+        if chain is not None:
+            server.ssl_certificate_chain = chain
         logger.info(
-            f"Loading SSL certificate chain from keyfile {key:s}, certfile {cert:s}"
+            f"Loading SSL certificate chain from keyfile {key:s}, certfile {cert:s}, chain {chain}"
         )
     elif secure:
         logger.warning(

@@ -24,9 +24,12 @@ class CrossOriginWebServiceAPIMiddleware(WebServiceAPIMiddlewareBase):
     Extends the base WebServiceAPIMiddlewareBase to read origins from requests
     and send necessary headers to permit or disallow requests.
     """
+
     def on_configure(self) -> None:
         self.origins = self.configuration.get("server.origin.allowlist", [])
-        self.allow_missing = self.configuration.get("server.origin.allow_missing", False)
+        self.allow_missing = self.configuration.get(
+            "server.origin.allow_missing", False
+        )
 
     def parse(
         self,
@@ -51,7 +54,9 @@ class CrossOriginWebServiceAPIMiddleware(WebServiceAPIMiddlewareBase):
                 for allowed_origin in self.origins:
                     if re.match(allowed_origin, origin):
                         return
-                logger.warning(f"Request received from {origin}, but this is not in the list of allowed origins. Screening request.")
+                logger.warning(
+                    f"Request received from {origin}, but this is not in the list of allowed origins. Screening request."
+                )
                 raise AuthenticationError(
                     "Your request was screened by network policy."
                 )

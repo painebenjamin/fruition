@@ -13,7 +13,9 @@ class APIServerProcess(Process):
     A small class that will run the server process in the background.
     """
 
-    def __init__(self, server: APIServerBase, configuration: Optional[Dict[str, Any]] = None) -> None:
+    def __init__(
+        self, server: APIServerBase, configuration: Optional[Dict[str, Any]] = None
+    ) -> None:
         super(APIServerProcess, self).__init__()
         self.server = server
         self.configuration = configuration

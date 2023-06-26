@@ -387,7 +387,9 @@ class UserExtensionServerBase(ORMWebServiceAPIServer):
                     if is_global:
                         existing_global = (
                             session.query(self.orm.GlobalPermission)
-                            .filter(self.orm.GlobalPermission.permission_id == existing.id)
+                            .filter(
+                                self.orm.GlobalPermission.permission_id == existing.id
+                            )
                             .one_or_none()
                         )
                         if not existing_global:
@@ -419,7 +421,8 @@ class UserExtensionServerBase(ORMWebServiceAPIServer):
                         if not existing_group_permission:
                             session.add(
                                 self.orm.PermissionGroupPermission(
-                                    permission_id=existing.id, group_id=existing_group.id
+                                    permission_id=existing.id,
+                                    group_id=existing_group.id,
                                 )
                             )
             session.commit()
@@ -446,7 +449,9 @@ class UserExtensionServerBase(ORMWebServiceAPIServer):
                 else:
                     if password:
                         password = Password.hash(password)
-                    existing = self.orm.User(password=password, username=username, **user)
+                    existing = self.orm.User(
+                        password=password, username=username, **user
+                    )
                     session.add(existing)
 
                 for permission in permissions:
@@ -568,6 +573,8 @@ class UserExtensionServerBase(ORMWebServiceAPIServer):
 
         self.database.add(token)
         self.database.commit()
+
+        setattr(request, "token", token)
 
         return cast(AuthenticationToken, token)
 

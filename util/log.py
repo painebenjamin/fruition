@@ -16,10 +16,7 @@ from logging import (
     DEBUG,
 )
 from typing import Any, List
-from logging.handlers import (
-    SysLogHandler,
-    RotatingFileHandler
-)
+from logging.handlers import SysLogHandler, RotatingFileHandler
 from termcolor import colored
 
 from pibble.api.configuration import APIConfiguration
@@ -178,23 +175,25 @@ class ConfigurationLoggingContext(UnifiedLoggingContext):
         elif handler_class == "file":
             file_path = configuration.get(f"{prefix}file", None)
             if file_path is None:
-                raise ValueError(f"Can't use 'file' handler without file - set {prefix}file")
+                raise ValueError(
+                    f"Can't use 'file' handler without file - set {prefix}file"
+                )
             if file_path.startswith("~"):
                 file_path = os.path.expanduser(file_path)
             file_path = os.path.abspath(file_path)
             backup_count = configuration.get(f"{prefix}backups", 2)
-            max_bytes = configuration.get(f"{prefix}maxbytes", 5*1024*1024)
+            max_bytes = configuration.get(f"{prefix}maxbytes", 5 * 1024 * 1024)
             if not isinstance(backup_count, int):
                 backup_count = 2
             if not isinstance(max_bytes, int):
-                max_bytes = 5*1024*1024
+                max_bytes = 5 * 1024 * 1024
             self.handler = RotatingFileHandler(
                 file_path,
-                mode='a',
+                mode="a",
                 maxBytes=max_bytes,
                 backupCount=backup_count,
                 encoding=None,
-                delay=0
+                delay=False,
             )
         elif handler_class == "syslog":
             self.handler = SysLogHandler(

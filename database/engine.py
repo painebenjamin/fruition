@@ -68,7 +68,9 @@ class Engine:
                     try:
                         os.makedirs(database_dir)
                     except:
-                        logger.error(f"Database directory {database_dir} does not exist, and it could not be created.")
+                        logger.error(
+                            f"Database directory {database_dir} does not exist, and it could not be created."
+                        )
                         raise
         else:
             self._default_database = "default"
