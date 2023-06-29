@@ -708,6 +708,14 @@ class OutputCatcher:
         if hasattr(self, "_stderr"):
             sys.stderr = self._stderr
 
+    def clean(self) -> None:
+        """
+        Cleans memory by replacing StringIO.
+        This is faster than trunc/seek
+        """
+        self.stdout = StringIO()
+        self.stderr = StringIO()
+
     def output(self) -> Tuple[str, str]:
         """
         Returns the contents of stdout and stderr.
