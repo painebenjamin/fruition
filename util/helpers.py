@@ -283,7 +283,9 @@ def is_binary_file(path: str, chunk_size: Optional[int] = 1024) -> bool:
 
     >>> from pibble.util.helpers import is_binary_file
     >>> import tempfile
-    >>> _, tmp = tempfile.mkstemp()
+    >>> import os
+    >>> fd, tmp = tempfile.mkstemp()
+    >>> os.close(fd)
     >>> s = open(tmp, "w").write("abc")
     >>> is_binary_file(tmp)
     False

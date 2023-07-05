@@ -1,4 +1,5 @@
 import io
+import os
 import json
 import zlib
 import tempfile
@@ -216,7 +217,8 @@ class RequestWrapper:
         we write the contents to a tempfile.
         """
         if not hasattr(self, "_body_file"):
-            _, self._body_file = tempfile.mkstemp()
+            fd, self._body_file = tempfile.mkstemp()
+            os.close(fd)
             if self.body is not None:
                 open(self._body_file, "wb").write(self.body)
             self._body_file_handle = open(self._body_file, "rb")

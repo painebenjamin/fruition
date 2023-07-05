@@ -53,8 +53,10 @@ def main(path: str, *args: str) -> None:
             i += 2
         else:
             i += 1
-    _, tmp = tempfile.mkstemp()
-    open(tmp, "w").write(template.render(**context))
+    fd, tmp = tempfile.mkstemp()
+    os.close(fd)
+    with open(tmp, "w") as fh:
+        fh.write(template.render(**context))
     os.remove(path)
     shutil.copy(tmp, path)
     os.remove(tmp)

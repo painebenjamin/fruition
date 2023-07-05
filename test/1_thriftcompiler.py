@@ -20,7 +20,8 @@ def main() -> None:
     except ImportError:
         return
     with DebugUnifiedLoggingContext():
-        _, tmp = tempfile.mkstemp()
+        fd, tmp = tempfile.mkstemp()
+        os.close(fd)
         try:
             open(tmp, "w").write(TEST_SERVICE)
             compiler = ApacheThriftCompiler(tmp)

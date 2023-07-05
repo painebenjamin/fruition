@@ -51,8 +51,10 @@ def main():
         return
     with DebugUnifiedLoggingContext():
         # Create temp files.
-        _, tmp = tempfile.mkstemp()
-        _, tmp2 = tempfile.mkstemp()
+        fd, tmp = tempfile.mkstemp()
+        os.close(fd)
+        fd, tmp2 = tempfile.mkstemp()
+        os.close(fd)
 
         try:
             # Create database, add username/password

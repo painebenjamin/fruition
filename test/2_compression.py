@@ -29,7 +29,8 @@ class TestServer(WebServiceAPIServerBase):
     @handlers.download()
     @handlers.compress()
     def download_test_file(self, request: Request, response: Response) -> str:
-        _, path = tempfile.mkstemp()
+        fd, path = tempfile.mkstemp()
+        os.close(fd)
         with open(path, "w") as fh:
             fh.write(random_contents)
         return path
