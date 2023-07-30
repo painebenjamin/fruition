@@ -1,5 +1,5 @@
+import os
 from typing import Any
-from pibble.util.strings import Serializer
 
 class NoDefaultProvided:
     """
@@ -42,10 +42,19 @@ class APIConfiguration:
     >>> os.environ["foo.bar.baz"] = "25"
     >>> configuration["foo.bar.baz"]
     25
+    >>> configuration["foo.bar.baz"] = 26
+    >>> configuration["foo.bar.baz"] # Should not have changed
+    25
+    >>> configuration.environment_prefix = "test."
+    >>> configuration["foo.bar.baz"]
+    26
+    >>> os.environ["test.foo.bar.baz."] = "27"
+    >>> configuration["foo.bar.baz"]
+    27
     """
 
-    def __init__(self, environment_prefix: Optional[str] = None, **kwargs: Any) -> None:
-        self.environment_prefix = environment_prefix
+    def __init__(self, **kwargs: Any) -> None:
+        self.environment_prefix = kwargs.pop("environment_prefix", None)
         if kwargs:
             self.configuration = dict(kwargs)
         else:
@@ -63,6 +72,7 @@ class APIConfiguration:
         value = os.getenv(key, NoDefaultProvided())
         if type(value) is NoDefaultProvided:
             raise KeyError(f"Key {key} not found in environment.")
+        from pibble.util.strings import Serializer
         return Serializer.deserialize(value)
 
     def get(self, key: str, default: Any = NoDefaultProvided()) -> Any:
