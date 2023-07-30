@@ -1,5 +1,5 @@
 from typing import Any
-
+from pibble.util.strings import Serializer
 
 class NoDefaultProvided:
     """
@@ -38,13 +38,32 @@ class APIConfiguration:
     'xyzzy'
     >>> from pibble.util.helpers import expect_exception
     >>> expect_exception(KeyError)(lambda: configuration.get("baz"))
+    >>> import os
+    >>> os.environ["foo.bar.baz"] = "25"
+    >>> configuration["foo.bar.baz"]
+    25
     """
 
-    def __init__(self, **kwargs: Any) -> None:
+    def __init__(self, environment_prefix: Optional[str] = None, **kwargs: Any) -> None:
+        self.environment_prefix = environment_prefix
         if kwargs:
             self.configuration = dict(kwargs)
         else:
             self.configuration = {}
+
+    def get_from_environment(self, key: str) -> Any:
+        """
+        Gets a single value from the environment.
+
+        :param key str: The key to look for.
+        :raises KeyError: When the key does not exist in the environment.
+        """
+        if self.environment_prefix:
+            key = f"{self.environment_prefix}{key}"
+        value = os.getenv(key, NoDefaultProvided())
+        if type(value) is NoDefaultProvided:
+            raise KeyError(f"Key {key} not found in environment.")
+        return Serializer.deserialize(value)
 
     def get(self, key: str, default: Any = NoDefaultProvided()) -> Any:
         """
@@ -55,6 +74,10 @@ class APIConfiguration:
         :raises KeyError: When the key does not exist, and no default was provided.
         :raises TypeError: When attempting to dot-access an object that is not a dictionary.
         """
+        try:
+            return self.get_from_environment(key)
+        except KeyError:
+            pass
         keys = key.split(".")
         active = self.configuration
         for keypart in keys:
