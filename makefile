@@ -53,7 +53,7 @@ PYTHON_PACKAGE=$(BUILD)/$(PYTHON_PACKAGE_FILENAME)
 PYTHON_TEST_SRC=$(patsubst $(SRC_DIR)/%,%,$(filter-out %setup.py,$(PYTHON_SRC)))
 PYTHON_TEST_TYPE=$(PYTHON_TEST_SRC:%=$(BUILD)/%.typecheck)
 PYTHON_TEST_IMPORT=$(PYTHON_TEST_SRC:%=$(BUILD)/%.importcheck)
-PYTHON_TEST_UNIT=$($(filter-out %__main__.py,$(PYTHON_TEST_SRC)):%=$(BUILD)/%.unittest)
+PYTHON_TEST_UNIT=$(patsubst %,$(BUILD)/%.unittest,$(filter-out %__main__.py,$(PYTHON_TEST_SRC)))
 PYTHON_TEST_INTEGRATION=$(BUILD)/.test
 
 #############

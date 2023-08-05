@@ -39,7 +39,7 @@ class APIConfiguration:
     >>> from pibble.util.helpers import expect_exception
     >>> expect_exception(KeyError)(lambda: configuration.get("baz"))
     >>> import os
-    >>> os.environ["foo.bar.baz"] = "25"
+    >>> os.environ["FOO.BAR.BAZ"] = "25"
     >>> configuration["foo.bar.baz"]
     25
     >>> configuration["foo.bar.baz"] = 26
@@ -48,7 +48,7 @@ class APIConfiguration:
     >>> configuration.environment_prefix = "test."
     >>> configuration["foo.bar.baz"]
     26
-    >>> os.environ["test.foo.bar.baz."] = "27"
+    >>> os.environ["TEST.FOO.BAR.BAZ"] = "27"
     >>> configuration["foo.bar.baz"]
     27
     """
@@ -69,6 +69,7 @@ class APIConfiguration:
         """
         if self.environment_prefix:
             key = f"{self.environment_prefix}{key}"
+        key = key.upper()
         value = os.getenv(key, NoDefaultProvided())
         if type(value) is NoDefaultProvided:
             raise KeyError(f"Key {key} not found in environment.")

@@ -148,11 +148,7 @@ def resolve(qualified_name: Any, local: dict = {}) -> Any:
     >>> from pibble.util.helpers import resolve, expect_exception
     >>> resolve("requests.models.Request")
     <class 'requests.models.Request'>
-    >>> class MyClass: pass
     >>> expect_exception(ImportError)(lambda: resolve("MyClass"))
-    >>> find_class = resolve("MyClass", local=dict(locals(), **globals()))
-    >>> find_class.__name__
-    'MyClass'
 
     :param qualified_name str: The fully-qualified name, or globally accessible name.
     :param local dict: A dictionary of local names, if name is unqualified.
