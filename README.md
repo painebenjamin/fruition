@@ -1,21 +1,20 @@
-# pibble
+# Pibble
+
 The Pibble framework turbocharges Python web applications with a huge array of features and easy-to-use interface.
 
-## Installation
+# Installation
 
 The `pibble` package is available on PYPI. Simply run:
 
 ```
 pip install pibble
 ```
-
-## Features
-
-### API Integration Layer
+# Features
+## API Integration Layer
 
 APIs are broken up into server and client modules.
 
-#### Server
+### Server
 
 All web server APIs should be extended from `pibble.api.server.webservice.base.WebServiceAPIServerBase`. For the most part, each implementation must only register some handlers using the `pibble.api.server.webservice.base.WebServiceAPIHandlerRegistry`, which will handle all requests using a method and path. A class is not recommended to use the parent handler function, as this will provider handlers for all classes in this module that extend from `pibble.api.webservice.base.WebServiceAPIServerBase`, instead defining their own. For example, if we simply wanted to serve files from a directory over HTTP, we could use something like this:
 
@@ -25,33 +24,31 @@ from typing import Optional
 from webob import Request, Response
 from pibble.api.exceptions import NotFoundError
 from pibble.api.server.webservice.base import (
-  WebServiceAPIServerBase,
-  WebServiceAPIHandlerRegistry
+    WebServiceAPIServerBase,
+    WebServiceAPIHandlerRegistry
 )
 
- 
-
 class SimpleFileServer(WebServiceAPIServerBase):
-  handlers = WebServiceAPIHandlerRegistry()
-  base_directory = "/var/www/html"
+    handlers = WebServiceAPIHandlerRegistry()
+    base_directory = "/var/www/html"
 
-  @handlers.path("(?P<file_path>.*)")
-  @handlers.methods("GET")
-  def retrieve_file(self, request: Request, response: Response, file_path: Optional[str] = None) -> None:
-      """
-      Handles the request by looking for the path in ``self.base_directory``.
+    @handlers.path("(?P<file_path>.*)")
+    @handlers.methods("GET")
+    def retrieve_file(self, request: Request, response: Response, file_path: Optional[str] = None) -> None:
+        """
+        Handles the request by looking for the path in ``self.base_directory``.
   
-      :param request webob.Request: The request object.
-      :param response webob.Response: The response object.
-      :param file_path str: The file path, captured from the URI.
-      :throws: :class:`pibble.api.exceptions.NotFoundError`
-      """
+        :param request webob.Request: The request object.
+        :param response webob.Response: The response object.
+        :param file_path str: The file path, captured from the URI.
+        :throws: :class:`pibble.api.exceptions.NotFoundError`
+        """
   
-      file_path = os.path.join(self.base_directory, file_path)
-      if not os.path.isfile(file_path):
-          raise NotFoundError("Could not find file at {0}".format(file_path))
+        file_path = os.path.join(self.base_directory, file_path)
+        if not os.path.isfile(file_path):
+            raise NotFoundError("Could not find file at {0}".format(file_path))
   
-      response.body = open(file_path, "r").read()
+        response.body = open(file_path, "r").read()
 ```
 
 The request and response parameters are webob.Request and webob.Response objects, respectively. See The WebOb Documentation for help with their usage. Note the method name does not matter, so use a naming schema relevant to your project.
@@ -71,7 +68,18 @@ server.start()
 server.stop()
 ```
 
-##### RPC
+For production, most servers will simply import a file and look for a globally-available `application` that conforms to WSGI standards. The easiest way to configure this is thusly:
+
+```python
+# wsgi.py
+from mypackage.server import SimpleFileServer
+server = SimpleFileServer()
+application = server.wsgi()
+```
+
+Pointing something like Apache's `mod_wsgi` to this `wsgi.py` file will allow Pibble to be ran through Apache.
+
+#### RPC
 
 Using one of the RPC servers is as simple as defining functions and registering them to the server:
 
@@ -111,7 +119,7 @@ server.serve()
 
 The base server defines methods for registration and dispatching of requests. The two implementations (XML and JSON) are responsible for parsing and formatting of requests and responses.
 
-#### Client
+### Client
 
 The simplest client possible is one that simply communicates with a webserver, and doesn't need to parse the response in any meaningful way. Unlike with servers, the base webservice API client is instantiable.
 
@@ -123,7 +131,7 @@ print(base.get().text)
 ```
 When executing any methods via .get(), .post(), etc., you will receive a `requests.models.Response` object. See the the requests documentation for assistance with these objects. Clients use a session (r`equests.models.Session`) object to maintain some state (cookies, etc.), but should generally assume themselves to be stateless.
 
-##### RPC
+#### RPC
 
 Using an XML RPC Client is very simple. Once a client is instantiated, it will queue up a call to system.listMethods, a built-in RPC function that will list the methods of a client. After that, calling them is as simple as calling the method with the appropriate variables
 
