@@ -28,7 +28,34 @@ from pibble.api.server.webservice.base import (
     WebServiceAPIHandlerRegistry
 )
 
-class SimpleFileServer(WebServiceAPIServerBase):
+class HelloWorldServer(WebServiceAPIServerBase):
+    """
+    This class provides a single endpoint at the root URL displaying a simple message.
+    It creates a handler registry, then uses the registries decorators to configure the handler.
+    """
+    handlers = WebServiceAPIHandlerRegistry()
+
+    @handlers.path("^$")
+    @handlers.methods("GET")
+    def hello_world(self, request: Request, response: Response) -> None:
+        """
+        Handles the request at the root and sends a simple message.
+  
+        :param request webob.Request: The request object.
+        :param response webob.Response: The response object.
+        """
+        response.text = "<!DOCTYPE html><html lang='en_US'><body>Hello, world!</body></html>"
+
+class SimpleFileServer(HelloWorldServer):
+    """
+    This class creates a more complicated handler than allows for downloading files.
+
+    It also extends the class above, inheriting the handlers above.
+
+    Classes should always name their handler registry 'handlers'. If you want to name your registry
+    something else, you need to add a `get_handlers()` classmethod that returns the registry for it
+    to be recognized by the dispatcher.
+    """
     handlers = WebServiceAPIHandlerRegistry()
     base_directory = "/var/www/html"
 
@@ -51,7 +78,7 @@ class SimpleFileServer(WebServiceAPIServerBase):
         response.body = open(file_path, "r").read()
 ```
 
-The request and response parameters are webob.Request and webob.Response objects, respectively. See The WebOb Documentation for help with their usage. Note the method name does not matter, so use a naming schema relevant to your project.
+The request and response parameters are webob.Request and webob.Response objects, respectively. See [The WebOb Documentation](https://docs.pylonsproject.org/projects/webob/en/stable/) for help with their usage. Note the method name does not matter, so use a naming schema relevant to your project.
 
 Deploying the API can be done using anything that conforms to wsgi standards. For development, we can deploy a server using werkzeug or gunicorn, binding to a local port with a configured listening host. Using the above server definition, we can do this with::
 
