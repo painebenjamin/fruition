@@ -112,6 +112,9 @@ class APIConfiguration:
         :param key str: The key to put. Can be dot-separated, will create empty dictionaries if a key doesn't exist.
         :param value object: The value to put.
         """
+        if key == "environment_prefix":
+            self.environment_prefix = f"{value}"
+            return
         if isinstance(value, dict):
             for k in value:
                 self.put("{0}.{1}".format(key, k), value[k])
