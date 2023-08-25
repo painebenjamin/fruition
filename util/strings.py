@@ -16,6 +16,7 @@ from datetime import datetime, date, time
 from chardet import detect
 from urllib.parse import unquote
 from PIL import Image
+from PIL.PngImagePlugin import PngInfo
 
 from pibble.util.log import logger
 
@@ -60,7 +61,10 @@ def serialize_image(image: Image.Image, **kwargs: Any) -> str:
     Serializes an image to a base64 Data URI.
     """
     image_byte_io = io.BytesIO()
-    image.save(image_byte_io, format="PNG")
+    image_png_info = PngInfo()
+    for key in image.text:
+        image_png_info.add_text(key, image.text[key])
+    image.save(image_byte_io, format="PNG", pnginfo=image_png_info)
     image_bytestring = base64.b64encode(image_byte_io.getvalue()).decode("utf-8")
     return f"data:image/png;base64,{image_bytestring}"
 
