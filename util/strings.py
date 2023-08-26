@@ -62,8 +62,9 @@ def serialize_image(image: Image.Image, **kwargs: Any) -> str:
     """
     image_byte_io = io.BytesIO()
     image_png_info = PngInfo()
-    for key in image.text:
-        image_png_info.add_text(key, image.text[key])
+    image_text_metadata = getattr(image, "text", {})
+    for key in image_text_metadata:
+        image_png_info.add_text(key, image_text_metadata[key])
     image.save(image_byte_io, format="PNG", pnginfo=image_png_info)
     image_bytestring = base64.b64encode(image_byte_io.getvalue()).decode("utf-8")
     return f"data:image/png;base64,{image_bytestring}"

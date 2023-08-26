@@ -18,3 +18,5 @@ class User(UserExtensionObjectBase):
     password = Column(String)
     password_expires = Column(DateTime)
     last_login = Column(DateTime)
+
+User.Hide("password")
