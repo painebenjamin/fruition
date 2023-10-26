@@ -4,9 +4,14 @@ try:
     from pyftpdlib.authorizers import UnixAuthorizer
 except ImportError:
     UnixAuthorizer = object
-from pyftpdlib.handlers import FTPHandler
-from pyftpdlib.handlers import TLS_FTPHandler
-from pyftpdlib.servers import FTPServer as PYFTPServer
+
+try:
+    from pyftpdlib.handlers import FTPHandler
+    from pyftpdlib.handlers import TLS_FTPHandler
+    from pyftpdlib.servers import FTPServer as PYFTPServer
+except ImportError:
+    raise ImportError("Couldn't find pyftpdlib. Run `pip install pibble[ftp]` to get it.")
+
 from pibble.api.server.base import APIServerBase
 from pibble.api.exceptions import ConfigurationError
 

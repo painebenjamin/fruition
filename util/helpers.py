@@ -41,7 +41,6 @@ from numpy import ndarray
 from difflib import unified_diff
 from time import sleep
 from datetime import date, datetime
-from openpyxl import load_workbook
 
 from pibble.util.log import logger
 from pibble.util.strings import truncate, decode, Serializer
@@ -307,6 +306,10 @@ def openpyxl_dataframe(
     read_only is omitted, since worksheet dimensions
     aren't always accurate.
     """
+    try:
+        from openpyxl import load_workbook
+    except ImportError:
+        raise ImportError("Couldn't import openpyxl. Run `pip install pibble[excel]` to get it.")
     wb = load_workbook(path)
     ws = wb.active
     data = ws.values

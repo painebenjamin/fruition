@@ -4,19 +4,22 @@ import socket
 import os
 import errno
 
-from paramiko import (  # type: ignore
-    AUTH_SUCCESSFUL,
-    AUTH_FAILED,
-    OPEN_SUCCEEDED,
-    SFTP_OK,
-    ServerInterface as ParamikoServerInterface,
-    SFTPServerInterface as ParamikoSFTPParamikoServerInterface,
-    SFTPServer as ParamikoSFTPServer,
-    SFTPHandle as ParamikoSFTPHandle,
-    SFTPAttributes,
-    RSAKey,
-    Transport,
-)
+try:
+    from paramiko import (  # type: ignore
+        AUTH_SUCCESSFUL,
+        AUTH_FAILED,
+        OPEN_SUCCEEDED,
+        SFTP_OK,
+        ServerInterface as ParamikoServerInterface,
+        SFTPServerInterface as ParamikoSFTPParamikoServerInterface,
+        SFTPServer as ParamikoSFTPServer,
+        SFTPHandle as ParamikoSFTPHandle,
+        SFTPAttributes,
+        RSAKey,
+        Transport,
+    )
+except ImportError:
+    raise ImportError("Couldn't find paramiko. Run `pip install pibble[ftp]` to get it.")
 
 from typing import Callable, Any, Union, Optional, List
 

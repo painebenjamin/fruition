@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 import os
-import boto3
 
 from io import IOBase
 from urllib.parse import urlparse, ParseResult
@@ -268,6 +267,10 @@ class S3Retriever(Retriever):
 
     def __init__(self, url: ParseResult, configuration: Optional[dict] = None):
         super(S3Retriever, self).__init__(url, configuration)
+        try:
+            import boto3
+        except ImportError:
+            raise ImportError("Couldn't import boto3. Run `pip install pibble[aws]` to get it.")
         self.s3 = boto3.client("s3")
 
     def __iter__(self) -> Iterator[bytes]:

@@ -110,8 +110,7 @@ class UnifiedLoggingContext:
                 getLogger(loggerName).setLevel(99)
             else:
                 getLogger(loggerName).setLevel(self.level)
-
-        getLogger().addHandler(self.handler)
+                getLogger(loggerName).addHandler(self.handler)
 
         def print_http_client(*args: Any, **kwargs: Any) -> None:
             for line in (" ".join(args)).splitlines():

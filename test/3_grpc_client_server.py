@@ -2,7 +2,7 @@ import tempfile
 import shutil
 import os
 
-from pibble.util.log import DebugUnifiedLoggingContext
+from pibble.util.log import DebugUnifiedLoggingContext, logger
 
 from pibble.api.client.googlerpc import GRPCAPIClient
 from pibble.api.server.googlerpc import GRPCAPIServer
