@@ -28,7 +28,7 @@ install_requires = [
     "wsgitypes>=0.0.4",
     "xlrd>=2.0,<3.0",
     "zeep>=4.2,<5.0",
-    "paramiko>=3.3.1"
+    "paramiko>=3.1,<4.0"
 ]
 
 extras_require = {
@@ -44,7 +44,7 @@ extras_require = {
     "werkzeug": ["werkzeug>=2.2,<3.0"],
     "excel": ["openpyxl>=3.1,<4.0"],
     "aws": ["boto3>=1.26,<2.0"],
-    "ftp": ["pyftpdlib>=1.5,<2.0", "paramiko>=3.1,<4.0"],
+    "ftp": ["pyftpdlib>=1.5,<2.0"],
     "build": [
         "sphinx>=6.2,<6.3",
         "sphinx-rtd-theme>=1.2,<1.3",
