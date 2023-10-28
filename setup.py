@@ -4,7 +4,7 @@ from setuptools import setup, find_packages
 package_name = "pibble"
 version_major = "0"
 version_minor = "7"
-version_patch = "0"
+version_patch = "1"
 
 install_requires = [
     "bcrypt>=4.0,<4.1",
@@ -28,6 +28,7 @@ install_requires = [
     "wsgitypes>=0.0.4",
     "xlrd>=2.0,<3.0",
     "zeep>=4.2,<5.0",
+    "paramiko>=3.3.1"
 ]
 
 extras_require = {
