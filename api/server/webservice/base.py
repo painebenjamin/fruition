@@ -443,11 +443,58 @@ class WebServiceAPIServerBase(APIServerBase):
 
         return application
 
+    def run_driver(
+        self,
+        driver: str,
+        host: str,
+        port: int,
+        secure: bool=False,
+        cert: Optional[str]=None,
+        key: Optional[str]=None,
+        chain: Optional[str]=None,
+        workers: Optional[int]=None,
+    ) -> None:
+        """
+        Servers the API through a passed driver on the passed host/port.
+        """
+        run_driver: Optional[Callable] = None
+
+        if driver == "cherrypy":
+            from pibble.api.server.webservice.drivers.driver_cherrypy import (
+                run_cherrypy,
+            )
+
+            destroy_on_stop = False
+            run_driver = run_cherrypy
+        elif driver == "werkzeug":
+            from pibble.api.server.webservice.drivers.driver_werkzeug import (
+                run_werkzeug,
+            )
+
+            run_driver = run_werkzeug
+        elif driver == "gunicorn":
+            from pibble.api.server.webservice.drivers.driver_gunicorn import (
+                run_gunicorn,
+            )
+
+            run_driver = run_gunicorn
+
+        if run_driver is None:
+            raise ConfigurationError(
+                "Server driver {0} not supported.".format(driver)
+            )
+
+        logger.debug(
+            "Running server process using driver {0} on {1}://{2}:{3}.".format(
+                driver, "https" if secure else "http", host, port
+            )
+        )
+
+        run_driver(self, host, port, secure, cert, key, chain, workers)
+
     def serve(self, destroy_on_stop: bool = True) -> None:
         """
-        Serves the API through varying means.
-
-        This is provided as a shortcut option, and not intended for use in production.
+        Serves the API through the configured method.
         """
         try:
             driver = self.configuration["server.driver"]
@@ -458,40 +505,7 @@ class WebServiceAPIServerBase(APIServerBase):
             key = self.configuration.get("server.key", None)
             chain = self.configuration.get("server.chain", None)
             workers = self.configuration.get("server.workers", None)
-
-            logger.debug(
-                "Attempting to run development server process using driver {0} on {1}://{2}:{3}.".format(
-                    driver, "https" if secure else "http", host, port
-                )
-            )
-
-            run_driver: Optional[Callable] = None
-
-            if driver == "cherrypy":
-                from pibble.api.server.webservice.drivers.driver_cherrypy import (
-                    run_cherrypy,
-                )
-
-                destroy_on_stop = False
-                run_driver = run_cherrypy
-            elif driver == "werkzeug":
-                from pibble.api.server.webservice.drivers.driver_werkzeug import (
-                    run_werkzeug,
-                )
-
-                run_driver = run_werkzeug
-            elif driver == "gunicorn":
-                from pibble.api.server.webservice.drivers.driver_gunicorn import (
-                    run_gunicorn,
-                )
-
-                run_driver = run_gunicorn
-
-            if run_driver is None:
-                raise ConfigurationError(
-                    "Server driver {0} not supported.".format(driver)
-                )
-            run_driver(self, host, port, secure, cert, key, chain, workers)
+            self.run_driver(driver, host, port, secure, cert, key, chain, workers)
         except KeyError as ex:
             raise ConfigurationError(str(ex))
         finally:

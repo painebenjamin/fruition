@@ -76,7 +76,9 @@ def deserialize_image(image_string: str, **kwargs: Any) -> Image.Image:
     """
     image_bytestring = image_string.split(",")[1]
     image_bytes = base64.b64decode(image_bytestring)
-    return Image.open(io.BytesIO(image_bytes))
+    img = Image.open(io.BytesIO(image_bytes))
+    img.load()
+    return img
 
 
 class Serializer:
