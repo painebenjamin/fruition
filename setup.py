@@ -4,7 +4,7 @@ from setuptools import setup, find_packages
 package_name = "pibble"
 version_major = "0"
 version_minor = "7"
-version_patch = "3"
+version_patch = "4"
 
 install_requires = [
     "bcrypt>=4.0,<4.1",
@@ -12,7 +12,6 @@ install_requires = [
     "click>=8.0,<9.0",
     "configparser>=5.3,<5.4",
     "jinja2>=3.1,<3.2",
-    "lxml>=4.9,<5.0",
     "mimeparse>=0.1",
     "pandas>=2.0,<3.0",
     "pycryptodome>=3.17,<4.0",
@@ -26,7 +25,6 @@ install_requires = [
     "termcolor>=2.2,<3.0",
     "webob>=1.8,<2.0",
     "wsgitypes>=0.0.4",
-    "xlrd>=2.0,<3.0",
     "zeep>=4.2,<5.0",
     "paramiko>=3.1,<4.0"
 ]
@@ -42,9 +40,10 @@ extras_require = {
     "cherrypy": ["cherrypy>=18.8,<19.0"],
     "gunicorn": ["gunicorn>=20.0,<21.0"],
     "werkzeug": ["werkzeug>=2.2,<3.0"],
-    "excel": ["openpyxl>=3.1,<4.0"],
+    "excel": ["openpyxl>=3.1,<4.0", "xlrd>=2.0,<3.0"],
     "aws": ["boto3>=1.26,<2.0"],
     "ftp": ["pyftpdlib>=1.5,<2.0"],
+    "xml": ["lxml>=4.9,<5.0"],
     "build": [
         "sphinx>=6.2,<6.3",
         "sphinx-rtd-theme>=1.2,<1.3",
