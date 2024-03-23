@@ -723,8 +723,8 @@ class OutputCatcher:
         Cleans memory by replacing StringIO.
         This is faster than trunc/seek
         """
-        self.stdout = StringIO()
-        self.stderr = StringIO()
+        self.stdout = DummyFileStringIO()
+        self.stderr = DummyFileStringIO()
 
     def output(self) -> Tuple[str, str]:
         """

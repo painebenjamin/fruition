@@ -84,13 +84,12 @@ class FrozenLogger(Logger):
         new_logger.disabled = logger.disabled
         return new_logger
 
-    def callHandlers(self, record):
+    def callHandlers(self, record: LogRecord) -> None:
         """
         Pass a record to all relevant handlers.
         This is a copy of the original callHandlers method, but with the
         handler list replaced with the static_handlers list when the logger is frozen.
         """
-        return
         global pibble_static_handlers, pibble_is_frozen, pibble_static_level
         from logging import lastResort, raiseExceptions
         c = self
@@ -101,9 +100,9 @@ class FrozenLogger(Logger):
                 if record.levelno >= pibble_static_level if pibble_is_frozen else hdlr.level:
                     hdlr.handle(record)
             if not c.propagate:
-                c = None    #break out
+                c = None # type: ignore[assignment]
             else:
-                c = c.parent
+                c = c.parent # type: ignore[assignment]
         if (found == 0):
             if lastResort:
                 if record.levelno >= lastResort.level:
@@ -145,7 +144,7 @@ class UnifiedLoggingContext:
         """
         Find initialized loggers and set their level/handler.
         """
-        from logging import _acquireLock, _releaseLock
+        from logging import _acquireLock, _releaseLock # type: ignore[attr-defined]
         global pibble_static_handlers, pibble_static_level, pibble_is_frozen
         _acquireLock()
         # First freeze future loggers
@@ -184,7 +183,7 @@ class UnifiedLoggingContext:
         setattr(http.client, "print", print_http_client)
         http.client.HTTPConnection.debuglevel = 1
         _releaseLock()
-        Logger.manager._clear_cache()
+        Logger.manager._clear_cache() # type: ignore[attr-defined]
 
     def stop(self) -> None:
         """
@@ -193,7 +192,7 @@ class UnifiedLoggingContext:
         Logger.root.handlers = self.handlers["root"]
         Logger.root.level = self.levels["root"]
         for loggerName, logger in Logger.manager.loggerDict.items():
-            if loggerName in self.handlers and loggerName in self.levels and loggerName in self.propagates:
+            if loggerName in self.handlers and loggerName in self.levels and loggerName in self.propagates and isinstance(logger, Logger):
                 logger.handlers = self.handlers[loggerName]
                 logger.level = self.levels[loggerName]
                 logger.propagate = self.propagates[loggerName]
