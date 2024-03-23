@@ -1,6 +1,8 @@
 """
 Utilities for logging - the global logger, and contexts for debugging.
 """
+from __future__ import annotations
+
 import os
 import sys
 import http.client
@@ -61,6 +63,57 @@ class ColoredLoggingFormatter(Formatter):
         }[record.levelname.upper()]
 
 
+pibble_static_handlers: List[Handler] = []
+pibble_static_level: int = 99
+pibble_is_frozen: bool = False
+
+class FrozenLogger(Logger):
+    """
+    A logger that will not allow handlers to be added or removed.
+    """
+    @classmethod
+    def from_logger(cls, logger: Logger) -> FrozenLogger:
+        """
+        Create a FrozenLogger from a Logger.
+        """
+        if not isinstance(logger, Logger):
+            return logger # type: ignore
+        new_logger = cls(logger.name, level=logger.level)
+        new_logger.handlers = logger.handlers
+        new_logger.propagate = logger.propagate
+        new_logger.disabled = logger.disabled
+        return new_logger
+
+    def callHandlers(self, record):
+        """
+        Pass a record to all relevant handlers.
+        This is a copy of the original callHandlers method, but with the
+        handler list replaced with the static_handlers list when the logger is frozen.
+        """
+        return
+        global pibble_static_handlers, pibble_is_frozen, pibble_static_level
+        from logging import lastResort, raiseExceptions
+        c = self
+        found = 0
+        while c:
+            for hdlr in pibble_static_handlers if pibble_is_frozen else c.handlers:
+                found = found + 1
+                if record.levelno >= pibble_static_level if pibble_is_frozen else hdlr.level:
+                    hdlr.handle(record)
+            if not c.propagate:
+                c = None    #break out
+            else:
+                c = c.parent
+        if (found == 0):
+            if lastResort:
+                if record.levelno >= lastResort.level:
+                    lastResort.handle(record)
+            elif raiseExceptions and not self.manager.emittedNoHandlerWarning:
+                sys.stderr.write("No handlers could be found for logger"
+                                 " \"%s\"\n" % self.name)
+                self.manager.emittedNoHandlerWarning = True
+
+
 class UnifiedLoggingContext:
     """
     A context manager that will remove logger handlers, then set the handler and level for the root
@@ -92,25 +145,37 @@ class UnifiedLoggingContext:
         """
         Find initialized loggers and set their level/handler.
         """
+        from logging import _acquireLock, _releaseLock
+        global pibble_static_handlers, pibble_static_level, pibble_is_frozen
+        _acquireLock()
+        # First freeze future loggers
+        pibble_is_frozen = True
+        pibble_static_handlers = [self.handler]
+        pibble_static_level = self.level
+        Logger.manager.setLoggerClass(FrozenLogger)
+
+        # Now modify current loggers
         self.handlers = {}
         self.levels = {}
+        self.propagates = {}
 
-        self.handlers["root"] = getLogger().handlers
-        self.levels["root"] = getLogger().level
+        self.handlers["root"] = Logger.root.handlers
+        self.levels["root"] = Logger.root.level
 
-        getLogger().handlers = []
-        getLogger().setLevel(self.level)
+        Logger.root.handlers = [self.handler]
+        Logger.root.setLevel(self.level)
 
-        for loggerName in Logger.manager.loggerDict:
-            self.handlers[loggerName] = getLogger(loggerName).handlers
-            self.levels[loggerName] = getLogger(loggerName).level
-
-            getLogger(loggerName).handlers = []
-            if loggerName in self.silenced:
-                getLogger(loggerName).setLevel(99)
-            else:
-                getLogger(loggerName).setLevel(self.level)
-                getLogger(loggerName).addHandler(self.handler)
+        for loggerName, logger in Logger.manager.loggerDict.items():
+            if isinstance(logger, Logger):
+                self.handlers[loggerName] = logger.handlers
+                self.levels[loggerName] = logger.level
+                self.propagates[loggerName] = logger.propagate
+                logger.handlers = [self.handler]
+                logger.propagate = False
+                if loggerName in self.silenced:
+                    logger.setLevel(99)
+                else:
+                    logger.setLevel(self.level)
 
         def print_http_client(*args: Any, **kwargs: Any) -> None:
             for line in (" ".join(args)).splitlines():
@@ -118,18 +183,21 @@ class UnifiedLoggingContext:
 
         setattr(http.client, "print", print_http_client)
         http.client.HTTPConnection.debuglevel = 1
+        _releaseLock()
+        Logger.manager._clear_cache()
 
     def stop(self) -> None:
         """
         For loggers that were changed during start(), revert the changes.
         """
-        getLogger().handlers = self.handlers["root"]
-        getLogger().level = self.levels["root"]
-        for loggerName in Logger.manager.loggerDict:
-            if loggerName in self.handlers and loggerName in self.levels:
-                getLogger(loggerName).handlers = self.handlers[loggerName]
-                getLogger(loggerName).level = self.levels[loggerName]
-
+        Logger.root.handlers = self.handlers["root"]
+        Logger.root.level = self.levels["root"]
+        for loggerName, logger in Logger.manager.loggerDict.items():
+            if loggerName in self.handlers and loggerName in self.levels and loggerName in self.propagates:
+                logger.handlers = self.handlers[loggerName]
+                logger.level = self.levels[loggerName]
+                logger.propagate = self.propagates[loggerName]
+        Logger.manager.setLoggerClass(Logger)
 
 class LevelUnifiedLoggingContext(UnifiedLoggingContext):
     """

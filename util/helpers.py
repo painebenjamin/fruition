@@ -670,6 +670,15 @@ class Pause:
             if diff <= 0.1:
                 return
 
+class DummyFileStringIO(StringIO):
+    """
+    A StringIO that doesn't break when fileno() is called.
+    """
+    def fileno(self) -> int:
+        """
+        Returns 0, since this is not a real file.
+        """
+        return 0
 
 class OutputCatcher:
     """
@@ -688,8 +697,8 @@ class OutputCatcher:
         """
         Initialize IOs for stdout and stderr.
         """
-        self.stdout = StringIO()
-        self.stderr = StringIO()
+        self.stdout = DummyFileStringIO()
+        self.stderr = DummyFileStringIO()
 
     def __enter__(self) -> None:
         """
