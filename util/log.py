@@ -144,13 +144,16 @@ class UnifiedLoggingContext:
         """
         Find initialized loggers and set their level/handler.
         """
-        from logging import _acquireLock, _releaseLock # type: ignore[attr-defined]
+        from logging import _acquireLock, _releaseLock, getLevelName # type: ignore[attr-defined]
         global pibble_static_handlers, pibble_static_level, pibble_is_frozen
         _acquireLock()
         # First freeze future loggers
         pibble_is_frozen = True
         pibble_static_handlers = [self.handler]
-        pibble_static_level = self.level
+        if isinstance(self.level, int):
+            pibble_static_level = self.level
+        else:
+            pibble_static_level = getLevelName(self.level) # type: ignore[unreachable]
         Logger.manager.setLoggerClass(FrozenLogger)
 
         # Now modify current loggers

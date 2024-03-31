@@ -4,7 +4,7 @@ from setuptools import setup, find_packages
 package_name = "pibble"
 version_major = "0"
 version_minor = "7"
-version_patch = "5"
+version_patch = "6"
 
 install_requires = [
     "bcrypt>=4.0,<4.1",
