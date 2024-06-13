@@ -7,16 +7,16 @@ from typing import Type, Optional, Any, Iterator, Tuple, List, Dict, cast
 
 from webob import Request, Response
 
-from pibble.api.server.webservice.base import MethodBasedWebServiceAPIServerBase
-from pibble.api.server.webservice.handler import WebServiceAPIHandlerRegistry
-from pibble.api.exceptions import (
+from fruition.api.server.webservice.base import MethodBasedWebServiceAPIServerBase
+from fruition.api.server.webservice.handler import WebServiceAPIHandlerRegistry
+from fruition.api.exceptions import (
     UnsupportedMethodError,
     BadRequestError,
     ConfigurationError,
     NotFoundError,
 )
-from pibble.util.strings import decode, encode, Serializer
-from pibble.util.log import logger
+from fruition.util.strings import decode, encode, Serializer
+from fruition.util.log import logger
 
 
 class MultiNamespaceElementBuilder:
@@ -395,7 +395,7 @@ class SOAPServer(MethodBasedWebServiceAPIServerBase):
             ET.tostring(E.soapenv.Envelope(E.soapenv.Body(_get_node(method, result)))),
         )
 
-    @handlers.path("/(?P<service_name>\w*)\.(?P<request_type>\w*)")
+    @handlers.path(r"/(?P<service_name>\w*)\.(?P<request_type>\w*)")
     @handlers.methods("GET")
     def wsdl(
         self, request: Request, response: Response, service_name: str, request_type: str
@@ -412,7 +412,7 @@ class SOAPServer(MethodBasedWebServiceAPIServerBase):
                 return decode(ET.tostring(self._generate_xsd()))
         raise NotFoundError(f"Unknown service {service_name}")
 
-    @handlers.path("/services/(?P<service_name>\w*)")
+    @handlers.path(r"/services/(?P<service_name>\w*)")
     @handlers.methods("POST")
     def method_call(
         self, request: Request, response: Response, service_name: str

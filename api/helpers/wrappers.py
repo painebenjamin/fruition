@@ -9,10 +9,10 @@ from typing import Any, Union, Iterator, Optional, Literal, List
 from urllib.parse import urlencode
 from http.cookies import SimpleCookie
 
-from pibble.api.client.base import APIClientBase
-from pibble.api.server.base import APIServerBase
-from pibble.util.strings import decode, encode, parse_url_encoded, parse_multipart
-from pibble.util.helpers import (
+from fruition.api.client.base import APIClientBase
+from fruition.api.server.base import APIServerBase
+from fruition.util.strings import decode, encode, parse_url_encoded, parse_multipart
+from fruition.util.helpers import (
     DecompressedIterator,
     CaseInsensitiveDict,
     FlexibleJSONDecoder,
@@ -35,9 +35,9 @@ class POSTWrapper:
     """
     Used for the request.POST wrapper provided by webob.
 
-    >>> wrapper = POSTWrapper('email=benjamin%40pibble.com&password=mypassword')
+    >>> wrapper = POSTWrapper('email=benjamin%40fruition.com&password=mypassword')
     >>> wrapper['email']
-    'benjamin@pibble.com'
+    'benjamin@fruition.com'
     >>> wrapper['password']
     'mypassword'
     """
@@ -154,7 +154,7 @@ class RequestWrapper:
         data = kwargs.get("data", None)
         files = kwargs.get("files", None)
 
-        self.user_agent = kwargs.get("user_agent", "pibble")
+        self.user_agent = kwargs.get("user_agent", "fruition")
 
         if isinstance(headers, dict):
             for key in headers:
@@ -446,7 +446,7 @@ class SessionWrapper:
     def prepare_request(self, request: RequestWrapper) -> RequestWrapper:
         """
         Pass through the prepare_request method, which does `not` actually
-        call the pibble prepare(), it is just a method required with requests.
+        call the fruition prepare(), it is just a method required with requests.
         """
         return request
 

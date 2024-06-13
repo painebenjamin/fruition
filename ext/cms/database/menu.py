@@ -2,8 +2,8 @@
 from sqlalchemy import Column, String, Integer, Sequence
 from sqlalchemy.types import JSON
 
-from pibble.ext.cms.database.base import CMSExtensionObjectBase
-from pibble.ext.dam.database import FileUpload
+from fruition.ext.cms.database.base import CMSExtensionObjectBase
+from fruition.ext.dam.database import FileUpload
 
 
 class Menu(CMSExtensionObjectBase):

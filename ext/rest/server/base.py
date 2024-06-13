@@ -8,17 +8,17 @@ from sqlalchemy.orm.query import Query
 from sqlalchemy.orm.attributes import QueryableAttribute
 from sqlalchemy.sql.elements import ColumnElement
 
-from pibble.api.exceptions import (
+from fruition.api.exceptions import (
     BadRequestError,
     ConfigurationError,
     NotFoundError,
     PermissionError,
 )
-from pibble.api.server.webservice.handler import WebServiceAPIHandlerRegistry
-from pibble.api.server.webservice.orm import ORMWebServiceAPIServer
-from pibble.database.orm import ORMSession, ORMObjectBase
-from pibble.util.log import logger
-from pibble.util.strings import Serializer, pretty_print, pretty_print_sentence
+from fruition.api.server.webservice.handler import WebServiceAPIHandlerRegistry
+from fruition.api.server.webservice.orm import ORMWebServiceAPIServer
+from fruition.database.orm import ORMSession, ORMObjectBase
+from fruition.util.log import logger
+from fruition.util.strings import Serializer, pretty_print, pretty_print_sentence
 
 from webob import Request, Response
 
@@ -33,7 +33,7 @@ class RESTExtensionServerBase(ORMWebServiceAPIServer):
     interface to create HTTP handlers that follow JSON-REST standards.
 
     This requires the use of an ORM, so the configuration for the ORMBuilder
-    is also required. See `pibble.database.orm.ORMBuilder`.
+    is also required. See `fruition.database.orm.ORMBuilder`.
 
     Optional configuration:
       - `rest.root` - The root of handlers. Defaults to /rest.
@@ -74,8 +74,8 @@ class RESTExtensionServerBase(ORMWebServiceAPIServer):
 
         :param request webob.Request: The request object from the base server.
         :param response webob.Response: The response object from the base server.
-        :param session pibble.database.orm.ORMSession: An ORMSession as returned by self.orm.session(). This could technically also be a sqlalchemy.Session, though in such a case, search is disabled.
-        :param obj pibble.database.orm.ORMObjectBase: The object to search for.
+        :param session fruition.database.orm.ORMSession: An ORMSession as returned by self.orm.session(). This could technically also be a sqlalchemy.Session, though in such a case, search is disabled.
+        :param obj fruition.database.orm.ORMObjectBase: The object to search for.
         :param handler_filters dict: A dictionary of <column, value> that the handler wants to always filter results down by.
         :returns tuple<Query, Query>: The prepared queries for (results, count).
         """
@@ -379,8 +379,8 @@ class RESTExtensionServerBase(ORMWebServiceAPIServer):
                 handler_regex = f"^{root:s}/{handler_root:s}"
 
                 for handler_parent_part in handler_parent:
-                    handler_regex += f"/(?P<{handler_parent_part:s}>[^\/]+)"
-                handler_regex += f"(/(?P<{handler_scope:s}>[^\/]+))?$"
+                    handler_regex += f"/(?P<{handler_parent_part:s}>[^/]+)"
+                handler_regex += f"(/(?P<{handler_scope:s}>[^/]+))?$"
 
                 if logger.isEnabledFor(logging.DEBUG):
                     handler_parent_string = ",".join(handler_parent)

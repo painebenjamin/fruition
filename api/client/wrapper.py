@@ -1,7 +1,7 @@
 from typing import Optional
 
-from pibble.api.server.base import APIServerBase
-from pibble.api.client.base import APIClientBase
+from fruition.api.server.base import APIServerBase
+from fruition.api.client.base import APIClientBase
 
 __all__ = ["APIClientWrapperBase"]
 

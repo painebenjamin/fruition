@@ -10,29 +10,29 @@ from typing import Optional, Callable, Any, Type, Union, cast
 
 from sqlalchemy.engine.result import Result
 
-from pibble.util.log import logger
-from pibble.util.encryption import Password
-from pibble.util.strings import get_uuid
-from pibble.api.exceptions import (
+from fruition.util.log import logger
+from fruition.util.encryption import Password
+from fruition.util.strings import get_uuid
+from fruition.api.exceptions import (
     AuthenticationError,
     PermissionError,
     ConfigurationError,
 )
-from pibble.api.server.base import APIServerBase
-from pibble.api.server.webservice.handler import (
+from fruition.api.server.base import APIServerBase
+from fruition.api.server.webservice.handler import (
     WebServiceAPIHandlerRegistry,
     WebServiceAPIHandler,
 )
-from pibble.api.server.webservice.template import (
+from fruition.api.server.webservice.template import (
     TemplateServerHandlerRegistry,
     TemplateHandler,
     TemplateServer,
 )
-from pibble.api.server.webservice.orm import ORMWebServiceAPIServer
-from pibble.ext.user.database.base import UserExtensionObjectBase
-from pibble.ext.user.database.user import User
-from pibble.ext.user.database.permission import Permission
-from pibble.ext.user.database.authentication import AuthenticationToken
+from fruition.api.server.webservice.orm import ORMWebServiceAPIServer
+from fruition.ext.user.database.base import UserExtensionObjectBase
+from fruition.ext.user.database.user import User
+from fruition.ext.user.database.permission import Permission
+from fruition.ext.user.database.authentication import AuthenticationToken
 
 DEFAULT_TOKEN_TYPE = "Bearer"
 
@@ -178,7 +178,7 @@ class UserExtensionServerBase(ORMWebServiceAPIServer):
         """
         Finds permissions by a user.
 
-        :param user pibble.ext.server.user.database.user.User: The user object to find permissions on.
+        :param user fruition.ext.server.user.database.user.User: The user object to find permissions on.
         :param object_name str: The object to find permissions for.
         :params kwargs dict: All other filters. These should be columns on the Permission object.
         :returns list: All permissions tied to this user that matched the arguments.
@@ -235,7 +235,7 @@ class UserExtensionServerBase(ORMWebServiceAPIServer):
         """
         Check a user's permission to perform an individual action.
 
-        :param user pibble.ext.server.user.database.user.User: The user object to find permissions on.
+        :param user fruition.ext.server.user.database.user.User: The user object to find permissions on.
         :param object_name str: The object being acted against.
         :param action str: The action being performed.
         :param secondary_action str: The secondary action being performed, if any.
@@ -303,8 +303,8 @@ class UserExtensionServerBase(ORMWebServiceAPIServer):
         """
         Checks a permission to see if it applies to the scope passed in.
 
-        :param user pibble.ext.server.user.database.user.User: The user object to check the permission against.
-        :param permission pibble.ext.server.user.database.permission.Permission: The permission object to check against.
+        :param user fruition.ext.server.user.database.user.User: The user object to check the permission against.
+        :param permission fruition.ext.server.user.database.permission.Permission: The permission object to check against.
         :param kwargs: The values passed in for explicit scopes.
         """
 
@@ -615,7 +615,7 @@ class UserExtensionTemplateServer(UserExtensionServerBase, TemplateServer):
         """
         On configure, grab the cookie name from config.
         """
-        self.cookie = self.configuration.get("user.cookie", "pibble_token")
+        self.cookie = self.configuration.get("user.cookie", "fruition_token")
 
     def set_token_cookie(self, response: Response, token: AuthenticationToken) -> None:
         """

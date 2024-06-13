@@ -1,8 +1,8 @@
 from typing import Any
 
-from pibble.util.log import logger
-from pibble.util.helpers import url_join
-from pibble.api.server.webservice.template.extensions import (
+from fruition.util.log import logger
+from fruition.util.helpers import url_join
+from fruition.api.server.webservice.template.extensions import (
     StatementExtensionBase,
     FunctionExtensionBase,
 )

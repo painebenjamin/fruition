@@ -17,9 +17,9 @@ from tempfile import mkdtemp
 
 from typing import Any, Iterable, Iterator, Optional, Literal, Union
 
-from pibble.util.log import logger
-from pibble.util.strings import get_uuid, safe_name
-from pibble.util.helpers import (
+from fruition.util.log import logger
+from fruition.util.strings import get_uuid, safe_name
+from fruition.util.helpers import (
     openpyxl_dataframe,
     FlexibleJSONDecoder,
     FlexibleJSONEncoder,
@@ -51,8 +51,8 @@ class IncludeLoader(yaml.SafeLoader):
     For example::
       # vars.yml
       ---
-      username: pibbleuser
-      first_name: Pibble
+      username: fruitionuser
+      first_name: Fruition
 
       # base.yml
       ---
@@ -63,8 +63,8 @@ class IncludeLoader(yaml.SafeLoader):
       ---
       context:
         vars:
-          username: pibbleuser
-          first_name: Pibble
+          username: fruitionuser
+          first_name: Fruition
     """
 
     def __init__(self, stream: TextIOWrapper) -> None:
@@ -103,14 +103,14 @@ def load_yaml(path: str) -> Any:
     :param path str: The path to load.
     :returns Any: The result, as parsed by pyyaml.
 
-    >>> from pibble.util.files import TempfileContext, load_yaml
+    >>> from fruition.util.files import TempfileContext, load_yaml
     >>> context = TempfileContext()
     >>> context.start()
     >>> main_file, include_file = next(context), next(context)
     >>> _ = open(include_file, "w").write("{role: admin}")
-    >>> _ = open(main_file, "w").write("{{username: pibble, meta: !include {0}}}".format(include_file))
+    >>> _ = open(main_file, "w").write("{{username: fruition, meta: !include {0}}}".format(include_file))
     >>> load_yaml(main_file)
-    {'username': 'pibble', 'meta': {'role': 'admin'}}
+    {'username': 'fruition', 'meta': {'role': 'admin'}}
     >>> context.stop()
     """
     with open(path, "r") as fp:
@@ -132,7 +132,7 @@ def load_json(path: str) -> Union[dict, list, str, int, float, bool, None]:
     """
     Loads a JSON file, using the Serializer.
 
-    >>> from pibble.util.files import TempfileContext, load_json
+    >>> from fruition.util.files import TempfileContext, load_json
     >>> import datetime
     >>> context = TempfileContext()
     >>> context.start()
@@ -153,7 +153,7 @@ def dump_json(path: str, to_dump: Union[dict, list]) -> None:
     """
     Dumps JSON to a file.
 
-    >>> from pibble.util.files import TempfileContext, dump_json
+    >>> from fruition.util.files import TempfileContext, dump_json
     >>> import datetime
     >>> context = TempfileContext()
     >>> context.start()
@@ -172,7 +172,7 @@ class TempfileContext:
     A simple helper that keeps track of tempfiles, then
     destroys them on exit.
 
-    >>> from pibble.util.files import TempfileContext
+    >>> from fruition.util.files import TempfileContext
     >>> tempfiles = TempfileContext()
     >>> tempfiles.start()
     >>> file_path = next(tempfiles)
@@ -262,8 +262,8 @@ class FileIterator:
     """
     A helper that reads a file iteratively. Useful for streaming responses.
 
-    >>> from pibble.util.files import TempfileContext, FileIterator
-    >>> from pibble.util.helpers import expect_exception
+    >>> from fruition.util.files import TempfileContext, FileIterator
+    >>> from fruition.util.helpers import expect_exception
     >>> tempfiles = TempfileContext()
     >>> tempfiles.start()
     >>> tmp = next(tempfiles)
@@ -327,8 +327,8 @@ class SpreadsheetParser:
     A series of helper functions and sub-classes for reading
     spreadsheets.
 
-    >>> from pibble.util.files import SpreadsheetParser, TempfileContext
-    >>> from pibble.util.helpers import expect_exception
+    >>> from fruition.util.files import SpreadsheetParser, TempfileContext
+    >>> from fruition.util.helpers import expect_exception
     >>> tempfiles = TempfileContext()
     >>> tempfiles.start()
     >>> csv_file = tempfiles.touch("test.csv")
@@ -483,7 +483,7 @@ def checksum(path: str, method: Literal["md5", "sha1"] = "md5") -> str:
     Performs a checksum on a path. Uses the FileIterator so as not to
     overload memory.
 
-    >>> from pibble.util.files import TempfileContext, checksum
+    >>> from fruition.util.files import TempfileContext, checksum
     >>> tempfiles = TempfileContext()
     >>> tempfiles.start()
     >>> sum_file = tempfiles.touch("test.txt")

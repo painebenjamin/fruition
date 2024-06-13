@@ -2,14 +2,14 @@ import json
 
 from typing import Any, Type
 
-from pibble.api.client.webservice.rpc.base import RPCClientBase
-from pibble.api.exceptions import (
+from fruition.api.client.webservice.rpc.base import RPCClientBase
+from fruition.api.exceptions import (
     BadRequestError,
     BadResponseError,
     UnknownError,
     UnsupportedMethodError,
 )
-from pibble.util.strings import Serializer
+from fruition.util.strings import Serializer
 
 
 class JSONRPCClient(RPCClientBase):
@@ -29,8 +29,8 @@ class JSONRPCClient(RPCClientBase):
         """
         Takes a string typename ("string", "float", etc.) and turns it into a python type.
 
-        >>> from pibble.api.client.webservice.rpc.jsonrpc import JSONRPCClient
-        >>> from pibble.util.helpers import expect_exception
+        >>> from fruition.api.client.webservice.rpc.jsonrpc import JSONRPCClient
+        >>> from fruition.util.helpers import expect_exception
         >>> JSONRPCClient.map_typename("int")
         <class 'int'>
         >>> JSONRPCClient.map_typename("array")
@@ -59,7 +59,7 @@ class JSONRPCClient(RPCClientBase):
         """
         Formats a request with method_name, *args and **kwargs into a JSONRPC request.
 
-        >>> from pibble.api.client.webservice.rpc.jsonrpc import JSONRPCClient
+        >>> from fruition.api.client.webservice.rpc.jsonrpc import JSONRPCClient
         >>> client = JSONRPCClient()
         >>> client.format_request("add", 1, 2)
         '{"jsonrpc": "2.0", "method": "add", "id": 1, "params": [1, 2]}'
@@ -87,7 +87,7 @@ class JSONRPCClient(RPCClientBase):
         """
         Takes a response from the RPC server, and returns its contents.
 
-        >>> from pibble.api.client.webservice.rpc.jsonrpc import JSONRPCClient
+        >>> from fruition.api.client.webservice.rpc.jsonrpc import JSONRPCClient
         >>> import json
         >>> JSONRPCClient.format_response(None, json.dumps({"result": 4}))
         4

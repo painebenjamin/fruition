@@ -1,7 +1,7 @@
-from pibble.database.engine import EngineFactory
-from pibble.database.util import row_to_dict
-from pibble.util.log import DebugUnifiedLoggingContext
-from pibble.util.helpers import Assertion
+from fruition.database.engine import EngineFactory
+from fruition.database.util import row_to_dict
+from fruition.util.log import DebugUnifiedLoggingContext
+from fruition.util.helpers import Assertion
 
 
 def main() -> None:

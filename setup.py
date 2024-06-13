@@ -1,10 +1,10 @@
 import os
 from setuptools import setup, find_packages
 
-package_name = "pibble"
+package_name = "fruition"
 version_major = "0"
-version_minor = "7"
-version_patch = "6"
+version_minor = "8"
+version_patch = "0"
 
 install_requires = [
     "bcrypt>=4.0,<4.1",
@@ -32,11 +32,11 @@ install_requires = [
 extras_require = {
     "mysql": ["mysqlclient>=2.1,<2.2"],
     "postgresql": ["psycopg2-binary>=2.9,<3.0"],
-    "mssql": ["pyodbc>=4.0,<5.0", "sqlalchemy-pyodbc-mssql>=0.1"],
+    "mssql": ["pyodbc>=5.0,<6.0", "sqlalchemy-pyodbc-mssql>=0.1"],
     "thrift": ["thrift>=0.16,<1.0"],
     "grpc": ["grpcio", "grpcio-tools"],
     "browser": ["selenium>=4.8,<5.0"],
-    "imaging": ["pdf2image>=1.16,<2.0", "pillow>=9.5,<10.0", "psd-tools>=1.9,<2.0"],
+    "imaging": ["pdf2image>=1.16,<2.0", "pillow>=10.0,<11.0", "psd-tools>=1.9,<2.0"],
     "cherrypy": ["cherrypy>=18.8,<19.0"],
     "gunicorn": ["gunicorn>=20.0,<21.0"],
     "werkzeug": ["werkzeug>=2.2,<3.0"],
@@ -54,6 +54,7 @@ extras_require = {
         "types-pytz>=2023.3",
         "types-python-dateutil>=2.8.19,<3.0",
         "types-protobuf>=4.22,<5.0",
+        "types-pillow>=10.0,<11.0",
         "types-paramiko>=3.0,<4.0",
         "types-oauthlib>=3.2,<4.0",
         "types-openpyxl==3.0.0",
@@ -75,16 +76,26 @@ setup(
     author_email="painebenjamin@gmail.com",
     version=f"{version_major}.{version_minor}.{version_patch}",
     packages=find_packages("."),
-    package_data={"pibble": ["py.typed"]},
+    package_data={"fruition": ["py.typed"]},
     license="gpl-3.0",
-    description="A framework for developing webapps quickly and easily using Python",
-    long_description=open(
-        os.path.join(os.path.dirname(os.path.abspath(__file__)), "README.md"), "r"
-    ).read(),
+    url="https://github.com/painebenjamin/fruition",
+    description="A framework for developing webapps quickly and easily using Python, SQLAlchemy, and Jinja2. Supports numerous protocols, databases, and web drivers.",
+    long_description=open("README.md", "r", encoding="utf-8").read(),
     long_description_content_type="text/markdown",
     entry_points={
-        "console_scripts": ["pibble = pibble.__main__:main"],
+        "console_scripts": ["fruition = fruition.__main__:main"],
     },
+    classifiers=[
+        "Development Status :: 4 - Beta",
+        "Intended Audience :: Developers",
+        "License :: OSI Approved :: GNU General Public License v3 (GPLv3)",
+        "Operating System :: OS Independent",
+        "Programming Language :: Python :: 3",
+        "Programming Language :: Python :: 3.9",
+        "Programming Language :: Python :: 3.10",
+        "Programming Language :: Python :: 3.11",
+        "Programming Language :: Python :: 3.12",
+    ],
     install_requires=install_requires,
     extras_require=extras_require,
 )

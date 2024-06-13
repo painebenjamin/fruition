@@ -2,10 +2,10 @@ from __future__ import annotations
 
 from typing import Callable, Any, Type, Optional, List, Dict
 
-from pibble.util.log import logger
-from pibble.util.strings import pretty_print
-from pibble.api.exceptions import BadRequestError, UnsupportedMethodError
-from pibble.api.client.webservice.base import WebServiceAPIClientBase
+from fruition.util.log import logger
+from fruition.util.strings import pretty_print
+from fruition.api.exceptions import BadRequestError, UnsupportedMethodError
+from fruition.api.client.webservice.base import WebServiceAPIClientBase
 
 
 class RPCClientBase(WebServiceAPIClientBase):
@@ -89,7 +89,7 @@ class RPCClientBase(WebServiceAPIClientBase):
         """
         Finds a method by its name using list comprehension.
 
-        :raises pibble.api.exceptions.UnsupportedMethodError: When the method is not defined.
+        :raises fruition.api.exceptions.UnsupportedMethodError: When the method is not defined.
         """
         if not self.introspected:
             self.introspect()

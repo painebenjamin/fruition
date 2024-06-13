@@ -27,19 +27,19 @@ try:
 except ImportError:
     LDAPObject = None
 
-from pibble.util.strings import encode, decode, pretty_print
-from pibble.util.log import logger
+from fruition.util.strings import encode, decode, pretty_print
+from fruition.util.log import logger
 
-from pibble.database.engine import EngineFactory
+from fruition.database.engine import EngineFactory
 
 from typing import Optional, Mapping, Union
 
-from pibble.api.exceptions import (
+from fruition.api.exceptions import (
     ConfigurationError,
     AuthenticationError,
     NotFoundError,
 )
-from pibble.api.configuration import APIConfiguration
+from fruition.api.configuration import APIConfiguration
 
 LDAP_OPTIONS = [
     "OPT_API_FEATURE_INFO",
@@ -73,7 +73,7 @@ class APIAuthenticationSource:
     Things like nonces and non u/p validation should be handled by the implementing class,
     but when simply looking to validate u/p, this can be used.
 
-    :param configuration pibble.api.configuration.Configuration: The configuration from the server.
+    :param configuration fruition.api.configuration.Configuration: The configuration from the server.
     """
 
     ENCRYPTIONS = [
@@ -214,7 +214,7 @@ class APIDatabaseAuthenticationSourceDriver(APIAuthenticationSourceDriver):
 
         Required configuration:
           1. ``authentication.database.type`` The database type - sqlite, postgresql, mssql, etc.
-          2. ``authentication.database.connection`` The connection parameters. See :class:``pibble.database.engine.EngineFactory``.
+          2. ``authentication.database.connection`` The connection parameters. See :class:``fruition.database.engine.EngineFactory``.
           3. ``authentication.database.table`` The tablename to select from.
 
         Optional configuration:

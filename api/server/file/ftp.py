@@ -10,10 +10,10 @@ try:
     from pyftpdlib.handlers import TLS_FTPHandler
     from pyftpdlib.servers import FTPServer as PYFTPServer
 except ImportError:
-    raise ImportError("Couldn't find pyftpdlib. Run `pip install pibble[ftp]` to get it.")
+    raise ImportError("Couldn't find pyftpdlib. Run `pip install fruition[ftp]` to get it.")
 
-from pibble.api.server.base import APIServerBase
-from pibble.api.exceptions import ConfigurationError
+from fruition.api.server.base import APIServerBase
+from fruition.api.exceptions import ConfigurationError
 
 
 class FTPServer(APIServerBase):

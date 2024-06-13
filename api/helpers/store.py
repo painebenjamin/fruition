@@ -2,13 +2,13 @@ from __future__ import annotations
 
 import sqlalchemy
 
-from pibble.database.engine import EngineFactory
-from pibble.database.util import row_to_dict
-from pibble.api.exceptions import ConfigurationError
-from pibble.api.configuration import APIConfiguration
-from pibble.util.strings import Serializer
-from pibble.util.helpers import resolve
-from pibble.util.log import logger
+from fruition.database.engine import EngineFactory
+from fruition.database.util import row_to_dict
+from fruition.api.exceptions import ConfigurationError
+from fruition.api.configuration import APIConfiguration
+from fruition.util.strings import Serializer
+from fruition.util.helpers import resolve
+from fruition.util.log import logger
 
 from typing import Any, Callable, Optional, Dict
 
@@ -34,7 +34,7 @@ class APISessionStore:
       3. ``session.store.serializer``: How values are serialized. Defaults to ``Serializer.serialize``.
       4. ``session.store.deserializer``: How values are deserialized. Defaults to ``Serializer.deserialize``.
 
-    :param configuration pibble.api.configuration.APIConfiguration: The configuration for the server or client.
+    :param configuration fruition.api.configuration.APIConfiguration: The configuration for the server or client.
     """
 
     CONFIGURATION_PREFIX = "session.store"
@@ -78,7 +78,7 @@ class APISessionStore:
         Returns an instance of this store with a different scope.
 
         :param scope str: The new scope.
-        :returns: ``pibble.api.helpers.store.ScopedAPISessionStore``
+        :returns: ``fruition.api.helpers.store.ScopedAPISessionStore``
         """
         return ScopedAPISessionStore(
             scope, self.serializer, self.deserializer, self.driver
@@ -233,9 +233,9 @@ class APISessionStoreDriver:
         Retrieve and instantiate the configured type.
 
         :param configuration_prefix str: The configuration prefix. Defaults to ``session.store``.
-        :param configuration pibble.api.configuration.APIConfiguration: The configuration object,
-        :returns pibble.api.helpers.APISessionStoreDriver: The session store.
-        :raises pibble.api.exceptions.ConfigurationError: When the implementation does not exist, or configuration values are not present.
+        :param configuration fruition.api.configuration.APIConfiguration: The configuration object,
+        :returns fruition.api.helpers.APISessionStoreDriver: The session store.
+        :raises fruition.api.exceptions.ConfigurationError: When the implementation does not exist, or configuration values are not present.
         """
         try:
             drivername = configuration["{0}.driver".format(configuration_prefix)]
@@ -294,7 +294,7 @@ class DatabaseAPISessionStore(APISessionStoreDriver):
 
         Required configuration:
           1. ``session.store.database.type`` The database type - sqlite, postgresql, mssql, etc.
-          2. ``session.store.database.connection`` The connection parameters. See :class:``pibble.database.engine.EngineFactory``.
+          2. ``session.store.database.connection`` The connection parameters. See :class:``fruition.database.engine.EngineFactory``.
           3. ``session.store.database.table`` The tablename to select from.
 
         Optional configuration:

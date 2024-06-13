@@ -6,9 +6,9 @@ Example Usage
 
 Using an XML RPC Client is very simple. Once a client is instantiated, it will queue up a call to ``system.listMethods``, a built-in RPC function that will list the methods of a client. After that, calling them is as simple as calling the method with the appropriate variables ::
 
-  from pibble.api.client.webservice.rpc.xml.client import XMLRPCClient
-  from pibble.api.exceptions import BadRequestError
-  from pibble.api.exceptions import UnsupportedMethodError
+  from fruition.api.client.webservice.rpc.xml.client import XMLRPCClient
+  from fruition.api.exceptions import BadRequestError
+  from fruition.api.exceptions import UnsupportedMethodError
 
   client = XMLRPCClient("127.0.0.1")
 
@@ -37,11 +37,11 @@ Base
 
 The base client has handlers for introspection and dispatching requests. Implementations are responsible for formatting requests and parsing responses.
 
-.. autoclass:: pibble.api.client.webservice.rpc.base.RPCClientBase
+.. autoclass:: fruition.api.client.webservice.rpc.base.RPCClientBase
    :members:
 
 XML
 ---
 
-.. autoclass:: pibble.api.client.webservice.rpc.xml.client.XMLRPCClient
+.. autoclass:: fruition.api.client.webservice.rpc.xml.client.XMLRPCClient
    :members:

@@ -1,6 +1,6 @@
-from pibble.util.helpers import Assertion
-from pibble.util.log import DebugUnifiedLoggingContext
-from pibble.util.files import TempfileContext, load_yaml
+from fruition.util.helpers import Assertion
+from fruition.util.log import DebugUnifiedLoggingContext
+from fruition.util.files import TempfileContext, load_yaml
 
 
 def main() -> None:

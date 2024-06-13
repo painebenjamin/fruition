@@ -2,15 +2,15 @@ import time
 
 from sqlalchemy import Column, String, ForeignKeyConstraint
 
-from pibble.util.log import DebugUnifiedLoggingContext
-from pibble.util.helpers import expect_exception, Assertion
-from pibble.util.files import TempfileContext
+from fruition.util.log import DebugUnifiedLoggingContext
+from fruition.util.helpers import expect_exception, Assertion
+from fruition.util.files import TempfileContext
 
-from pibble.database.orm import ORMObjectBase
-from pibble.api.exceptions import NotFoundError, BadRequestError, PermissionError
-from pibble.api.client.webservice.jsonapi import JSONWebServiceAPIClient
-from pibble.api.server.webservice.jsonapi import JSONWebServiceAPIServer
-from pibble.ext.rest.server.base import RESTExtensionServerBase
+from fruition.database.orm import ORMObjectBase
+from fruition.api.exceptions import NotFoundError, BadRequestError, PermissionError
+from fruition.api.client.webservice.jsonapi import JSONWebServiceAPIClient
+from fruition.api.server.webservice.jsonapi import JSONWebServiceAPIServer
+from fruition.ext.rest.server.base import RESTExtensionServerBase
 
 
 class RESTExtensionJSONServer(JSONWebServiceAPIServer, RESTExtensionServerBase):

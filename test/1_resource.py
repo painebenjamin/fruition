@@ -7,22 +7,22 @@ import sqlite3
 
 from webob import Request, Response
 
-from pibble.util.log import logger, DebugUnifiedLoggingContext
-from pibble.util.strings import encode, RandomWordGenerator
-from pibble.util.helpers import expect_exception, Assertion
-from pibble.util.files import TempfileContext, SpreadsheetParser
+from fruition.util.log import logger, DebugUnifiedLoggingContext
+from fruition.util.strings import encode, RandomWordGenerator
+from fruition.util.helpers import expect_exception, Assertion
+from fruition.util.files import TempfileContext, SpreadsheetParser
 
-from pibble.resources.retriever import Retriever, RetrieverIO
+from fruition.resources.retriever import Retriever, RetrieverIO
 
-from pibble.api.server.webservice.base import WebServiceAPIHandlerRegistry
-from pibble.api.server.webservice.base import WebServiceAPIServerBase
-from pibble.api.middleware.webservice.authentication.basic import (
+from fruition.api.server.webservice.base import WebServiceAPIHandlerRegistry
+from fruition.api.server.webservice.base import WebServiceAPIServerBase
+from fruition.api.middleware.webservice.authentication.basic import (
     BasicAuthenticationMiddleware,
 )
-from pibble.api.exceptions import AuthenticationError
+from fruition.api.exceptions import AuthenticationError
 
-from pibble.api.server.file.ftp import FTPServer
-from pibble.api.server.file.sftp import SFTPServer
+from fruition.api.server.file.ftp import FTPServer
+from fruition.api.server.file.sftp import SFTPServer
 
 CHUNK_SIZE = 8192
 CHUNKS = 10
@@ -166,7 +166,7 @@ def main() -> None:
 
             if os.name != "nt" and os.getuid() == 0:
                 try:
-                    test_user = "pibble-test"
+                    test_user = "fruition-test"
                     test_user_password = "password"
                     test_file = "ftp-test.csv"
 

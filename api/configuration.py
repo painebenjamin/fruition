@@ -18,7 +18,7 @@ class APIConfiguration:
 
     Allows for dot-separated values, like "mydict.myotherdict.mykey".
 
-    >>> from pibble.api.configuration import APIConfiguration
+    >>> from fruition.api.configuration import APIConfiguration
     >>> configuration = APIConfiguration()
     >>> configuration.update(foo = "bar")
     >>> configuration.get("foo")
@@ -36,7 +36,7 @@ class APIConfiguration:
     True
     >>> configuration["foo.bar"]
     'xyzzy'
-    >>> from pibble.util.helpers import expect_exception
+    >>> from fruition.util.helpers import expect_exception
     >>> expect_exception(KeyError)(lambda: configuration.get("baz"))
     >>> import os
     >>> os.environ["FOO_BAR_BAZ"] = "25"
@@ -73,7 +73,7 @@ class APIConfiguration:
         value = os.getenv(key, NoDefaultProvided())
         if type(value) is NoDefaultProvided:
             raise KeyError(f"Key {key} not found in environment.")
-        from pibble.util.strings import Serializer
+        from fruition.util.strings import Serializer
         return Serializer.deserialize(value)
 
     def get(self, key: str, default: Any = NoDefaultProvided()) -> Any:

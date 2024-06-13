@@ -1,11 +1,11 @@
 import os
 from typing import Any, Union, List
 
-from pibble.api.configuration import APIConfiguration
-from pibble.api.helpers.store import APISessionStore, UnconfiguredAPISessionStore
-from pibble.api.exceptions import ConfigurationError
-from pibble.util.log import logger, ConfigurationLoggingContext
-from pibble.util.strings import pretty_print, get_uuid
+from fruition.api.configuration import APIConfiguration
+from fruition.api.helpers.store import APISessionStore, UnconfiguredAPISessionStore
+from fruition.api.exceptions import ConfigurationError
+from fruition.util.log import logger, ConfigurationLoggingContext
+from fruition.util.strings import pretty_print, get_uuid
 
 
 class APIBase:

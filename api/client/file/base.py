@@ -5,10 +5,10 @@ import io
 
 from typing import Optional, Iterable, Any, Iterator, Union, cast
 
-from pibble.api.client.base import APIClientBase
-from pibble.api.exceptions import NotFoundError
-from pibble.util.strings import encode
-from pibble.util.log import logger
+from fruition.api.client.base import APIClientBase
+from fruition.api.exceptions import NotFoundError
+from fruition.util.strings import encode
+from fruition.util.log import logger
 
 
 class ContentIterator:
@@ -179,7 +179,7 @@ class FileTransferAPIClientBase(APIClientBase):
 
         :param path str: The path of the file to read.
         :returns iterable: An iterator over the contents of the file.
-        :raises `pibble.api.exceptions.NotFoundError`: When the file does not exist.
+        :raises `fruition.api.exceptions.NotFoundError`: When the file does not exist.
         """
         raise NotImplementedError()
 
@@ -192,7 +192,7 @@ class FileTransferAPIClientBase(APIClientBase):
 
         :param path str: The path of the file to read.
         :returns bytearray: The byte array of the entire file.
-        :raises `pibble.api.exceptions.NotFoundError`: When path is not found.
+        :raises `fruition.api.exceptions.NotFoundError`: When path is not found.
         """
         path = self.absPath(path)
 
@@ -225,7 +225,7 @@ class FileTransferAPIClientBase(APIClientBase):
 
         :param path str: The path to the file.
         :returns str: The hex digest.
-        :raises `pibble.api.exceptions.NotFoundError`: When path is not found.
+        :raises `fruition.api.exceptions.NotFoundError`: When path is not found.
         """
         path = self.absPath(path)
 
@@ -258,7 +258,7 @@ class FileTransferAPIClientBase(APIClientBase):
         :param src str: The source path.
         :param dest str: The destination path.
         :returns RemoteObject: The newly moved file.
-        :raises `pibble.api.exceptions.NotFoundError`: When src is not found.
+        :raises `fruition.api.exceptions.NotFoundError`: When src is not found.
         """
         src = self.absPath(src)
         dest = self.absPath(dest)
@@ -278,7 +278,7 @@ class FileTransferAPIClientBase(APIClientBase):
         :param dest str: The path to the destination, either a file or directory.
         :param overwrite bool: Whether or not to overwrite when calling writeFile.
         :returns RemoteObject: The newly copied file.
-        :raises `pibble.api.exceptions.NotFoundError`: When src is not found.
+        :raises `fruition.api.exceptions.NotFoundError`: When src is not found.
         """
         src = self.absPath(src)
         dest = self.absPath(dest)
@@ -341,7 +341,7 @@ class FileTransferAPIClientBase(APIClientBase):
 
         :param path str: The path to get.
         :returns bool: If the path represents a file.
-        :raises `pibble.api.exceptions.NotFoundError`: When the path is not found.
+        :raises `fruition.api.exceptions.NotFoundError`: When the path is not found.
         """
         return self.getPath(path).otype == RemoteObject.FILE
 
@@ -351,7 +351,7 @@ class FileTransferAPIClientBase(APIClientBase):
 
         :param path str: The path to get.
         :returns bool: If the path represents a directory.
-        :raises `pibble.api.exceptions.NotFoundError`: When the path is not found.
+        :raises `fruition.api.exceptions.NotFoundError`: When the path is not found.
         """
         return self.getPath(path).otype == RemoteObject.DIRECTORY
 
@@ -361,7 +361,7 @@ class FileTransferAPIClientBase(APIClientBase):
 
         :param path str: The path to get.
         :returns bool: If the path represents a link.
-        :raises `pibble.api.exceptions.NotFoundError`: When the path is not found.
+        :raises `fruition.api.exceptions.NotFoundError`: When the path is not found.
         """
         return self.getPath(path).otype == RemoteObject.LINK
 
@@ -371,7 +371,7 @@ class FileTransferAPIClientBase(APIClientBase):
 
         :param path str: The path to list. Defaults to `self.cwd`.
         :returns RemoteObject: The file or directory.
-        :raises `pibble.api.exceptions.NotFoundError`: When the path is not found.
+        :raises `fruition.api.exceptions.NotFoundError`: When the path is not found.
         """
         raise NotImplementedError()
 
@@ -393,7 +393,7 @@ class FileTransferAPIClientBase(APIClientBase):
         :param path str: Either a file or directory path.
         :param permission: Any radix-8 permission integer.
         :returns RemoteObject: The updated path.
-        :raises `pibble.api.exceptions.NotFoundError`: When the path is not found.
+        :raises `fruition.api.exceptions.NotFoundError`: When the path is not found.
         """
         raise NotImplementedError()
 
@@ -411,7 +411,7 @@ class FileTransferAPIClientBase(APIClientBase):
         :param owner str: The owner name.
         :param group str: The group name.
         :returns RemoteObject: The updated path.
-        :raises `pibble.api.exceptions.NotFoundError`: When the path is not found.
-        :raises `pibble.api.exceptions.BadRequestError`: When both owner and group are None.
+        :raises `fruition.api.exceptions.NotFoundError`: When the path is not found.
+        :raises `fruition.api.exceptions.BadRequestError`: When both owner and group are None.
         """
         raise NotImplementedError()

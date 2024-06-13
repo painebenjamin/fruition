@@ -3,11 +3,11 @@ import os
 from io import IOBase
 from typing import Optional, Callable, Any, Union, Type, Dict, List, cast
 
-from pibble.util.helpers import url_join, resolve
-from pibble.util.log import logger
-from pibble.util.strings import Serializer
+from fruition.util.helpers import url_join, resolve
+from fruition.util.log import logger
+from fruition.util.strings import Serializer
 
-from pibble.api.exceptions import (
+from fruition.api.exceptions import (
     NotFoundError,
     UnsupportedMethodError,
     AuthenticationError,
@@ -16,8 +16,8 @@ from pibble.api.exceptions import (
     ConfigurationError,
     TooManyRequestsError,
 )
-from pibble.api.helpers.wrappers import RequestWrapper, ResponseWrapper, SessionWrapper
-from pibble.api.client.base import APIClientBase
+from fruition.api.helpers.wrappers import RequestWrapper, ResponseWrapper, SessionWrapper
+from fruition.api.client.base import APIClientBase
 
 from requests import Request, Response, Session
 
@@ -260,7 +260,7 @@ class WebServiceAPIClientBase(APIClientBase):
 
         If no directory is specified, will download to cwd().
 
-        See :func:`pibble.api.client.webservice.base.WebServiceAPIClientBase.query` for more information.
+        See :func:`fruition.api.client.webservice.base.WebServiceAPIClientBase.query` for more information.
         """
         if "stream" in kwargs:
             del kwargs["stream"]
@@ -305,7 +305,7 @@ class WebServiceAPIClientBase(APIClientBase):
         **kwargs: Any,
     ) -> Union[Response, ResponseWrapper]:
         """
-        Sends a GET request. See :func:`pibble.api.client.webservice.base.WebServiceAPIClientBase.query`
+        Sends a GET request. See :func:`fruition.api.client.webservice.base.WebServiceAPIClientBase.query`
         """
         return self.query(
             "GET", url=url, parameters=parameters, headers=headers, **kwargs
@@ -319,7 +319,7 @@ class WebServiceAPIClientBase(APIClientBase):
         **kwargs: Any,
     ) -> Union[Response, ResponseWrapper]:
         """
-        Sends a DELETE request. See :func:`pibble.api.client.webservice.base.WebServiceAPIClientBase.query`
+        Sends a DELETE request. See :func:`fruition.api.client.webservice.base.WebServiceAPIClientBase.query`
         """
         return self.query(
             "DELETE", url=url, parameters=parameters, headers=headers, **kwargs
@@ -333,7 +333,7 @@ class WebServiceAPIClientBase(APIClientBase):
         **kwargs: Any,
     ) -> Union[Response, ResponseWrapper]:
         """
-        Sends a HEAD request. See :func:`pibble.api.client.webservice.base.WebServiceAPIClientBase.query`
+        Sends a HEAD request. See :func:`fruition.api.client.webservice.base.WebServiceAPIClientBase.query`
         """
         return self.query(
             "HEAD", url=url, parameters=parameters, headers=headers, **kwargs
@@ -347,7 +347,7 @@ class WebServiceAPIClientBase(APIClientBase):
         **kwargs: Any,
     ) -> Union[Response, ResponseWrapper]:
         """
-        Sends an OPTIONS request. See :func:`pibble.api.client.webservice.base.WebServiceAPIClientBase.query`
+        Sends an OPTIONS request. See :func:`fruition.api.client.webservice.base.WebServiceAPIClientBase.query`
         """
         return self.query(
             "OPTIONS", url=url, parameters=parameters, headers=headers, **kwargs
@@ -363,7 +363,7 @@ class WebServiceAPIClientBase(APIClientBase):
         **kwargs: Any,
     ) -> Union[Response, ResponseWrapper]:
         """
-        Sends a POST request. See :func:`pibble.api.client.webservice.base.WebServiceAPIClientBase.query`
+        Sends a POST request. See :func:`fruition.api.client.webservice.base.WebServiceAPIClientBase.query`
         """
         return self.query(
             "POST",
@@ -385,7 +385,7 @@ class WebServiceAPIClientBase(APIClientBase):
         **kwargs: Any,
     ) -> Union[Response, ResponseWrapper]:
         """
-        Sends a PUT request. See :func:`pibble.api.client.webservice.base.WebServiceAPIClientBase.query`
+        Sends a PUT request. See :func:`fruition.api.client.webservice.base.WebServiceAPIClientBase.query`
         """
         return self.query(
             "PUT",
@@ -407,7 +407,7 @@ class WebServiceAPIClientBase(APIClientBase):
         **kwargs: Any,
     ) -> Union[Response, ResponseWrapper]:
         """
-        Sends a PATCH request. See :func:`pibble.api.client.webservice.base.WebServiceAPIClientBase.query`
+        Sends a PATCH request. See :func:`fruition.api.client.webservice.base.WebServiceAPIClientBase.query`
         """
         return self.query(
             "PATCH", url=url, data=data, files=files, headers=headers, **kwargs

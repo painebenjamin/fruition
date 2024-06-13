@@ -3,13 +3,13 @@ from typing_extensions import Self
 
 from webob import Request, Response
 
-from pibble.api.exceptions import PermissionError, BadRequestError
-from pibble.ext.user.server.base import (
+from fruition.api.exceptions import PermissionError, BadRequestError
+from fruition.ext.user.server.base import (
     UserExtensionServer,
     UserExtensionHandlerRegistry,
 )
-from pibble.ext.rest.server.base import RESTExtensionServerBase
-from pibble.ext.user.database import *
+from fruition.ext.rest.server.base import RESTExtensionServerBase
+from fruition.ext.user.database import *
 
 
 class UserRESTExtensionServerBase(UserExtensionServer, RESTExtensionServerBase):

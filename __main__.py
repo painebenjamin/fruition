@@ -10,14 +10,14 @@ import traceback
 
 from typing import Optional, List
 
-from pibble.api.meta.helpers import MetaFactory, MetaService
-from pibble.util.log import (
+from fruition.api.meta.helpers import MetaFactory, MetaService
+from fruition.util.log import (
     logger,
     LevelUnifiedLoggingContext,
     DebugUnifiedLoggingContext,
     ConfigurationLoggingContext,
 )
-from pibble.util.files import load_json
+from fruition.util.files import load_json
 
 
 class MetaServerProcess(multiprocessing.Process):
@@ -30,10 +30,10 @@ class MetaServerProcess(multiprocessing.Process):
         self.service.serve()
 
 
-@click.group(name="pibble")
+@click.group(name="fruition")
 def main() -> None:
     """
-    Pibble Framework command-line tools.
+    Fruition Framework command-line tools.
     """
     pass
 
@@ -185,7 +185,7 @@ def client(
 
     if wrapper:
         wrapper_path = (
-            "pibble.api.client.webservice.wrapper.WebServiceAPILambdaClientWrapper"
+            "fruition.api.client.webservice.wrapper.WebServiceAPILambdaClientWrapper"
         )
         if (
             wrapper_path
@@ -272,7 +272,7 @@ def thumbnail(
     Builds a thumbnail from an input path.
     """
     with LevelUnifiedLoggingContext(logging.DEBUG if debug else logging.WARNING):
-        from pibble.media.thumbnail import ThumbnailBuilder
+        from fruition.media.thumbnail import ThumbnailBuilder
 
         ThumbnailBuilder(input).build(output, width, height, trim=trim)
 

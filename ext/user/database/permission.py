@@ -1,6 +1,6 @@
 from sqlalchemy import Column, Integer, String, Enum
-from pibble.ext.user.database.base import UserExtensionObjectBase
-from pibble.ext.user.database.user import User
+from fruition.ext.user.database.base import UserExtensionObjectBase
+from fruition.ext.user.database.user import User
 
 
 class Permission(UserExtensionObjectBase):
@@ -50,13 +50,13 @@ class Permission(UserExtensionObjectBase):
 
       @handlers.methods("PUT")
       @handlers.secured("MySingularlyOwnedObject", "update")
-      @handlers.path(r"^/singular/(?P<name>[a-zA-Z0-9_\-]+)$")
+      @handlers.path(r"^/singular/(?P<name>[a-zA-Z0-9_\\-]+)$")
       def modifySingularObject(self, request, response, name = None):
         # this will only be allowed if the associated permission exists, so feel free
         # to just have this handler modify the object.
     """
 
-    __tablename__ = "pibble_permission"
+    __tablename__ = "fruition_permission"
 
     id = Column(Integer, autoincrement=True, primary_key=True)
     object_name = Column(String, nullable=False)
@@ -85,14 +85,14 @@ class Permission(UserExtensionObjectBase):
 
 
 class PermissionGroup(UserExtensionObjectBase):
-    __tablename__ = "pibble_permission_group"
+    __tablename__ = "fruition_permission_group"
 
     id = Column(Integer, autoincrement=True, primary_key=True)
     label = Column(String)
 
 
 class PermissionGroupPermission(UserExtensionObjectBase):
-    __tablename__ = "pibble_permission_group_permission"
+    __tablename__ = "fruition_permission_group_permission"
 
     group_id = Column(
         Integer,
@@ -110,7 +110,7 @@ class PermissionGroupPermission(UserExtensionObjectBase):
 
 
 class UserPermission(UserExtensionObjectBase):
-    __tablename__ = "pibble_user_permission"
+    __tablename__ = "fruition_user_permission"
 
     permission_id = Column(
         Integer,
@@ -130,7 +130,7 @@ User.Relate(UserPermission, name="permissions", backref="user")
 
 
 class GlobalPermission(UserExtensionObjectBase):
-    __tablename__ = "pibble_global_permission"
+    __tablename__ = "fruition_global_permission"
 
     permission_id = Column(
         Integer,
@@ -141,7 +141,7 @@ class GlobalPermission(UserExtensionObjectBase):
 
 
 class UserPermissionGroup(UserExtensionObjectBase):
-    __tablename__ = "pibble_user_permission_group"
+    __tablename__ = "fruition_user_permission_group"
 
     group_id = Column(
         Integer,
@@ -161,7 +161,7 @@ User.Relate(UserPermissionGroup, name="permission_groups", backref="user")
 
 
 class GlobalPermissionGroup(UserExtensionObjectBase):
-    __tablename__ = "pibble_global_permission_group"
+    __tablename__ = "fruition_global_permission_group"
 
     group_id = Column(
         Integer,

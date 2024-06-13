@@ -4,9 +4,9 @@ from io import IOBase
 from requests import Response
 from typing import Any, Union, Dict
 
-from pibble.util.strings import Serializer
-from pibble.api.helpers.wrappers import ResponseWrapper
-from pibble.api.client.webservice.base import WebServiceAPIClientBase
+from fruition.util.strings import Serializer
+from fruition.api.helpers.wrappers import ResponseWrapper
+from fruition.api.client.webservice.base import WebServiceAPIClientBase
 
 __all__ = ["JSONWebServiceAPIClient"]
 
@@ -22,7 +22,7 @@ class JSONWebServiceAPIClient(WebServiceAPIClientBase):
         **kwargs: Any,
     ) -> Union[Response, ResponseWrapper]:
         """
-        Sends a POST request. See :func:`pibble.api.client.webservice.base.WebServiceAPIClientBase.query`
+        Sends a POST request. See :func:`fruition.api.client.webservice.base.WebServiceAPIClientBase.query`
         """
         if data:
             formatted_data = json.dumps(data, default=Serializer.serialize)

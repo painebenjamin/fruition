@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
 from sqlalchemy import Column, Integer, String, Boolean, DateTime
-from pibble.ext.user.database.base import UserExtensionObjectBase
+from fruition.ext.user.database.base import UserExtensionObjectBase
 
 
 class User(UserExtensionObjectBase):
-    __tablename__ = "pibble_user"
+    __tablename__ = "fruition_user"
 
     id = Column(Integer, autoincrement=True, primary_key=True)
 

@@ -1,10 +1,10 @@
 import grpc
 import datetime
 
-from pibble.api.middleware.googlerpc.base import GRPCAPIMiddlewareBase
-from pibble.api.helpers.googlerpc import GRPCRequest, GRPCService
-from pibble.api.meta.base import MetaService
-from pibble.api.exceptions import ConfigurationError
+from fruition.api.middleware.googlerpc.base import GRPCAPIMiddlewareBase
+from fruition.api.helpers.googlerpc import GRPCRequest, GRPCService
+from fruition.api.meta.base import MetaService
+from fruition.api.exceptions import ConfigurationError
 
 
 class GRPCOAuthAuthenticationMiddleware(GRPCAPIMiddlewareBase):
@@ -30,14 +30,14 @@ class GRPCOAuthAuthenticationMiddleware(GRPCAPIMiddlewareBase):
         use it to get the token. We then ensure the channel credentials are properly
         instantiated.
 
-        :param request pibble.api.helpers.grpc.GRPCRequest: The request object.
+        :param request fruition.api.helpers.grpc.GRPCRequest: The request object.
         """
         if getattr(self, "_grpc_authentication_client", None) is None:
             self._grpc_authentication_client = MetaService(
                 "GRPCAuthenticationClient",
                 [
-                    "pibble.api.client.webservice.base.WebServiceAPIClientBase",
-                    "pibble.api.middleware.webservice.authentication.oauth.OAuthAuthenticationMiddleware",
+                    "fruition.api.client.webservice.base.WebServiceAPIClientBase",
+                    "fruition.api.middleware.webservice.authentication.oauth.OAuthAuthenticationMiddleware",
                 ],
                 {
                     "authentication": self.configuration["authentication"],

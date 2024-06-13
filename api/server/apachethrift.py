@@ -2,13 +2,13 @@ from thrift.transport import TSocket
 from thrift.transport import TTransport
 from thrift.protocol import TBinaryProtocol
 from thrift.server import TServer
-from pibble.api.server.base import APIServerBase
-from pibble.api.helpers.apachethrift import (
+from fruition.api.server.base import APIServerBase
+from fruition.api.helpers.apachethrift import (
     ApacheThriftService,
     ApacheThriftServerHandler,
     ApacheThriftBufferedTransportFactory,
 )
-from pibble.util.log import logger
+from fruition.util.log import logger
 
 
 class ApacheThriftServer(APIServerBase):
@@ -23,7 +23,7 @@ class ApacheThriftServer(APIServerBase):
     Optional configuration:
       1. ``server.type`` The type of server. One of "simple", "threaded", or "forking."
 
-    See :class:`pibble.api.helpers.thrift.ApacheThriftService` for required arguments for the thrift service.
+    See :class:`fruition.api.helpers.thrift.ApacheThriftService` for required arguments for the thrift service.
     """
 
     SIMPLE = 0

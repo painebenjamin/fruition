@@ -1,14 +1,14 @@
 import time
 
-from pibble.util.log import DebugUnifiedLoggingContext
-from pibble.util.helpers import expect_exception, Assertion
-from pibble.util.files import TempfileContext
+from fruition.util.log import DebugUnifiedLoggingContext
+from fruition.util.helpers import expect_exception, Assertion
+from fruition.util.files import TempfileContext
 
-from pibble.api.exceptions import NotFoundError
-from pibble.api.client.webservice.base import WebServiceAPIClientBase
-from pibble.api.server.webservice.handler import WebServiceAPIHandlerRegistry
+from fruition.api.exceptions import NotFoundError
+from fruition.api.client.webservice.base import WebServiceAPIClientBase
+from fruition.api.server.webservice.handler import WebServiceAPIHandlerRegistry
 
-from pibble.ext.session.server.base import SessionExtensionServerBase
+from fruition.ext.session.server.base import SessionExtensionServerBase
 
 from webob import Request, Response
 

@@ -1,15 +1,15 @@
 import socket
 
-from pibble.api.exceptions import AuthenticationError
+from fruition.api.exceptions import AuthenticationError
 
-from pibble.api.server.webservice.base import WebServiceAPIServerBase
-from pibble.api.server.webservice.handler import WebServiceAPIHandlerRegistry
-from pibble.api.client.webservice.base import WebServiceAPIClientBase
-from pibble.api.middleware.webservice.screening import (
+from fruition.api.server.webservice.base import WebServiceAPIServerBase
+from fruition.api.server.webservice.handler import WebServiceAPIHandlerRegistry
+from fruition.api.client.webservice.base import WebServiceAPIClientBase
+from fruition.api.middleware.webservice.screening import (
     ScreeningWebServiceAPIMiddleware,
 )
-from pibble.util.log import DebugUnifiedLoggingContext
-from pibble.util.helpers import expect_exception
+from fruition.util.log import DebugUnifiedLoggingContext
+from fruition.util.helpers import expect_exception
 
 PORT = 9091
 

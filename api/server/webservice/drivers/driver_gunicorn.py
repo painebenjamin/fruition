@@ -3,14 +3,14 @@ from __future__ import annotations
 from typing import Optional, TYPE_CHECKING
 from multiprocessing import cpu_count
 from gunicorn.app.base import Application
-from pibble.util.log import logger
+from fruition.util.log import logger
 
 if TYPE_CHECKING:
-    from pibble.api.server.webservice.base import WebServiceAPIServerBase
+    from fruition.api.server.webservice.base import WebServiceAPIServerBase
     from typeshed._wsgi import WSGIApplication
 
 
-class PibbleGunicornApplication(Application):  # type: ignore
+class FruitionGunicornApplication(Application):  # type: ignore
     """
     A simple extension of the gunicorn application base to work with the webservice.
     """
@@ -18,7 +18,7 @@ class PibbleGunicornApplication(Application):  # type: ignore
     def __init__(self, application: WSGIApplication, options: dict):
         self.options = options
         self.application = application
-        super(PibbleGunicornApplication, self).__init__()
+        super(FruitionGunicornApplication, self).__init__()
 
     def load_config(self) -> None:
         config = dict(
@@ -70,5 +70,5 @@ def run_gunicorn(
             "No SSL keyfile/certfile specific, but SSL enabled. If this server is being proxied through another service that provides SSL context this is okay, otherwise connections will fail."
         )
 
-    application = PibbleGunicornApplication(application.wsgi(), options)
+    application = FruitionGunicornApplication(application.wsgi(), options)
     application.run()

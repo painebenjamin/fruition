@@ -1,9 +1,9 @@
 from webob import Request, Response
 from typing import Any
 
-from pibble.util.strings import Serializer
-from pibble.api.server.webservice.base import WebServiceAPIServerBase
-from pibble.api.middleware.database.orm import ORMMiddlewareBase
+from fruition.util.strings import Serializer
+from fruition.api.server.webservice.base import WebServiceAPIServerBase
+from fruition.api.middleware.database.orm import ORMMiddlewareBase
 
 
 class ORMWebServiceAPIServer(WebServiceAPIServerBase, ORMMiddlewareBase):

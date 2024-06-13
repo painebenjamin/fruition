@@ -1,8 +1,6 @@
-from pibble.api.server.webservice.base import (
-    WebServiceAPIServerBase,
-)
-from pibble.api.middleware.database.orm import ORMMiddlewareBase
-from pibble.ext.dam.database.base import DAMObjectBase
+from fruition.api.server.webservice.base import WebServiceAPIServerBase
+from fruition.api.middleware.database.orm import ORMMiddlewareBase
+from fruition.ext.dam.database.base import DAMObjectBase
 
 
 class DAMServerBase(WebServiceAPIServerBase, ORMMiddlewareBase):

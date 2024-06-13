@@ -4,16 +4,16 @@ import datetime
 
 from typing import Iterator, Iterable, Optional, Any, Union, Mapping
 
-from pibble.api.exceptions import (
+from fruition.api.exceptions import (
     NotFoundError,
     BadRequestError,
 )
-from pibble.api.client.file.base import (
+from fruition.api.client.file.base import (
     FileTransferAPIClientBase,
     RemoteObject,
     ContentIterator,
 )
-from pibble.util.strings import encode, decode
+from fruition.util.strings import encode, decode
 
 
 class FTPClient(FileTransferAPIClientBase):
@@ -202,7 +202,7 @@ class FTPClient(FileTransferAPIClientBase):
 
         :param path str: The path of the file to read.
         :returns iterable: An iterator over the contents of the file.
-        :raises `pibble.api.exceptions.NotFoundError`: When the file does not exist.
+        :raises `fruition.api.exceptions.NotFoundError`: When the file does not exist.
         """
 
         binary = None
@@ -233,7 +233,7 @@ class FTPClient(FileTransferAPIClientBase):
         :param src str: The source path.
         :param dest str: The destination path.
         :returns RemoteObject: The newly moved file.
-        :raises `pibble.api.exceptions.NotFoundError`: When src is not found.
+        :raises `fruition.api.exceptions.NotFoundError`: When src is not found.
         """
         src = self.absPath(src)
         dest = self.absPath(dest)
@@ -254,7 +254,7 @@ class FTPClient(FileTransferAPIClientBase):
 
         :param path str: The path to list. Defaults to `self.cwd`.
         :returns RemoteObject: The file or directory.
-        :raises `pibble.api.exceptions.NotFoundError`: When the path is not found.
+        :raises `fruition.api.exceptions.NotFoundError`: When the path is not found.
         """
         path = self.absPath(path)
         facts = ["type", "size", "perm", "modify", "unix.mode"]

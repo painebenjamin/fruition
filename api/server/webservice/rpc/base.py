@@ -1,8 +1,8 @@
 from webob import Request, Response
 
-from pibble.api.server.webservice.base import MethodBasedWebServiceAPIServerBase
-from pibble.api.server.webservice.handler import WebServiceAPIHandlerRegistry
-from pibble.api.exceptions import (
+from fruition.api.server.webservice.base import MethodBasedWebServiceAPIServerBase
+from fruition.api.server.webservice.handler import WebServiceAPIHandlerRegistry
+from fruition.api.exceptions import (
     UnsupportedMethodError,
     ConfigurationError,
 )
@@ -63,7 +63,7 @@ class RPCServerBase(MethodBasedWebServiceAPIServerBase):
 
         :param fn_name str: The function to return.
         :returns list: A list of lists of types.
-        :raises pibble.api.exceptions.UnsupportedMethodError: when the method is not found.
+        :raises fruition.api.exceptions.UnsupportedMethodError: when the method is not found.
         """
         fn = self._find_method_by_name(fn_name)
         if fn is None:
@@ -92,7 +92,7 @@ class RPCServerBase(MethodBasedWebServiceAPIServerBase):
 
         :param fn_name str: The function to retrieve the docstring for.
         :returns str: The docstring of the method.
-        :raises pibble.api.exceptions.UnsupportedMethodError: when the method is not found.
+        :raises fruition.api.exceptions.UnsupportedMethodError: when the method is not found.
         """
         fn = self._find_method_by_name(fn_name)
         if fn is None:

@@ -22,19 +22,19 @@ from typing import (
 
 from webob import Request, Response
 
-from pibble.util.strings import decode
-from pibble.util.log import logger
-from pibble.util.helpers import CompressedIterator
-from pibble.util.files import FileIterator
-from pibble.api.server.base import APIServerBase
-from pibble.api.server.webservice.handler import (
+from fruition.util.strings import decode
+from fruition.util.log import logger
+from fruition.util.helpers import CompressedIterator
+from fruition.util.files import FileIterator
+from fruition.api.server.base import APIServerBase
+from fruition.api.server.webservice.handler import (
     WebServiceAPIHandlerRegistry,
     WebServiceAPIHandler,
     WebServiceAPIBoundHandler,
 )
-from pibble.api.middleware.webservice.base import WebServiceAPIMiddlewareBase
+from fruition.api.middleware.webservice.base import WebServiceAPIMiddlewareBase
 
-from pibble.api.exceptions import (
+from fruition.api.exceptions import (
     BadRequestError,
     BadResponseError,
     NotFoundError,
@@ -46,7 +46,7 @@ from pibble.api.exceptions import (
     TooManyRequestsError,
 )
 
-from pibble.api.helpers.wrappers import (
+from fruition.api.helpers.wrappers import (
     RequestWrapper,
     ResponseWrapper,
 )
@@ -67,7 +67,7 @@ class WebServiceAPIServerBase(APIServerBase):
     """
     A web service API base, useful for extension or mixins.
 
-    To add functionality to the web service, use a :class:`pibble.api.server.webservice.handler.WebServiceAPIHandlerRegistry` to register methods and paths.
+    To add functionality to the web service, use a :class:`fruition.api.server.webservice.handler.WebServiceAPIHandlerRegistry` to register methods and paths.
     """
 
     HEADERS = {
@@ -460,20 +460,20 @@ class WebServiceAPIServerBase(APIServerBase):
         run_driver: Optional[Callable] = None
 
         if driver == "cherrypy":
-            from pibble.api.server.webservice.drivers.driver_cherrypy import (
+            from fruition.api.server.webservice.drivers.driver_cherrypy import (
                 run_cherrypy,
             )
 
             destroy_on_stop = False
             run_driver = run_cherrypy
         elif driver == "werkzeug":
-            from pibble.api.server.webservice.drivers.driver_werkzeug import (
+            from fruition.api.server.webservice.drivers.driver_werkzeug import (
                 run_werkzeug,
             )
 
             run_driver = run_werkzeug
         elif driver == "gunicorn":
-            from pibble.api.server.webservice.drivers.driver_gunicorn import (
+            from fruition.api.server.webservice.drivers.driver_gunicorn import (
                 run_gunicorn,
             )
 
@@ -902,7 +902,7 @@ class MethodBasedWebServiceAPIServerBase(WebServiceAPIServerBase):
 
         :param method_name str: The method to call
         :param args tuple: The argument to pass into the method.
-        :raises pibble.api.exceptions.UnsupportedMethodError: when the method is not found.
+        :raises fruition.api.exceptions.UnsupportedMethodError: when the method is not found.
         """
         fn = self._find_method_by_name(method_name)
         if not fn or not fn.registered:

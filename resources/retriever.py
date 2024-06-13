@@ -6,27 +6,27 @@ from io import IOBase
 from urllib.parse import urlparse, ParseResult
 from typing import Optional, Iterator, Type, Sequence, Union, List, Dict
 
-from pibble.util.log import logger
+from fruition.util.log import logger
 
-from pibble.api.meta.base import MetaService
-from pibble.api.client.webservice.base import WebServiceAPIClientBase
+from fruition.api.meta.base import MetaService
+from fruition.api.client.webservice.base import WebServiceAPIClientBase
 
-from pibble.api.middleware.webservice.authentication.basic import (
+from fruition.api.middleware.webservice.authentication.basic import (
     BasicAuthenticationMiddleware,
 )
-from pibble.api.middleware.webservice.authentication.digest import (
+from fruition.api.middleware.webservice.authentication.digest import (
     DigestAuthenticationMiddleware,
 )
-from pibble.api.middleware.webservice.authentication.oauth import (
+from fruition.api.middleware.webservice.authentication.oauth import (
     OAuthAuthenticationMiddleware,
 )
 
-from pibble.api.client.file.ftp import FTPClient
-from pibble.api.client.file.sftp import SFTPClient
+from fruition.api.client.file.ftp import FTPClient
+from fruition.api.client.file.sftp import SFTPClient
 
-from pibble.api.configuration import APIConfiguration
-from pibble.api.exceptions import ConfigurationError
-from pibble.api.exceptions import NotFoundError
+from fruition.api.configuration import APIConfiguration
+from fruition.api.exceptions import ConfigurationError
+from fruition.api.exceptions import NotFoundError
 
 
 class Retriever:
@@ -270,7 +270,7 @@ class S3Retriever(Retriever):
         try:
             import boto3
         except ImportError:
-            raise ImportError("Couldn't import boto3. Run `pip install pibble[aws]` to get it.")
+            raise ImportError("Couldn't import boto3. Run `pip install fruition[aws]` to get it.")
         self.s3 = boto3.client("s3")
 
     def __iter__(self) -> Iterator[bytes]:

@@ -3,9 +3,10 @@ from __future__ import annotations
 from typing import Optional, Dict, Any
 
 from multiprocessing import Process
-from pibble.api.base import APIBase
-from pibble.util.helpers import Pause
-from pibble.util.log import logger
+
+from fruition.api.base import APIBase
+from fruition.util.helpers import Pause
+from fruition.util.log import logger
 
 
 class APIServerProcess(Process):

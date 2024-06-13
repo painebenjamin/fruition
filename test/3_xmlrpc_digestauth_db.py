@@ -7,15 +7,15 @@ from sqlalchemy import (
     Column,
 )
 
-from pibble.database.engine import EngineFactory
-from pibble.api.middleware.webservice.authentication.digest import (
+from fruition.database.engine import EngineFactory
+from fruition.api.middleware.webservice.authentication.digest import (
     DigestAuthenticationMiddleware,
 )
-from pibble.api.server.webservice.rpc.xmlrpc import XMLRPCServer
-from pibble.api.client.webservice.rpc.xmlrpc import XMLRPCClient
-from pibble.util.log import DebugUnifiedLoggingContext
-from pibble.util.helpers import Assertion
-from pibble.util.files import TempfileContext
+from fruition.api.server.webservice.rpc.xmlrpc import XMLRPCServer
+from fruition.api.client.webservice.rpc.xmlrpc import XMLRPCClient
+from fruition.util.log import DebugUnifiedLoggingContext
+from fruition.util.helpers import Assertion
+from fruition.util.files import TempfileContext
 
 
 class DigestAuthenticationXMLRPCServer(DigestAuthenticationMiddleware, XMLRPCServer):

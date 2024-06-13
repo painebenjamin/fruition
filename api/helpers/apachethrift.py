@@ -11,14 +11,14 @@ import functools
 import datetime
 import traceback
 
-from pibble.api.base import APIBase
-from pibble.api.client.base import APIClientBase
-from pibble.api.configuration import APIConfiguration
-from pibble.api.exceptions import ConfigurationError, ApacheThriftError
+from fruition.api.base import APIBase
+from fruition.api.client.base import APIClientBase
+from fruition.api.configuration import APIConfiguration
+from fruition.api.exceptions import ConfigurationError, ApacheThriftError
 
-from pibble.util.log import logger
-from pibble.util.strings import decode, encode
-from pibble.util.helpers import find_executable, resolve
+from fruition.util.log import logger
+from fruition.util.strings import decode, encode
+from fruition.util.helpers import find_executable, resolve
 
 from thrift.transport import TTransport, TSocket
 from thrift.protocol import TBinaryProtocol
@@ -31,7 +31,7 @@ class ApacheThriftHandler:
     """
     A meta class from which handlers should inherit.
 
-    :param configuration pibble.api.configuration.APIConfiguration: The configuration. If passed as a dict, will be instantiated to APIConfiguration.
+    :param configuration fruition.api.configuration.APIConfiguration: The configuration. If passed as a dict, will be instantiated to APIConfiguration.
     """
 
     def __init__(self, configuration: Union[dict, APIConfiguration]):
@@ -109,7 +109,7 @@ class ApacheThriftResponse:
 class ApacheThriftServerHandler:
     """
     A small wrapper that will catch exceptions raised by a handler, then wrap then in a
-    :class:`pibble.api.exceptions.ThriftError` which is itself a wrapper of a `thrift.transport.TTransport.TTransportException`.
+    :class:`fruition.api.exceptions.ThriftError` which is itself a wrapper of a `thrift.transport.TTransport.TTransportException`.
 
     The reason we go through this is so we can actually get the exception raised by the handler during the *process* step, rather than it being eaten up by the thrift handler.
     """
@@ -192,7 +192,7 @@ class TTransitiveMemoryBuffer(TTransport.TTransportBase):  # type: ignore
     Basically just a wrapper around a bytearray(). This is implemented
     because TMemoryBuffer() is read OR write, not both.
 
-    >>> from pibble.api.helpers.apachethrift import TTransitiveMemoryBuffer
+    >>> from fruition.api.helpers.apachethrift import TTransitiveMemoryBuffer
     >>> buf = TTransitiveMemoryBuffer([1,2,3])
     >>> buf.read(1)
     b'\\x01'

@@ -11,7 +11,7 @@ from requests import (
     Request as RequestsRequest,
     Response as RequestsResponse,
 )
-from pibble.api.helpers.wrappers import (
+from fruition.api.helpers.wrappers import (
     RequestWrapper,
     ResponseWrapper,
 )
@@ -26,17 +26,17 @@ from oauthlib.oauth2 import LegacyApplicationClient
 from oauthlib.oauth2 import BackendApplicationClient
 
 
-from pibble.api.middleware.webservice.base import WebServiceAPIMiddlewareBase
+from fruition.api.middleware.webservice.base import WebServiceAPIMiddlewareBase
 
-from pibble.api.helpers.store import APISessionStore
+from fruition.api.helpers.store import APISessionStore
 
-from pibble.api.exceptions import (
+from fruition.api.exceptions import (
     AuthorizationError,
     ConfigurationError,
 )
 
-from pibble.util.strings import Serializer
-from pibble.util.log import logger
+from fruition.util.strings import Serializer
+from fruition.util.log import logger
 
 
 class OAuthAuthenticationMiddleware(WebServiceAPIMiddlewareBase):

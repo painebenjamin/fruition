@@ -1,11 +1,11 @@
 import datetime
 from sqlalchemy import Column, Integer, String, DateTime
-from pibble.ext.user.database.base import UserExtensionObjectBase
-from pibble.ext.user.database.user import User
+from fruition.ext.user.database.base import UserExtensionObjectBase
+from fruition.ext.user.database.user import User
 
 
 class AuthenticationToken(UserExtensionObjectBase):
-    __tablename__ = "pibble_user_token"
+    __tablename__ = "fruition_user_token"
 
     user_id = Column(
         User.ForeignKey("id", ondelete="CASCADE", onupdate="CASCADE"), nullable=False

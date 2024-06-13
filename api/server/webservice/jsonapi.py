@@ -4,9 +4,9 @@ from webob import Request, Response
 
 from typing import Any, Optional
 
-from pibble.database.orm import ORMObject
-from pibble.api.server.webservice.base import WebServiceAPIServerBase
-from pibble.util.strings import Serializer
+from fruition.database.orm import ORMObject
+from fruition.api.server.webservice.base import WebServiceAPIServerBase
+from fruition.util.strings import Serializer
 
 
 class JSONWebServiceAPIServer(WebServiceAPIServerBase):

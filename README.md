@@ -1,13 +1,13 @@
-# Pibble
+# Fruition
 
-The Pibble framework turbocharges Python web applications with a huge array of features and easy-to-use interface.
+The Fruition framework turbocharges Python web applications with a huge array of features and easy-to-use interface.
 
 # Installation
 
-The `pibble` package is available on PYPI. Simply run:
+The `fruition` package is available on PYPI. Simply run:
 
 ```
-pip install pibble
+pip install fruition
 ```
 # Features
 ## API Integration Layer
@@ -16,14 +16,14 @@ APIs are broken up into server and client modules.
 
 ### Server
 
-All web server APIs should be extended from `pibble.api.server.webservice.base.WebServiceAPIServerBase`. For the most part, each implementation must only register some handlers using the `pibble.api.server.webservice.base.WebServiceAPIHandlerRegistry`, which will handle all requests using a method and path. A class is not recommended to use the parent handler function, as this will provider handlers for all classes in this module that extend from `pibble.api.webservice.base.WebServiceAPIServerBase`, instead defining their own. For example, if we simply wanted to serve files from a directory over HTTP, we could use something like this:
+All web server APIs should be extended from `fruition.api.server.webservice.base.WebServiceAPIServerBase`. For the most part, each implementation must only register some handlers using the `fruition.api.server.webservice.base.WebServiceAPIHandlerRegistry`, which will handle all requests using a method and path. A class is not recommended to use the parent handler function, as this will provider handlers for all classes in this module that extend from `fruition.api.webservice.base.WebServiceAPIServerBase`, instead defining their own. For example, if we simply wanted to serve files from a directory over HTTP, we could use something like this:
 
 ```python3
 import os
 from typing import Optional
 from webob import Request, Response
-from pibble.api.exceptions import NotFoundError
-from pibble.api.server.webservice.base import (
+from fruition.api.exceptions import NotFoundError
+from fruition.api.server.webservice.base import (
     WebServiceAPIServerBase,
     WebServiceAPIHandlerRegistry
 )
@@ -68,7 +68,7 @@ class SimpleFileServer(HelloWorldServer):
         :param request webob.Request: The request object.
         :param response webob.Response: The response object.
         :param file_path str: The file path, captured from the URI.
-        :throws: :class:`pibble.api.exceptions.NotFoundError`
+        :throws: :class:`fruition.api.exceptions.NotFoundError`
         """
   
         file_path = os.path.join(self.base_directory, file_path)
@@ -104,14 +104,14 @@ server = SimpleFileServer()
 application = server.wsgi()
 ```
 
-Pointing something like Apache's `mod_wsgi` to this `wsgi.py` file will allow Pibble to be ran through Apache.
+Pointing something like Apache's `mod_wsgi` to this `wsgi.py` file will allow Fruition to be ran through Apache.
 
 #### RPC
 
 Using one of the RPC servers is as simple as defining functions and registering them to the server:
 
 ```python
-from pibble.api.server.webservice.rpc.xml.server import XMLRPCServer
+from fruition.api.server.webservice.rpc.xml.server import XMLRPCServer
 
 server = XMLRPCServer()
 
@@ -151,7 +151,7 @@ The base server defines methods for registration and dispatching of requests. Th
 The simplest client possible is one that simply communicates with a webserver, and doesn't need to parse the response in any meaningful way. Unlike with servers, the base webservice API client is instantiable.
 
 ```python
-from pibble.api.client.webservice.base import WebServiceAPIClientBase
+from fruition.api.client.webservice.base import WebServiceAPIClientBase
 
 base = WebServiceAPIClientBase("google.com")
 print(base.get().text)
@@ -163,8 +163,8 @@ When executing any methods via .get(), .post(), etc., you will receive a `reques
 Using an XML RPC Client is very simple. Once a client is instantiated, it will queue up a call to system.listMethods, a built-in RPC function that will list the methods of a client. After that, calling them is as simple as calling the method with the appropriate variables
 
 ```python
-from pibble.api.client.webservice.rpc.xml.client import XMLRPCClient
-from pibble.api.exceptions import (
+from fruition.api.client.webservice.rpc.xml.client import XMLRPCClient
+from fruition.api.exceptions import (
     BadRequestError,
     UnsupportedMethodError
 )

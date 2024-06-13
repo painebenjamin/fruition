@@ -3,8 +3,8 @@ import re
 import subprocess
 
 from typing import Optional, Any
-from pibble.util.strings import decode
-from pibble.util.log import logger
+from fruition.util.strings import decode
+from fruition.util.log import logger
 
 try:
     from PIL import ImageChops, Image
@@ -14,8 +14,8 @@ except ImportError:
     )
     raise
 
-from pibble.util.helpers import find_executable
-from pibble.util.files import TempfileContext
+from fruition.util.helpers import find_executable
+from fruition.util.files import TempfileContext
 
 video_extensions = [".mov", ".mp4", ".flv", ".gif", ".webm"]
 audio_extensions = [
@@ -249,7 +249,7 @@ class ThumbnailBuilder:
             ).build(output, width, height)
 
     def _build_browser(self, output: str, width: int, height: int) -> Image.Image:
-        from pibble.web.scraper import WebScraper
+        from fruition.web.scraper import WebScraper
 
         logger.debug(f"Building browser thumbnail from {self.filename} to {output}")
         tempfiles = TempfileContext()
@@ -286,7 +286,7 @@ class ThumbnailBuilder:
         image = psd.composite()
         image.thumbnail((width, height))
         image.save(output)
-        return image
+        return image # type: ignore[no-any-return]
 
     def _build_image(self, output: str, width: int, height: int) -> Image.Image:
         logger.debug(f"Building image thumbnail from {self.filename} to {output}")

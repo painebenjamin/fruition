@@ -1,7 +1,7 @@
 from sqlalchemy import Column, String, Integer, Boolean
 from sqlalchemy.types import JSON
 
-from pibble.ext.cms.database.base import CMSExtensionObjectBase
+from fruition.ext.cms.database.base import CMSExtensionObjectBase
 
 
 class Taxonomy(CMSExtensionObjectBase):

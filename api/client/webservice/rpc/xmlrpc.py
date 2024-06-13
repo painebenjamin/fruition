@@ -3,8 +3,8 @@ import base64
 import datetime
 import lxml.etree as ET
 from lxml.builder import E
-from pibble.api.client.webservice.rpc.base import RPCClientBase
-from pibble.api.exceptions import (
+from fruition.api.client.webservice.rpc.base import RPCClientBase
+from fruition.api.exceptions import (
     BadRequestError,
     BadResponseError,
     UnknownError,
@@ -27,7 +27,7 @@ class XMLRPCClient(RPCClientBase):
 
         >>> import lxml.etree as ET
         >>> import datetime
-        >>> from pibble.api.client.webservice.rpc.xmlrpc import XMLRPCClient
+        >>> from fruition.api.client.webservice.rpc.xmlrpc import XMLRPCClient
         >>> ET.tostring(XMLRPCClient.format_parameter("foo"))
         b'<param><value><string>foo</string></value></param>'
         >>> ET.tostring(XMLRPCClient.format_parameter(5))
@@ -37,9 +37,9 @@ class XMLRPCClient(RPCClientBase):
         >>> ET.tostring(XMLRPCClient.format_parameter({"bar": False}))
         b'<param><value><struct><member><value><boolean>0</boolean></value><name>bar</name></member></struct></value></param>'
 
-        :param parameter object: Any value of the acceptable list of value types (see :class:`pibble.api.client.webservice.rpc.xmlrpc.XMLRPCClient`)
+        :param parameter object: Any value of the acceptable list of value types (see :class:`fruition.api.client.webservice.rpc.xmlrpc.XMLRPCClient`)
         :return lxml.etree._Element: The <parameter/> element.
-        :raises pibble.api.exceptions.BadRequestError: When the parameter is not a known RPC type.
+        :raises fruition.api.exceptions.BadRequestError: When the parameter is not a known RPC type.
         """
 
         def _format_parameter(value: Any, name: Optional[str] = None) -> ET._Element:
@@ -88,8 +88,8 @@ class XMLRPCClient(RPCClientBase):
         """
         Takes a string typename ("string", "float", etc.) and turns it into a python type.
 
-        >>> from pibble.api.client.webservice.rpc.xmlrpc import XMLRPCClient
-        >>> from pibble.util.helpers import expect_exception
+        >>> from fruition.api.client.webservice.rpc.xmlrpc import XMLRPCClient
+        >>> from fruition.util.helpers import expect_exception
         >>> XMLRPCClient.map_typename("int")
         <class 'int'>
         >>> XMLRPCClient.map_typename("array")
@@ -121,7 +121,7 @@ class XMLRPCClient(RPCClientBase):
         Formats an n-tuple of parameters into a single <params/> node.
 
         >>> import lxml.etree as ET
-        >>> from pibble.api.client.webservice.rpc.xmlrpc import XMLRPCClient
+        >>> from fruition.api.client.webservice.rpc.xmlrpc import XMLRPCClient
         >>> ET.tostring(XMLRPCClient.format_parameters())
         b'<params/>'
 
@@ -138,7 +138,7 @@ class XMLRPCClient(RPCClientBase):
         """
         Formats a request with method_name and *args into XML syntax.
 
-        >>> from pibble.api.client.webservice.rpc.xmlrpc import XMLRPCClient
+        >>> from fruition.api.client.webservice.rpc.xmlrpc import XMLRPCClient
         >>> XMLRPCClient.format_request(None, "print", "my_message")
         b'<methodCall><methodName>print</methodName><params><param><value><string>my_message</string></value></param></params></methodCall>'
 
@@ -160,7 +160,7 @@ class XMLRPCClient(RPCClientBase):
 
         >>> import lxml.etree as ET
         >>> from lxml.builder import E
-        >>> from pibble.api.client.webservice.rpc.xmlrpc import XMLRPCClient
+        >>> from fruition.api.client.webservice.rpc.xmlrpc import XMLRPCClient
         >>> XMLRPCClient.parse_parameters(E.params(E.param(E.value(E.int("4")))))
         [4]
         >>> XMLRPCClient.parse_parameters(E.params(E.param(E.value(E.int("4"))), E.param(E.value(E.array(E.data(E.value(E.string("foo"))))))))
@@ -170,7 +170,7 @@ class XMLRPCClient(RPCClientBase):
 
         :param node lxml.etree._Element: The <params/> node from the request.
         :returns list: A list of all parameters in a request.
-        :raises pibble.api.exceptions.BadRequestError: When the type of the value is incorrect.
+        :raises fruition.api.exceptions.BadRequestError: When the type of the value is incorrect.
         """
 
         def parse_parameter(param_node: ET._Element) -> Any:

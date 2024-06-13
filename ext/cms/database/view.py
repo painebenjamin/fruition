@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 from sqlalchemy import Column, String, ForeignKey, Integer, ForeignKeyConstraint
 from sqlalchemy.types import JSON
-from pibble.ext.cms.database.base import CMSExtensionObjectBase
-from pibble.ext.cms.database.interface import (
+from fruition.ext.cms.database.base import CMSExtensionObjectBase
+from fruition.ext.cms.database.interface import (
     Taxonomy,
     Interface,
     InterfaceParameter,

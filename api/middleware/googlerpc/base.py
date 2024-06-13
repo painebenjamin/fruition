@@ -1,5 +1,5 @@
-from pibble.api.middleware.base import APIMiddlewareBase
-from pibble.api.helpers.googlerpc import GRPCRequest, GRPCResponse
+from fruition.api.middleware.base import APIMiddlewareBase
+from fruition.api.helpers.googlerpc import GRPCRequest, GRPCResponse
 
 
 class GRPCAPIMiddlewareBase(APIMiddlewareBase):
@@ -18,7 +18,7 @@ class GRPCAPIMiddlewareBase(APIMiddlewareBase):
         Servers: prepares a request for processing.
         Clients: prepares a request for sending. Context is unavailable.
 
-        :param request pibble.api.helpers.grpc.GRPCRequest: The request method, message and args.
+        :param request fruition.api.helpers.grpc.GRPCRequest: The request method, message and args.
         """
         pass
 
@@ -27,6 +27,6 @@ class GRPCAPIMiddlewareBase(APIMiddlewareBase):
         Servers: prepares a response for sending.
         Clients: parses a response from the server. Context is unavailable.
 
-        :param response pibble.api.helpers.grpc.GRPCResponse: The response object.
+        :param response fruition.api.helpers.grpc.GRPCResponse: The response object.
         """
         pass

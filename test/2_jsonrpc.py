@@ -1,11 +1,11 @@
 from typing import Dict
 
-from pibble.api.server.webservice.rpc.jsonrpc import JSONRPCServer
-from pibble.api.client.webservice.rpc.jsonrpc import JSONRPCClient
-from pibble.api.client.webservice.wrapper import WebServiceAPIClientWrapper
+from fruition.api.server.webservice.rpc.jsonrpc import JSONRPCServer
+from fruition.api.client.webservice.rpc.jsonrpc import JSONRPCClient
+from fruition.api.client.webservice.wrapper import WebServiceAPIClientWrapper
 
-from pibble.util.log import DebugUnifiedLoggingContext
-from pibble.util.helpers import Assertion
+from fruition.util.log import DebugUnifiedLoggingContext
+from fruition.util.helpers import Assertion
 
 
 class JSONRPCClientWrapper(JSONRPCClient, WebServiceAPIClientWrapper):

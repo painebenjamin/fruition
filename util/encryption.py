@@ -15,7 +15,7 @@ from Crypto.Protocol.KDF import PBKDF2
 
 from typing import Optional, Tuple, Union
 
-from pibble.util.strings import encode, decode
+from fruition.util.strings import encode, decode
 
 __all__ = ["Password", "AESCipher"]
 
@@ -24,7 +24,7 @@ class Password:
     """
     A small class providing a reasonably secure hashing methods for passwords.
 
-    >>> from pibble.util.encryption import Password
+    >>> from fruition.util.encryption import Password
     >>> hashed = Password.hash("password")
     >>> Password.verify(hashed, "password")
     True
@@ -69,7 +69,7 @@ class AESCipher:
 
     Accepts a small amount of combinations of initialization parameters for various use cases.
 
-    >>> from pibble.util.encryption import AESCipher
+    >>> from fruition.util.encryption import AESCipher
     >>> random_cipher = AESCipher()
     >>> random_cipher.decrypt(random_cipher.encrypt("test"))
     'test'
@@ -119,7 +119,7 @@ class AESCipher:
 
         The pad character is the number of bytes of padding added.
 
-        >>> from pibble.util.encryption import AESCipher
+        >>> from fruition.util.encryption import AESCipher
         >>> from random import randint
         >>> string_length = randint(1, AESCipher.BLOCK_SIZE - 1)
         >>> string_to_pad = AESCipher.random(string_length)
@@ -143,7 +143,7 @@ class AESCipher:
         Must be used in conjunction with pad(), as this expects the pad
         character to be the length of the padding.
 
-        >>> from pibble.util.encryption import AESCipher
+        >>> from fruition.util.encryption import AESCipher
         >>> expects_one_pad_character = b"0123456789abcde"
         >>> assert AESCipher.unpad(expects_one_pad_character + b'\x01') == expects_one_pad_character
 
@@ -175,7 +175,7 @@ class AESCipher:
         """
         Simply encodes the current key in base64. Necessary if you're going to store it later.
 
-        >>> from pibble.util.encryption import AESCipher
+        >>> from fruition.util.encryption import AESCipher
         >>> from base64 import b64encode
         >>> key = AESCipher.random(AESCipher.KEY_SIZE)
         >>> assert AESCipher(key=key).b64key == b64encode(key)
@@ -199,7 +199,7 @@ class AESCipher:
         """
         Encrypts a string and returns the base64 representation.
 
-        >>> from pibble.util.encryption import AESCipher
+        >>> from fruition.util.encryption import AESCipher
         >>> iv = b'0' * AESCipher.BLOCK_SIZE
         >>> key = b'0' * AESCipher.KEY_SIZE
         >>> cipher = AESCipher(key=key)
@@ -213,13 +213,13 @@ class AESCipher:
         raw_padded = self.pad(encode(raw))
         iv, cipher = self.cipher(iv)
         b64encoded = b64encode(iv + cipher.encrypt(raw_padded))
-        return decode(b64encoded)
+        return str(decode(b64encoded))
 
     def decrypt(self, encoded: str) -> str:
         """
         Decrypts the base64-encoded string.
 
-        >>> from pibble.util.encryption import AESCipher
+        >>> from fruition.util.encryption import AESCipher
         >>> key = b'0' * AESCipher.KEY_SIZE
         >>> cipher = AESCipher(key=key)
         >>> cipher.decrypt('MDAwMDAwMDAwMDAwMDAwMFLR9bzH43Otc2e61hCvYuw=')
@@ -231,4 +231,4 @@ class AESCipher:
         b64_decoded = b64decode(encode(encoded))
         iv = b64_decoded[:16]
         iv, cipher = self.cipher(iv)
-        return decode(self.unpad(cipher.decrypt(b64_decoded[16:])))
+        return str(decode(self.unpad(cipher.decrypt(b64_decoded[16:]))))

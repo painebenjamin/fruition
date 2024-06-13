@@ -3,18 +3,18 @@ import tempfile
 import sqlalchemy
 import hashlib
 
-from pibble.api.middleware.webservice.authentication.basic import (
+from fruition.api.middleware.webservice.authentication.basic import (
     BasicAuthenticationMiddleware,
 )
-from pibble.api.server.webservice.apachethrift import ApacheThriftWebServer
-from pibble.api.client.webservice.apachethrift import ApacheThriftWebClient
-from pibble.api.helpers.apachethrift import ApacheThriftHandler, ApacheThriftCompiler
-from pibble.util.log import DebugUnifiedLoggingContext
-from pibble.util.helpers import Assertion, find_executable
-from pibble.database.engine import EngineFactory
+from fruition.api.server.webservice.apachethrift import ApacheThriftWebServer
+from fruition.api.client.webservice.apachethrift import ApacheThriftWebClient
+from fruition.api.helpers.apachethrift import ApacheThriftHandler, ApacheThriftCompiler
+from fruition.util.log import DebugUnifiedLoggingContext
+from fruition.util.helpers import Assertion, find_executable
+from fruition.database.engine import EngineFactory
 
 TEST_SERVICE = """
-namespace py PibbleThiftTest
+namespace py FruitionThiftTest
 
 service Calculator {
   i32 add(1:i32 num1, 2:i32 num2)
@@ -77,7 +77,7 @@ def main():
 
             # Write and compile service
             open(tmp, "w").write(TEST_SERVICE)
-            PibbleApacheThriftTest = ApacheThriftCompiler(tmp).compile()
+            FruitionApacheThriftTest = ApacheThriftCompiler(tmp).compile()
 
             # Create server
             server = BasicAuthenticationApacheThriftWebServer()
@@ -87,8 +87,8 @@ def main():
                 **{
                     "server": {"host": "0.0.0.0", "port": PORT, "driver": "werkzeug"},
                     "thrift": {
-                        "service": PibbleApacheThriftTest.Calculator,
-                        "types": PibbleApacheThriftTest.ttypes,
+                        "service": FruitionApacheThriftTest.Calculator,
+                        "types": FruitionApacheThriftTest.ttypes,
                         "handler": CalculatorHandler,
                     },
                     "authentication": {
@@ -113,8 +113,8 @@ def main():
                 **{
                     "client": {"host": "127.0.0.1", "port": PORT},
                     "thrift": {
-                        "service": PibbleApacheThriftTest.Calculator,
-                        "types": PibbleApacheThriftTest.ttypes,
+                        "service": FruitionApacheThriftTest.Calculator,
+                        "types": FruitionApacheThriftTest.ttypes,
                     },
                     "authentication": {
                         "basic": {"username": USERNAME, "password": PASSWORD}

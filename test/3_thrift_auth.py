@@ -2,18 +2,18 @@ import os
 import tempfile
 import socket
 
-from pibble.api.exceptions import AuthenticationError
-from pibble.api.server.apachethrift import ApacheThriftServer
-from pibble.api.client.apachethrift import ApacheThriftClient
-from pibble.api.middleware.apachethrift.screening import (
+from fruition.api.exceptions import AuthenticationError
+from fruition.api.server.apachethrift import ApacheThriftServer
+from fruition.api.client.apachethrift import ApacheThriftClient
+from fruition.api.middleware.apachethrift.screening import (
     ScreeningApacheThriftAPIMiddleware,
 )
-from pibble.api.helpers.apachethrift import ApacheThriftHandler, ApacheThriftCompiler
-from pibble.util.log import DebugUnifiedLoggingContext
-from pibble.util.helpers import Assertion, find_executable
+from fruition.api.helpers.apachethrift import ApacheThriftHandler, ApacheThriftCompiler
+from fruition.util.log import DebugUnifiedLoggingContext
+from fruition.util.helpers import Assertion, find_executable
 
 TEST_SERVICE = """
-namespace py PibbleThiftTest
+namespace py FruitionThiftTest
 
 service Calculator {
   i32 add(1:i32 num1, 2:i32 num2)
@@ -49,7 +49,7 @@ def main():
         os.close(fd)
         try:
             open(tmp, "w").write(TEST_SERVICE)
-            PibbleApacheThriftTest = ApacheThriftCompiler(tmp).compile()
+            FruitionApacheThriftTest = ApacheThriftCompiler(tmp).compile()
             server = ApacheThriftScreeningServer()
             server.configure(
                 **{
@@ -61,8 +61,8 @@ def main():
                         "offlist": "reject",
                     },
                     "thrift": {
-                        "service": PibbleApacheThriftTest.Calculator,
-                        "types": PibbleApacheThriftTest.ttypes,
+                        "service": FruitionApacheThriftTest.Calculator,
+                        "types": FruitionApacheThriftTest.ttypes,
                         "handler": CalculatorHandler,
                     },
                 }
@@ -73,8 +73,8 @@ def main():
                 **{
                     "client": {"host": "127.0.0.1", "port": PORT},
                     "thrift": {
-                        "types": PibbleApacheThriftTest.ttypes,
-                        "service": PibbleApacheThriftTest.Calculator,
+                        "types": FruitionApacheThriftTest.ttypes,
+                        "service": FruitionApacheThriftTest.Calculator,
                     },
                 }
             )

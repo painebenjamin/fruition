@@ -1,4 +1,4 @@
-from pibble.ext.rest.database.base import RESTObjectBase
+from fruition.ext.rest.database.base import RESTObjectBase
 
 __all__ = ["RESTObjectBase"]
 

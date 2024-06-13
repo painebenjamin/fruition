@@ -12,9 +12,9 @@ import sqlalchemy
 
 from typing import Any, List, Dict
 from statistics import median
-from pibble.util.log import logger
-from pibble.database.engine import EngineFactory
-from pibble.database.util import row_to_dict
+from fruition.util.log import logger
+from fruition.database.engine import EngineFactory
+from fruition.database.util import row_to_dict
 
 from sqlalchemy.sql.type_api import TypeEngine as SQLAlchemyType
 

@@ -3,10 +3,10 @@ import ipaddress
 
 from typing import List, Union
 
-from pibble.util.log import logger
-from pibble.util.files import load_yaml, load_json
-from pibble.api.middleware.base import APIMiddlewareBase
-from pibble.api.configuration import APIConfiguration
+from fruition.util.log import logger
+from fruition.util.files import load_yaml, load_json
+from fruition.api.middleware.base import APIMiddlewareBase
+from fruition.api.configuration import APIConfiguration
 
 
 def parse_ip_list(
@@ -70,7 +70,7 @@ class ScreeningAPIMiddlewareBase(APIMiddlewareBase):
     2. ``server.blocklist`` Similar to ``server.allowlist``, but these are always rejected. Defaults to empty.
     3. ``server.offlist`` What the default behavior is. This is either `accept` or `reject`. Defaults to `accept`.
 
-    :param request pibble.api.server.thrift.ThriftRequest: The request object.
+    :param request fruition.api.server.thrift.ThriftRequest: The request object.
     """
 
     def on_configure(self) -> None:

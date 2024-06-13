@@ -1,5 +1,5 @@
-from pibble.api.middleware.base import APIMiddlewareBase
-from pibble.util.files import TempfileContext
+from fruition.api.middleware.base import APIMiddlewareBase
+from fruition.util.files import TempfileContext
 
 
 class APITempfileMiddleware(APIMiddlewareBase):

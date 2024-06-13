@@ -116,7 +116,7 @@ html_static_path = ["_static"]
 # -- Options for HTMLHelp output ---------------------------------------------
 
 # Output file base name for HTML help builder.
-htmlhelp_basename = "PibbleFrameworkdoc"
+htmlhelp_basename = "FruitionFrameworkdoc"
 
 
 # -- Options for LaTeX output ------------------------------------------------
@@ -142,8 +142,8 @@ latex_elements = {
 latex_documents = [
     (
         master_doc,
-        "PibbleFramework.tex",
-        "Pibble Framework Documentation",
+        "FruitionFramework.tex",
+        "Fruition Framework Documentation",
         "Benjamin Paine",
         "manual",
     ),
@@ -157,8 +157,8 @@ latex_documents = [
 man_pages = [
     (
         master_doc,
-        "pibbleraries",
-        "Pibble Framework Documentation",
+        "fruitionraries",
+        "Fruition Framework Documentation",
         [author],
         1,
     )
@@ -173,10 +173,10 @@ man_pages = [
 texinfo_documents = [
     (
         master_doc,
-        "PibbleFramework",
-        "Pibble Framework Documentation",
+        "FruitionFramework",
+        "Fruition Framework Documentation",
         author,
-        "PibbleFramework",
+        "FruitionFramework",
         "One line description of project.",
         "Miscellaneous",
     ),

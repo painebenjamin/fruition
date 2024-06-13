@@ -6,15 +6,15 @@ from thrift.transport import TSocket
 from thrift.transport import TTransport
 from thrift.protocol import TBinaryProtocol
 
-from pibble.api.client.base import APIClientBase
+from fruition.api.client.base import APIClientBase
 
-from pibble.api.helpers.apachethrift import (
+from fruition.api.helpers.apachethrift import (
     ApacheThriftService,
     ApacheThriftRequest,
     ApacheThriftResponse,
 )
 
-from pibble.util.helpers import resolve
+from fruition.util.helpers import resolve
 
 __all__ = ["ApacheThriftClientBase", "ApacheThriftClient"]
 
@@ -90,7 +90,7 @@ class ApacheThriftClientBase(APIClientBase):
 
         if response.response_type == ApacheThriftResponse.ERROR:
             err = response.response
-            if str(response.response).startswith("pibble.api.exceptions"):
+            if str(response.response).startswith("fruition.api.exceptions"):
                 error_parts = str(response.response).split(":")
                 try:
                     err = resolve(error_parts[0])(":".join(error_parts[1:]))
@@ -133,7 +133,7 @@ class ApacheThriftClient(ApacheThriftClientBase):
       1. ``client.host`` the host the connect to.
       2. ``client.port`` the port to connect to.
 
-    See `pibble.api.helpers.apachethrift.ApacheThriftService` for required service arguments.
+    See `fruition.api.helpers.apachethrift.ApacheThriftService` for required service arguments.
     """
 
     def on_configure(self) -> None:

@@ -1,15 +1,15 @@
 import sqlite3
 import hashlib
 
-from pibble.api.middleware.webservice.authentication.basic import (
+from fruition.api.middleware.webservice.authentication.basic import (
     BasicAuthenticationMiddleware,
 )
-from pibble.api.server.webservice.rpc.xmlrpc import XMLRPCServer
-from pibble.api.client.webservice.rpc.xmlrpc import XMLRPCClient
-from pibble.util.log import DebugUnifiedLoggingContext
-from pibble.util.helpers import Assertion
-from pibble.util.files import TempfileContext
-from pibble.util.strings import encode
+from fruition.api.server.webservice.rpc.xmlrpc import XMLRPCServer
+from fruition.api.client.webservice.rpc.xmlrpc import XMLRPCClient
+from fruition.util.log import DebugUnifiedLoggingContext
+from fruition.util.helpers import Assertion
+from fruition.util.files import TempfileContext
+from fruition.util.strings import encode
 
 
 class BasicAuthenticationXMLRPCServer(BasicAuthenticationMiddleware, XMLRPCServer):

@@ -1,5 +1,5 @@
 Exceptions
 ==========
 
-.. automodule:: pibble.api.exceptions
+.. automodule:: fruition.api.exceptions
   :members:

@@ -1,23 +1,23 @@
 import sqlalchemy
 import time
 
-from pibble.util.log import DebugUnifiedLoggingContext
-from pibble.util.helpers import expect_exception
-from pibble.util.files import TempfileContext
-from pibble.database.orm import ORMObjectBase
-from pibble.api.exceptions import (
+from fruition.util.log import DebugUnifiedLoggingContext
+from fruition.util.helpers import expect_exception
+from fruition.util.files import TempfileContext
+from fruition.database.orm import ORMObjectBase
+from fruition.api.exceptions import (
     NotFoundError,
     AuthenticationError,
     PermissionError,
     BadRequestError,
 )
-from pibble.api.server.webservice.jsonapi import JSONWebServiceAPIServer
-from pibble.api.client.webservice.jsonapi import JSONWebServiceAPIClient
-from pibble.ext.user.server.base import (
+from fruition.api.server.webservice.jsonapi import JSONWebServiceAPIServer
+from fruition.api.client.webservice.jsonapi import JSONWebServiceAPIClient
+from fruition.ext.user.server.base import (
     UserExtensionServer,
     UserExtensionHandlerRegistry,
 )
-from pibble.ext.user.client.base import UserExtensionClientBase
+from fruition.ext.user.client.base import UserExtensionClientBase
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm.exc import NoResultFound
 

@@ -2,10 +2,10 @@ from typing import Optional, Union
 
 from webob import Request as WebobRequest, Response as WebobResponse
 from requests import Request as RequestsRequest, Response as RequestsResponse
-from pibble.api.helpers.wrappers import RequestWrapper, ResponseWrapper
-from pibble.api.middleware.base import APIMiddlewareBase
-from pibble.database.orm import ORM, ORMBuilder, ORMSession
-from pibble.util.log import logger
+from fruition.api.helpers.wrappers import RequestWrapper, ResponseWrapper
+from fruition.api.middleware.base import APIMiddlewareBase
+from fruition.database.orm import ORM, ORMBuilder, ORMSession
+from fruition.util.log import logger
 
 
 class ORMMiddlewareBase(APIMiddlewareBase):

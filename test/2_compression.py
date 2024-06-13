@@ -4,13 +4,13 @@ import zlib
 
 from webob import Request, Response
 
-from pibble.api.client.webservice.base import WebServiceAPIClientBase
-from pibble.api.client.webservice.wrapper import WebServiceAPIClientWrapper
-from pibble.api.server.webservice.base import WebServiceAPIServerBase
-from pibble.api.server.webservice.handler import WebServiceAPIHandlerRegistry
+from fruition.api.client.webservice.base import WebServiceAPIClientBase
+from fruition.api.client.webservice.wrapper import WebServiceAPIClientWrapper
+from fruition.api.server.webservice.base import WebServiceAPIServerBase
+from fruition.api.server.webservice.handler import WebServiceAPIHandlerRegistry
 
-from pibble.util.log import logger, DebugUnifiedLoggingContext
-from pibble.util.helpers import Assertion, Pause, CompressedIterator
+from fruition.util.log import logger, DebugUnifiedLoggingContext
+from fruition.util.helpers import Assertion, Pause, CompressedIterator
 
 # random_contents = "\n".join([random_string() for i in range(10)])
 random_contents = "a" * 128

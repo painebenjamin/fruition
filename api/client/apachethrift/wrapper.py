@@ -1,9 +1,9 @@
 from typing import Any
 
-from pibble.api.helpers.apachethrift import ApacheThriftRequest
-from pibble.api.client.wrapper import APIClientWrapperBase
-from pibble.api.client.apachethrift import ApacheThriftClientBase
-from pibble.api.server.apachethrift import ApacheThriftServer
+from fruition.api.helpers.apachethrift import ApacheThriftRequest
+from fruition.api.client.wrapper import APIClientWrapperBase
+from fruition.api.client.apachethrift import ApacheThriftClientBase
+from fruition.api.server.apachethrift import ApacheThriftServer
 
 __all__ = ["ApacheThriftClientWrapper", "ApacheThriftHandlerWrapper"]
 
@@ -13,7 +13,7 @@ class ApacheThriftClientWrapper(ApacheThriftClientBase, APIClientWrapperBase):
     A wrapper around the client class of a thrift service that doesn't instantiate any kind of protocol,
     instead directly calling the server instance.
 
-    See `pibble.api.helpers.apachethrift.ApacheThriftService` for required service arguments.
+    See `fruition.api.helpers.apachethrift.ApacheThriftService` for required service arguments.
     """
 
     def _execute(self, request: ApacheThriftRequest) -> Any:
@@ -31,7 +31,7 @@ class ApacheThriftHandlerWrapper(ApacheThriftClientBase):
     A wrapper around the client class of a thrift service that doesn't instantiate any kind of protocol,
     instead directly calling the server instance.
 
-    See `pibble.api.helpers.apachethrift.ApacheThriftService` for required service arguments.
+    See `fruition.api.helpers.apachethrift.ApacheThriftService` for required service arguments.
     """
 
     def _execute(self, request: ApacheThriftRequest) -> Any:

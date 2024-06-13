@@ -4,8 +4,8 @@ import shutil
 import os
 import grpc
 
-from pibble.util.log import DebugUnifiedLoggingContext
-from pibble.api.helpers.googlerpc import GRPCCompiler, GRPCImporter
+from fruition.util.log import DebugUnifiedLoggingContext
+from fruition.api.helpers.googlerpc import GRPCCompiler, GRPCImporter
 
 from concurrent.futures import ThreadPoolExecutor
 

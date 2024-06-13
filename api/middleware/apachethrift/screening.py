@@ -1,10 +1,10 @@
 import ipaddress
 
-from pibble.api.exceptions import AuthenticationError
-from pibble.api.middleware.apachethrift.base import ApacheThriftAPIMiddlewareBase
-from pibble.api.middleware.screening import ScreeningAPIMiddlewareBase
-from pibble.api.helpers.apachethrift import ApacheThriftRequest
-from pibble.api.server.apachethrift import ApacheThriftServer
+from fruition.api.exceptions import AuthenticationError
+from fruition.api.middleware.apachethrift.base import ApacheThriftAPIMiddlewareBase
+from fruition.api.middleware.screening import ScreeningAPIMiddlewareBase
+from fruition.api.helpers.apachethrift import ApacheThriftRequest
+from fruition.api.server.apachethrift import ApacheThriftServer
 
 
 class ScreeningApacheThriftAPIMiddleware(

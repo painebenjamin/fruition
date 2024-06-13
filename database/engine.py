@@ -13,7 +13,7 @@ from typing_extensions import Self
 
 from sqlalchemy.engine.url import URL
 from sqlalchemy.engine.base import Engine as EngineBase
-from pibble.util.log import logger
+from fruition.util.log import logger
 
 from sqlalchemy.schema import DropTable
 from sqlalchemy.ext.compiler import compiles
@@ -169,7 +169,7 @@ class NoEngine:
 
 class EngineFactory:
     """
-    The EngineFactory is used to create Engines. See :class:pibble.database.engine.Engine
+    The EngineFactory is used to create Engines. See :class:fruition.database.engine.Engine
 
     :param kwargs dict: A dictionary containing "key" => "configuration" pairs, where "configuration" is a dictionary containing necessary configuration keys.
     """
@@ -229,7 +229,7 @@ class EngineFactory:
 
         :param engine_type str: The engine type. See EngineFactory.DEFAULTS, the keys present there are known engine types - though using SQLAlchemy means this can be extended.
         :param configuration dict: Any configuration to override default values with.
-        :return pibble.database.engine.Engine: The engine requested.
+        :return fruition.database.engine.Engine: The engine requested.
         """
         configuration = {**self.configuration.get(engine_type, {}), **configuration}
         for store in self.stores:
@@ -253,7 +253,7 @@ class EngineFactory:
         """
         Dispose of an individual engine. Generally not used, as long as the context manager is used.
 
-        :param engine pibble.database.engine.Engine: The engine to dispose of.
+        :param engine fruition.database.engine.Engine: The engine to dispose of.
         """
         self.stores = [store for store in self.stores if store.engine is not engine]
         engine.dispose()

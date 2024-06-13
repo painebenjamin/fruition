@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 from sqlalchemy import Column, String, Integer
 from sqlalchemy.types import JSON
-from pibble.ext.dam.database.base import DAMObjectBase
+from fruition.ext.dam.database.base import DAMObjectBase
 
 
 class MIMEMetaData(DAMObjectBase):

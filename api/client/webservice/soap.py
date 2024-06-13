@@ -10,9 +10,9 @@ from zeep import Client
 from zeep.transports import Transport
 from zeep.wsdl.definitions import Operation, AbstractMessage
 
-from pibble.api.helpers.wrappers import RequestWrapper, ResponseWrapper
-from pibble.api.client.webservice.base import WebServiceAPIClientBase
-from pibble.util.helpers import url_join
+from fruition.api.helpers.wrappers import RequestWrapper, ResponseWrapper
+from fruition.api.client.webservice.base import WebServiceAPIClientBase
+from fruition.util.helpers import url_join
 
 
 class SOAPError(Exception):

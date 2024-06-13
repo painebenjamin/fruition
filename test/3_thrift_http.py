@@ -1,15 +1,15 @@
 import os
 import tempfile
 
-from pibble.api.client.webservice.wrapper import WebServiceAPIClientWrapper
-from pibble.api.server.webservice.apachethrift import ApacheThriftWebServer
-from pibble.api.client.webservice.apachethrift import ApacheThriftWebClient
-from pibble.api.helpers.apachethrift import ApacheThriftHandler, ApacheThriftCompiler
-from pibble.util.log import DebugUnifiedLoggingContext
-from pibble.util.helpers import Assertion
+from fruition.api.client.webservice.wrapper import WebServiceAPIClientWrapper
+from fruition.api.server.webservice.apachethrift import ApacheThriftWebServer
+from fruition.api.client.webservice.apachethrift import ApacheThriftWebClient
+from fruition.api.helpers.apachethrift import ApacheThriftHandler, ApacheThriftCompiler
+from fruition.util.log import DebugUnifiedLoggingContext
+from fruition.util.helpers import Assertion
 
 TEST_SERVICE = """
-namespace py PibbleThiftTest
+namespace py FruitionThiftTest
 
 service Calculator {
   i32 add(1:i32 num1, 2:i32 num2)
@@ -33,13 +33,13 @@ def main():
         server = ApacheThriftWebServer()
         try:
             open(tmp, "w").write(TEST_SERVICE)
-            PibbleApacheThriftTest = ApacheThriftCompiler(tmp).compile()
+            FruitionApacheThriftTest = ApacheThriftCompiler(tmp).compile()
             server.configure(
                 **{
                     "server": {"host": "0.0.0.0", "port": PORT, "driver": "werkzeug"},
                     "thrift": {
-                        "service": PibbleApacheThriftTest.Calculator,
-                        "types": PibbleApacheThriftTest.ttypes,
+                        "service": FruitionApacheThriftTest.Calculator,
+                        "types": FruitionApacheThriftTest.ttypes,
                         "handler": CalculatorHandler,
                     },
                 }
@@ -52,8 +52,8 @@ def main():
                         "client": {"host": "127.0.0.1", "port": PORT},
                         "server": {"instance": server},
                         "thrift": {
-                            "types": PibbleApacheThriftTest.ttypes,
-                            "service": PibbleApacheThriftTest.Calculator,
+                            "types": FruitionApacheThriftTest.ttypes,
+                            "service": FruitionApacheThriftTest.Calculator,
                         },
                     }
                 )

@@ -10,9 +10,9 @@ from grpc import ServicerContext
 
 from typing import Any, NamedTuple
 
-from pibble.util.log import DebugUnifiedLoggingContext, logger
-from pibble.util.helpers import find_executable
-from pibble.api.helpers.googlerpc import (
+from fruition.util.log import DebugUnifiedLoggingContext, logger
+from fruition.util.helpers import find_executable
+from fruition.api.helpers.googlerpc import (
     GRPCCompiler,
     GRPCImporter,
     GRPCServiceExplorer,

@@ -2,11 +2,11 @@ from __future__ import annotations
 
 import os
 
-from pibble.util.files import load_yaml, load_json
-from pibble.util.strings import Serializer
+from fruition.util.files import load_yaml, load_json
+from fruition.util.strings import Serializer
 
-from pibble.api.configuration import APIConfiguration
-from pibble.api.meta.base import MetaService, MetaFunction
+from fruition.api.configuration import APIConfiguration
+from fruition.api.meta.base import MetaService, MetaFunction
 
 __all__ = ["MetaFactory"]
 

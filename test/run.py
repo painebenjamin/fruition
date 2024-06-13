@@ -3,8 +3,8 @@ import os
 import traceback
 import multiprocessing
 
-from pibble.util.log import logger, DebugUnifiedLoggingContext
-from pibble.util.helpers import resolve
+from fruition.util.log import logger, DebugUnifiedLoggingContext
+from fruition.util.helpers import resolve
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 
@@ -18,8 +18,8 @@ class TestThread(multiprocessing.Process):
     def run(self):
         try:
             test_module = __import__(
-                "pibble.test.{0}".format(self.test_module_name),
-                fromlist=["pibble.test"],
+                "fruition.test.{0}".format(self.test_module_name),
+                fromlist=["fruition.test"],
             )
             result = test_module.main()
         except Exception as ex:

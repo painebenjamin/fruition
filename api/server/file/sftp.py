@@ -19,15 +19,15 @@ try:
         Transport,
     )
 except ImportError:
-    raise ImportError("Couldn't find paramiko. Run `pip install pibble[ftp]` to get it.")
+    raise ImportError("Couldn't find paramiko. Run `pip install fruition[ftp]` to get it.")
 
 from typing import Callable, Any, Union, Optional, List
 
-from pibble.util.log import logger
-from pibble.api.server.base import APIServerBase
-from pibble.api.exceptions import AuthenticationError
-from pibble.api.configuration import APIConfiguration
-from pibble.api.helpers.authentication import APIAuthenticationSource
+from fruition.util.log import logger
+from fruition.api.server.base import APIServerBase
+from fruition.api.exceptions import AuthenticationError
+from fruition.api.configuration import APIConfiguration
+from fruition.api.helpers.authentication import APIAuthenticationSource
 
 
 class SFTPRequest:
@@ -79,7 +79,7 @@ class StubServer(ParamikoServerInterface):
 
     Adapted from https://github.com/rspivak/sftpserver
 
-    See :class:pibble.api.server.file.sftp.ParamikoSFTPServer for more information.
+    See :class:fruition.api.server.file.sftp.ParamikoSFTPServer for more information.
     """
 
     publickey: Optional[APIAuthenticationSource]
@@ -150,7 +150,7 @@ class SFTPStubHandler(ParamikoSFTPHandle):
 
     Adapted from https://github.com/rspivak/sftpserver
 
-    See :class:pibble.api.server.file.sftp.ParamikoSFTPServer for more information.
+    See :class:fruition.api.server.file.sftp.ParamikoSFTPServer for more information.
     """
 
     def stat(self) -> Union[SFTPAttributes, int]:
@@ -173,7 +173,7 @@ class SFTPStubServer(ParamikoSFTPParamikoServerInterface):
 
     Adapted from https://github.com/rspivak/sftpserver
 
-    See :class:pibble.api.server.file.sftp.ParamikoSFTPServer for more information.
+    See :class:fruition.api.server.file.sftp.ParamikoSFTPServer for more information.
     """
 
     processor = SFTPProcessor()
@@ -372,7 +372,7 @@ class SFTPServer(APIServerBase):
     authentication.driver = "<anything but rsa>" - only use username/password authentication
     authentication.driver = ["rsa", "<anything but rsa>"] - use both.
 
-    :see:pibble.api.helpers.authentication.APIAuthenticationSource
+    :see:fruition.api.helpers.authentication.APIAuthenticationSource
     """
 
     def on_configure(self) -> None:

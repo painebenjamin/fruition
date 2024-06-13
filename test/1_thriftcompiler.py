@@ -1,12 +1,12 @@
 import tempfile
 import os
 
-from pibble.util.helpers import find_executable
-from pibble.util.log import DebugUnifiedLoggingContext
-from pibble.api.helpers.apachethrift import ApacheThriftCompiler
+from fruition.util.helpers import find_executable
+from fruition.util.log import DebugUnifiedLoggingContext
+from fruition.api.helpers.apachethrift import ApacheThriftCompiler
 
 TEST_SERVICE = """
-namespace py PibbleThriftTest
+namespace py FruitionThriftTest
 
 service Calculator {
   i32 add(1:i32 num1, 2:i32 num2)
@@ -25,9 +25,9 @@ def main() -> None:
         try:
             open(tmp, "w").write(TEST_SERVICE)
             compiler = ApacheThriftCompiler(tmp)
-            PibbleThriftTest = compiler.compile()
-            assert hasattr(PibbleThriftTest, "Calculator")
-            assert hasattr(PibbleThriftTest.Calculator, "Client")
+            FruitionThriftTest = compiler.compile()
+            assert hasattr(FruitionThriftTest, "Calculator")
+            assert hasattr(FruitionThriftTest.Calculator, "Client")
 
             open(tmp, "w").write("\n".join(TEST_SERVICE.splitlines()[2:]))
             compiler2 = ApacheThriftCompiler(tmp)

@@ -1,15 +1,15 @@
 from typing import Dict
 
-from pibble.api.server.webservice.rpc.jsonrpc import JSONRPCServer
-from pibble.api.server.webservice.awslambda import WebServiceAPILambdaServer
-from pibble.api.client.webservice.rpc.jsonrpc import JSONRPCClient
-from pibble.api.client.webservice.wrapper import (
+from fruition.api.server.webservice.rpc.jsonrpc import JSONRPCServer
+from fruition.api.server.webservice.awslambda import WebServiceAPILambdaServer
+from fruition.api.client.webservice.rpc.jsonrpc import JSONRPCClient
+from fruition.api.client.webservice.wrapper import (
     WebServiceAPIClientWrapper,
     WebServiceAPILambdaTestClientWrapper,
 )
 
-from pibble.util.log import DebugUnifiedLoggingContext
-from pibble.util.helpers import Assertion
+from fruition.util.log import DebugUnifiedLoggingContext
+from fruition.util.helpers import Assertion
 
 
 class JSONRPCLambdaTestClientWrapper(

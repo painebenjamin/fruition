@@ -3,14 +3,14 @@ import os
 
 from webob import Request, Response
 
-from pibble.api.client.webservice.base import WebServiceAPIClientBase
-from pibble.api.client.webservice.wrapper import WebServiceAPIClientWrapper
-from pibble.api.server.webservice.base import WebServiceAPIServerBase
-from pibble.api.server.webservice.handler import WebServiceAPIHandlerRegistry
-from pibble.util.log import DebugUnifiedLoggingContext
-from pibble.util.strings import random_string
-from pibble.util.helpers import Assertion, Pause
-from pibble.util.files import TempfileContext
+from fruition.api.client.webservice.base import WebServiceAPIClientBase
+from fruition.api.client.webservice.wrapper import WebServiceAPIClientWrapper
+from fruition.api.server.webservice.base import WebServiceAPIServerBase
+from fruition.api.server.webservice.handler import WebServiceAPIHandlerRegistry
+from fruition.util.log import DebugUnifiedLoggingContext
+from fruition.util.strings import random_string
+from fruition.util.helpers import Assertion, Pause
+from fruition.util.files import TempfileContext
 
 class TestServer(WebServiceAPIServerBase):
     handlers = WebServiceAPIHandlerRegistry()

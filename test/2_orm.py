@@ -1,6 +1,6 @@
 import sqlalchemy
 
-from pibble.database.orm import (
+from fruition.database.orm import (
     ORMObjectBase,
     ORMBuilder,
     ORMEncryptedStringType,
@@ -8,9 +8,9 @@ from pibble.database.orm import (
     ORMEncryptedVariadicType,
     ORM,
 )
-from pibble.util.log import DebugUnifiedLoggingContext
-from pibble.util.helpers import Assertion, expect_exception
-from pibble.api.exceptions import BadRequestError, PermissionError
+from fruition.util.log import DebugUnifiedLoggingContext
+from fruition.util.helpers import Assertion, expect_exception
+from fruition.api.exceptions import BadRequestError, PermissionError
 
 
 class ORMTestBase(ORMObjectBase):

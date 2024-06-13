@@ -14,17 +14,17 @@ from requests import (
     Request as RequestsRequest,
     Response as RequestsResponse,
 )
-from pibble.api.helpers.wrappers import (
+from fruition.api.helpers.wrappers import (
     RequestWrapper,
     ResponseWrapper,
 )
 from requests.auth import HTTPDigestAuth
 
-from pibble.api.helpers.authentication import APIAuthenticationSource
-from pibble.api.middleware.webservice.base import WebServiceAPIMiddlewareBase
-from pibble.api.middleware.webservice.authentication.header import AuthorizationHeader
-from pibble.api.exceptions import AuthenticationError, ConfigurationError
-from pibble.util.strings import encode, decode
+from fruition.api.helpers.authentication import APIAuthenticationSource
+from fruition.api.middleware.webservice.base import WebServiceAPIMiddlewareBase
+from fruition.api.middleware.webservice.authentication.header import AuthorizationHeader
+from fruition.api.exceptions import AuthenticationError, ConfigurationError
+from fruition.util.strings import encode, decode
 
 
 class DigestAuthenticationMiddleware(WebServiceAPIMiddlewareBase):
@@ -35,7 +35,7 @@ class DigestAuthenticationMiddleware(WebServiceAPIMiddlewareBase):
       1. Storing passwords MUST be either plaintext passwords (not recommended), OR an MD5-hashed version of the password that is "username:realm:password". Simply hashing the password is not possible due to the nature of digesting content.
       2. Python "requests" library does not currenty support "auth-int" quality-of-protection. For this reason, it's recommended to always use "auth".
 
-    Digest authentication uses "nonces", which are randomly generated values that must be present during the challenge-response cycle. Some libraries refuse to reuse nonces, whereas we permit it here. See :class:`pibble.api.middleware.webservice.authentication.digest.NonceList` and :class:`pibble.api.middleware.webservice.authentication.digest.NonceList.Nonce` for how these are kept and checked.
+    Digest authentication uses "nonces", which are randomly generated values that must be present during the challenge-response cycle. Some libraries refuse to reuse nonces, whereas we permit it here. See :class:`fruition.api.middleware.webservice.authentication.digest.NonceList` and :class:`fruition.api.middleware.webservice.authentication.digest.NonceList.Nonce` for how these are kept and checked.
     """
 
     def parse(
@@ -242,7 +242,7 @@ class DigestAuthenticationMiddleware(WebServiceAPIMiddlewareBase):
 
         :param request requests.models.Request: The request. This can also be a :class:`webob.Request`, in which case we pass.
         :param response requests.models.Response: The response. This should be None when using a client.
-        :raises pibble.api.exceptions.ConfigurationError: When username and/or password are not configured.
+        :raises fruition.api.exceptions.ConfigurationError: When username and/or password are not configured.
         """
         if isinstance(request, RequestsRequest):
             """

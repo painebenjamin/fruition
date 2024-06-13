@@ -8,15 +8,15 @@ from requests.models import (
     Request as RequestsRequest,
     Response as RequestsResponse,
 )
-from pibble.api.helpers.wrappers import (
+from fruition.api.helpers.wrappers import (
     RequestWrapper,
     ResponseWrapper,
 )
 
-from pibble.api.exceptions import AuthenticationError
-from pibble.api.helpers.authentication import APIAuthenticationSource
-from pibble.api.middleware.webservice.base import WebServiceAPIMiddlewareBase
-from pibble.api.middleware.webservice.authentication.header import AuthorizationHeader
+from fruition.api.exceptions import AuthenticationError
+from fruition.api.helpers.authentication import APIAuthenticationSource
+from fruition.api.middleware.webservice.base import WebServiceAPIMiddlewareBase
+from fruition.api.middleware.webservice.authentication.header import AuthorizationHeader
 
 
 class TokenAuthenticationMiddleware(WebServiceAPIMiddlewareBase):
@@ -39,8 +39,8 @@ class TokenAuthenticationMiddleware(WebServiceAPIMiddlewareBase):
         :param request webob.Request: The request. This can also be a :class:`requests.models.Request`, in which case we pass.
         :param response webob.Response: The prepared response. We don't bother with it here.
         :raises TypeError: When passed an unparseable object.
-        :raises pibble.api.exceptions.AuthenticationError: When authentication is missing or incorrect.
-        :raises pibble.api.exceptions.ConfigurationError: When unable to determine source of authentication data.
+        :raises fruition.api.exceptions.AuthenticationError: When authentication is missing or incorrect.
+        :raises fruition.api.exceptions.ConfigurationError: When unable to determine source of authentication data.
         """
         if isinstance(request, WebobRequest) or isinstance(request, RequestWrapper):
             """
@@ -87,7 +87,7 @@ class TokenAuthenticationMiddleware(WebServiceAPIMiddlewareBase):
 
         :param request requests.models.Request: The request. This can also be a :class:`webob.Request`, in which case we pass.
         :param response requests.models.Response: The response. This should be None when using a client.
-        :raises pibble.api.exceptions.ConfigurationError: When username and/or password are not configured.
+        :raises fruition.api.exceptions.ConfigurationError: When username and/or password are not configured.
         """
         if isinstance(request, RequestsRequest):
             """

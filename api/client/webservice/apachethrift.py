@@ -1,14 +1,14 @@
 from functools import partial
 from typing import Callable, Any, List
 
-from pibble.util.log import logger
-from pibble.util.helpers import resolve
-from pibble.api.client.webservice.base import WebServiceAPIClientBase
-from pibble.api.helpers.apachethrift import (
+from fruition.util.log import logger
+from fruition.util.helpers import resolve
+from fruition.api.client.webservice.base import WebServiceAPIClientBase
+from fruition.api.helpers.apachethrift import (
     TTransitiveMemoryBuffer,
     ApacheThriftService,
 )
-from pibble.api.protocol.apachethrift import TJSONProtocol  # type: ignore
+from fruition.api.protocol.apachethrift import TJSONProtocol  # type: ignore
 
 
 class ApacheThriftWebClient(WebServiceAPIClientBase):
@@ -26,8 +26,8 @@ class ApacheThriftWebClient(WebServiceAPIClientBase):
     Optional configuration:
       1. ``client.introspect`` If true, will assign partial functions to client object. Default true.
 
-    See :class:`pibble.api.helpers.thrift.ThriftService` for required service arguments.
-    See superclass :class:`pibble.api.client.webservice.base.WebServiceAPIClientBase` for additional required arguments.
+    See :class:`fruition.api.helpers.thrift.ThriftService` for required service arguments.
+    See superclass :class:`fruition.api.client.webservice.base.WebServiceAPIClientBase` for additional required arguments.
     """
 
     BUFFER_SIZE = 2**15

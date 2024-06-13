@@ -1,12 +1,12 @@
 from typing import Any, Optional, Union, Type
 from urllib.parse import urlencode
 
-from pibble.util.log import logger
-from pibble.api.exceptions import ConfigurationError
-from pibble.api.helpers.wrappers import RequestWrapper, ResponseWrapper, SessionWrapper
-from pibble.api.client.wrapper import APIClientWrapperBase
-from pibble.api.client.webservice.base import WebServiceAPIClientBase
-from pibble.api.client.webservice.jsonapi import JSONWebServiceAPIClient
+from fruition.util.log import logger
+from fruition.api.exceptions import ConfigurationError
+from fruition.api.helpers.wrappers import RequestWrapper, ResponseWrapper, SessionWrapper
+from fruition.api.client.wrapper import APIClientWrapperBase
+from fruition.api.client.webservice.base import WebServiceAPIClientBase
+from fruition.api.client.webservice.jsonapi import JSONWebServiceAPIClient
 
 from requests import Request, Response
 
@@ -100,7 +100,7 @@ class WebServiceAPILambdaTestClientSessionWrapper(SessionWrapper):
                     "method": request.method,
                     "path": request.path,
                     "sourceIp": "127.0.0.1",
-                    "userAgent": "pibble/WebServiceAPILambdaClientSessionWraper",
+                    "userAgent": "fruition/WebServiceAPILambdaClientSessionWraper",
                 }
             },
         }
@@ -163,7 +163,7 @@ class WebServiceAPILambdaClientSessionWrapper(SessionWrapper):
                     "method": request.method,
                     "path": request.path,
                     "sourceIp": "127.0.0.1",
-                    "userAgent": "pibble/WebServiceAPILambdaClientSessionWraper",
+                    "userAgent": "fruition/WebServiceAPILambdaClientSessionWraper",
                 }
             },
         }

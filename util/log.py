@@ -21,7 +21,7 @@ from typing import Any, List
 from logging.handlers import SysLogHandler, RotatingFileHandler
 from termcolor import colored
 
-from pibble.api.configuration import APIConfiguration
+from fruition.api.configuration import APIConfiguration
 
 __all__ = [
     "logger",
@@ -32,7 +32,7 @@ __all__ = [
     "ConfigurationLoggingContext",
 ]
 
-logger = getLogger("pibble")
+logger = getLogger("fruition")
 
 
 class ColoredLoggingFormatter(Formatter):
@@ -63,9 +63,9 @@ class ColoredLoggingFormatter(Formatter):
         }[record.levelname.upper()]
 
 
-pibble_static_handlers: List[Handler] = []
-pibble_static_level: int = 99
-pibble_is_frozen: bool = False
+fruition_static_handlers: List[Handler] = []
+fruition_static_level: int = 99
+fruition_is_frozen: bool = False
 
 class FrozenLogger(Logger):
     """
@@ -90,14 +90,14 @@ class FrozenLogger(Logger):
         This is a copy of the original callHandlers method, but with the
         handler list replaced with the static_handlers list when the logger is frozen.
         """
-        global pibble_static_handlers, pibble_is_frozen, pibble_static_level
+        global fruition_static_handlers, fruition_is_frozen, fruition_static_level
         from logging import lastResort, raiseExceptions
         c = self
         found = 0
         while c:
-            for hdlr in pibble_static_handlers if pibble_is_frozen else c.handlers:
+            for hdlr in fruition_static_handlers if fruition_is_frozen else c.handlers:
                 found = found + 1
-                if record.levelno >= pibble_static_level if pibble_is_frozen else hdlr.level:
+                if record.levelno >= fruition_static_level if fruition_is_frozen else hdlr.level:
                     hdlr.handle(record)
             if not c.propagate:
                 c = None # type: ignore[assignment]
@@ -145,15 +145,15 @@ class UnifiedLoggingContext:
         Find initialized loggers and set their level/handler.
         """
         from logging import _acquireLock, _releaseLock, getLevelName # type: ignore[attr-defined]
-        global pibble_static_handlers, pibble_static_level, pibble_is_frozen
+        global fruition_static_handlers, fruition_static_level, fruition_is_frozen
         _acquireLock()
         # First freeze future loggers
-        pibble_is_frozen = True
-        pibble_static_handlers = [self.handler]
+        fruition_is_frozen = True
+        fruition_static_handlers = [self.handler]
         if isinstance(self.level, int):
-            pibble_static_level = self.level
+            fruition_static_level = self.level
         else:
-            pibble_static_level = getLevelName(self.level) # type: ignore[unreachable]
+            fruition_static_level = getLevelName(self.level) # type: ignore[unreachable]
         Logger.manager.setLoggerClass(FrozenLogger)
 
         # Now modify current loggers
@@ -226,7 +226,7 @@ class DebugUnifiedLoggingContext(LevelUnifiedLoggingContext):
 
 class ConfigurationLoggingContext(UnifiedLoggingContext):
     """
-    An extension of the UnifiedLoggingContext that reads an :class:`pibble.api.configuration.APIConfiguration` object.
+    An extension of the UnifiedLoggingContext that reads an :class:`fruition.api.configuration.APIConfiguration` object.
     """
 
     def __init__(self, configuration: APIConfiguration, prefix: str = "logging."):

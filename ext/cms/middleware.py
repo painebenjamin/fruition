@@ -1,9 +1,9 @@
 from typing import Dict
 from webob import Request, Response
 
-from pibble.util.log import logger
-from pibble.api.exceptions import ConfigurationError
-from pibble.api.middleware.webservice.base import WebServiceAPIMiddlewareBase
+from fruition.util.log import logger
+from fruition.api.exceptions import ConfigurationError
+from fruition.api.middleware.webservice.base import WebServiceAPIMiddlewareBase
 
 
 class CMSExtensionContextMiddleware(WebServiceAPIMiddlewareBase):

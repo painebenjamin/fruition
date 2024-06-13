@@ -1,4 +1,4 @@
-from pibble.api.configuration import APIConfiguration
+from fruition.api.configuration import APIConfiguration
 
 
 class APIMiddlewareBase:

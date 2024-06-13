@@ -2,16 +2,16 @@ import time
 
 from sqlalchemy import Column, String, ForeignKeyConstraint
 
-from pibble.util.log import DebugUnifiedLoggingContext
-from pibble.util.helpers import Assertion, expect_exception
-from pibble.util.strings import random_string
-from pibble.util.files import TempfileContext
-from pibble.database.orm import ORMObjectBase
-from pibble.api.exceptions import NotFoundError, PermissionError
-from pibble.api.client.webservice.jsonapi import JSONWebServiceAPIClient
-from pibble.api.server.webservice.jsonapi import JSONWebServiceAPIServer
-from pibble.ext.rest.server.user import UserRESTExtensionServerBase
-from pibble.ext.user.client.base import UserExtensionClientBase
+from fruition.util.log import DebugUnifiedLoggingContext
+from fruition.util.helpers import Assertion, expect_exception
+from fruition.util.strings import random_string
+from fruition.util.files import TempfileContext
+from fruition.database.orm import ORMObjectBase
+from fruition.api.exceptions import NotFoundError, PermissionError
+from fruition.api.client.webservice.jsonapi import JSONWebServiceAPIClient
+from fruition.api.server.webservice.jsonapi import JSONWebServiceAPIServer
+from fruition.ext.rest.server.user import UserRESTExtensionServerBase
+from fruition.ext.user.client.base import UserExtensionClientBase
 
 
 class UserRESTExtensionJSONServer(JSONWebServiceAPIServer, UserRESTExtensionServerBase):
@@ -68,7 +68,7 @@ ChildTestObject.Relate(GrandchildTestObject, name="children", backref="parent")
 USER_1 = {
     "username": "user@test.com",
     "password": random_string(),
-    "groups": ["Pibble Creators"],
+    "groups": ["Fruition Creators"],
 }
 
 USER_2 = {"username": "user2@test.com", "password": random_string()}
@@ -94,7 +94,7 @@ CONFIGURATION = {
                 "object_name": TestObject.__name__,
                 "scope_type": "explicit",
                 "action": "create",
-                "group": "Pibble Creators",
+                "group": "Fruition Creators",
             },
         ]
         + [
@@ -102,7 +102,7 @@ CONFIGURATION = {
                 "object_name": ChildTestObject.__name__,
                 "scope_type": "inherited",
                 "action": action,
-                "group": "Pibble Creators",
+                "group": "Fruition Creators",
                 "inherited_scope_object_name": TestObject.__name__,
                 "inherited_scope_source_attribute": "parent_name",
                 "inherited_scope_target_attribute": "name",
@@ -115,7 +115,7 @@ CONFIGURATION = {
                 "object_name": GrandchildTestObject.__name__,
                 "scope_type": "inherited",
                 "action": action,
-                "group": "Pibble Creators",
+                "group": "Fruition Creators",
                 "inherited_scope_object_name": TestObject.__name__,
                 "inherited_scope_source_attribute": "parent_parent_name",
                 "inherited_scope_target_attribute": "name",

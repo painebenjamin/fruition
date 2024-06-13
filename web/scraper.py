@@ -2,9 +2,9 @@ import os
 
 from typing import List, Any
 
-from pibble.util.log import logger
-from pibble.util.strings import pretty_print
-from pibble.util.helpers import find_executable
+from fruition.util.log import logger
+from fruition.util.strings import pretty_print
+from fruition.util.helpers import find_executable
 
 from urllib.parse import urlparse
 

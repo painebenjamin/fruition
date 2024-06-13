@@ -4,12 +4,12 @@ from typing import Any, Optional, cast
 
 from webob import Request, Response
 
-from pibble.util.strings import get_uuid
-from pibble.database.orm import ORMSession, ORM
-from pibble.api.server.webservice.orm import ORMWebServiceAPIServer
-from pibble.api.exceptions import ConfigurationError
-from pibble.ext.session.database import SessionExtensionObjectBase
-from pibble.ext.session.database.session import SessionDatum
+from fruition.util.strings import get_uuid
+from fruition.database.orm import ORMSession, ORM
+from fruition.api.server.webservice.orm import ORMWebServiceAPIServer
+from fruition.api.exceptions import ConfigurationError
+from fruition.ext.session.database import SessionExtensionObjectBase
+from fruition.ext.session.database.session import SessionDatum
 
 
 class NoDefaultProvided:
@@ -89,7 +89,7 @@ class SessionExtensionServerBase(ORMWebServiceAPIServer):
                     raise NotFoundError("You haven't told me your name yet!")
 
             @handlers.methods("GET")
-            @handlers.path("^/(?P<name>[\w]+)$")
+            @handlers.path("^/(?P<name>[\\w]+)$")
             def set_name(self, request: Request, response: Response, name: str) -> None:
                 request.session["name"] = name
                 response.status_code = 301
@@ -140,5 +140,5 @@ class SessionExtensionServerBase(ORMWebServiceAPIServer):
             create=self.configuration.get("orm.create", True),
         )
         self.session_cookie_name = self.configuration.get(
-            "session.cookie", "pibble_session"
+            "session.cookie", "fruition_session"
         )

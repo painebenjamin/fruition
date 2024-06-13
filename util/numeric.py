@@ -11,7 +11,7 @@ def r8d2o(value: int) -> int:
     Probably called exactly in one scenario - to turn octal permission values
     from decimal (e.g. 755) to octal (decimal 493, or 0o755).
 
-    >>> from pibble.util.numeric import r8d2o
+    >>> from fruition.util.numeric import r8d2o
     >>> r8d2o(777)
     511
     >>> "{0:o}".format(r8d2o(777))
@@ -34,7 +34,7 @@ def o2r8d(value: int) -> int:
 
     Opposite of r8d20.
 
-    >>> from pibble.util.numeric import o2r8d
+    >>> from fruition.util.numeric import o2r8d
     >>> o2r8d(493)
     755
     >>> o2r8d(511)
@@ -54,7 +54,7 @@ def human_size(size: Union[int, float]) -> str:
     """
     Returns a human-readable size, based on a number of bytes.
 
-    >>> from pibble.util.numeric import human_size
+    >>> from fruition.util.numeric import human_size
     >>> human_size(42)
     '42 B'
     >>> human_size(2**10)

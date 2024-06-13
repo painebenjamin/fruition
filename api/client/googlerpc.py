@@ -3,8 +3,8 @@ import grpc
 from typing import Callable, Any, List
 from functools import partial
 
-from pibble.api.client.base import APIClientBase
-from pibble.api.helpers.googlerpc import (
+from fruition.api.client.base import APIClientBase
+from fruition.api.helpers.googlerpc import (
     GRPCConfiguration,
     GRPCRequest,
     GRPCResponse,
@@ -17,7 +17,7 @@ class GRPCAPIClient(APIClientBase):
 
     Required configuration is `client.host` at a minimum. `client.port` can be configured, or defaults to 80/443. `client.secure` is a boolean which tells whether to use an SSL channel or not.
 
-    The rest of the required configuration can be seen in the details for `pibble.api.helpers.grpc.GRPCConfiguration`.
+    The rest of the required configuration can be seen in the details for `fruition.api.helpers.grpc.GRPCConfiguration`.
     """
 
     def on_configure(self) -> None:
@@ -60,7 +60,7 @@ class GRPCAPIClient(APIClientBase):
         """
         Calls the underlying method.
 
-        We cast the arguments into a `pibble.api.helpers.grpc.GRPCRequest` so that we can run it
+        We cast the arguments into a `fruition.api.helpers.grpc.GRPCRequest` so that we can run it
         through middleware processors.
 
         :param method str: The method name.

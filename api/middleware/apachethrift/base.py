@@ -1,5 +1,5 @@
-from pibble.api.middleware.base import APIMiddlewareBase
-from pibble.api.helpers.apachethrift import ApacheThriftRequest, ApacheThriftResponse
+from fruition.api.middleware.base import APIMiddlewareBase
+from fruition.api.helpers.apachethrift import ApacheThriftRequest, ApacheThriftResponse
 
 
 class ApacheThriftAPIMiddlewareBase(APIMiddlewareBase):
@@ -19,7 +19,7 @@ class ApacheThriftAPIMiddlewareBase(APIMiddlewareBase):
         """
         Prepares a request (before processor handling.)
 
-        :param request pibble.api.helpers.apachethrift.ApacheThriftRequest: The request.
+        :param request fruition.api.helpers.apachethrift.ApacheThriftRequest: The request.
         """
         pass
 
@@ -27,6 +27,6 @@ class ApacheThriftAPIMiddlewareBase(APIMiddlewareBase):
         """
         Parses a response (after processor handling.)
 
-        :param request pibble.api.helpers.apachethrift.ApacheThriftResponse: The response.
+        :param request fruition.api.helpers.apachethrift.ApacheThriftResponse: The response.
         """
         pass

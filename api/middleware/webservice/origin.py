@@ -9,14 +9,14 @@ from webob import (
     Request as WebobRequest,
     Response as WebobResponse,
 )
-from pibble.api.helpers.wrappers import (
+from fruition.api.helpers.wrappers import (
     RequestWrapper,
     ResponseWrapper,
 )
 
-from pibble.api.exceptions import AuthenticationError
-from pibble.api.middleware.webservice.base import WebServiceAPIMiddlewareBase
-from pibble.util.log import logger
+from fruition.api.exceptions import AuthenticationError
+from fruition.api.middleware.webservice.base import WebServiceAPIMiddlewareBase
+from fruition.util.log import logger
 
 
 class CrossOriginWebServiceAPIMiddleware(WebServiceAPIMiddlewareBase):

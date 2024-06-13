@@ -1,5 +1,5 @@
 from typing import Optional, Type
-from pibble.util.helpers import qualify
+from fruition.util.helpers import qualify
 
 try:
     from thrift.Thrift import TApplicationException

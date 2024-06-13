@@ -4,12 +4,12 @@ import logging
 
 from webob import Request, Response
 
-from pibble.api.client.webservice.base import WebServiceAPIClientBase
-from pibble.api.server.webservice.base import WebServiceAPIServerBase
-from pibble.api.server.webservice.handler import WebServiceAPIHandlerRegistry
-from pibble.api.middleware.webservice.limit import RateLimitedWebServiceAPIMiddleware
-from pibble.util.log import LevelUnifiedLoggingContext, logger
-from pibble.util.helpers import Assertion
+from fruition.api.client.webservice.base import WebServiceAPIClientBase
+from fruition.api.server.webservice.base import WebServiceAPIServerBase
+from fruition.api.server.webservice.handler import WebServiceAPIHandlerRegistry
+from fruition.api.middleware.webservice.limit import RateLimitedWebServiceAPIMiddleware
+from fruition.util.log import LevelUnifiedLoggingContext, logger
+from fruition.util.helpers import Assertion
 
 
 class RateLimitedServer(RateLimitedWebServiceAPIMiddleware, WebServiceAPIServerBase):

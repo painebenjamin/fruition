@@ -9,7 +9,7 @@ def contrast_color(color: str) -> Literal["black", "white"]:
     Given a color, return the best contrasting color
     of either black or white.
 
-    >>> from pibble.util.imaging import contrast_color
+    >>> from fruition.util.imaging import contrast_color
     >>> contrast_color('#E2FFC1')
     'black'
     >>> contrast_color('#004A70')

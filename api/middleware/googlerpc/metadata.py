@@ -1,6 +1,6 @@
-from pibble.util.log import logger
-from pibble.api.middleware.googlerpc.base import GRPCAPIMiddlewareBase
-from pibble.api.helpers.googlerpc import GRPCRequest
+from fruition.util.log import logger
+from fruition.api.middleware.googlerpc.base import GRPCAPIMiddlewareBase
+from fruition.api.helpers.googlerpc import GRPCRequest
 
 
 class GRPCMetadataMiddleware(GRPCAPIMiddlewareBase):
@@ -15,7 +15,7 @@ class GRPCMetadataMiddleware(GRPCAPIMiddlewareBase):
         """
         Either add to or create the metadata argument for function calls.
 
-        :param request pibble.api.helpers.grpc.GRPCRequest: The request object.
+        :param request fruition.api.helpers.grpc.GRPCRequest: The request object.
         """
 
         if "metadata" not in request.kwargs:

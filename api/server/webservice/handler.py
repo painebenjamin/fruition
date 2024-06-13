@@ -7,11 +7,11 @@ from webob import Request, Response
 
 from collections import defaultdict
 
-from pibble.util.helpers import resolve
-from pibble.util.log import logger
-from pibble.api.exceptions import NotFoundError
+from fruition.util.helpers import resolve
+from fruition.util.log import logger
+from fruition.api.exceptions import NotFoundError
 
-from pibble.api.server.base import APIServerBase
+from fruition.api.server.base import APIServerBase
 
 
 class WebServiceAPIHandler:
@@ -110,7 +110,7 @@ class WebServiceAPIHandlerRegistry:
           # Returns the root of the API
           pass
 
-        @handlers.path("/user(/(?P<username>\w+))?")
+        @handlers.path("/user(/(?P<username>\\w+))?")
         @handlers.methods("GET"):
         def get_user(request, response, username = None):
           # Handles getting either all users (username is None) or an individual user
@@ -224,7 +224,7 @@ class WebServiceAPIHandlerRegistry:
 
           handler = WebServiceAPIHandlerRegistry()
 
-          @handler.path("/user(/(?P<username>\w+))?")
+          @handler.path("/user(/(?P<username>\\w+))?")
           def get_user(self, request, response, username = None):
             if username is None:
               # Get all users
@@ -326,7 +326,7 @@ class WebServiceAPIHandlerRegistry:
         Example usage::
           handlers = WebServiceAPIHandlerRegistry()
 
-          @handlers.path("/article(/(?P<id>\d+))?$")
+          @handlers.path("/article(/(?P<id>\\d+))?$")
           @handlers.methods("GET")
           @handlers.reverse("Articles", "/article/{id}")
           def get_article(self, request, response, id = None):
@@ -345,7 +345,7 @@ class WebServiceAPIHandlerRegistry:
         Example usage ::
           handlers = WebServiceAPIHandlerRegistry()
 
-          @handlers.path("/article(?P<category>[a-zA-Z0-9_\-]+(/(?P<id>\d+))?)?$")
+          @handlers.path("/article(?P<category>[a-zA-Z0-9_\\-]+(/(?P<id>\\d+))?)?$")
           @handlers.methods("GET")
           @handlers.reverse("Articles", "/article/{category}/{id}")
           def get_article(self, request, response, category = None, id = None):
@@ -382,7 +382,7 @@ class WebServiceAPIHandlerRegistry:
           def insecure_endpoint(self, request, response):
             # Handle an insecure request
 
-        :param classes tuple: Any number of class names to ignore. These can be fully qualified strings, like `pibble.api.middleware.webservice.authentication.basic.BasicAuthenticationMiddleware` or an actual class.
+        :param classes tuple: Any number of class names to ignore. These can be fully qualified strings, like `fruition.api.middleware.webservice.authentication.basic.BasicAuthenticationMiddleware` or an actual class.
         :returns function: Returns the wrapper function.
         """
         classlist = [cls if isinstance(cls, type) else resolve(cls) for cls in classes]
@@ -444,7 +444,7 @@ class WebServiceAPIHandlerRegistry:
 
         :param method str: The method - GET, PUT, POST, etc.
         :param path str: The request path.
-        :param server pibble.api.server.base.APIServerBase: The implementing server.
+        :param server fruition.api.server.base.APIServerBase: The implementing server.
         :param args tuple: The arg array.
         :param kwargs dict: The kwargs dict.
         :returns object: The response from the handler.

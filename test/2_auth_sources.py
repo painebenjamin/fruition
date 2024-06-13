@@ -9,23 +9,23 @@ from webob import Request, Response
 from typing import Any
 
 # Utilities
-from pibble.util.log import logger, DebugUnifiedLoggingContext
-from pibble.util.helpers import expect_exception
-from pibble.util.files import TempfileContext
-from pibble.util.strings import encode
+from fruition.util.log import logger, DebugUnifiedLoggingContext
+from fruition.util.helpers import expect_exception
+from fruition.util.files import TempfileContext
+from fruition.util.strings import encode
 
 # Shared middleware, helpers
-from pibble.api.middleware.webservice.authentication.basic import (
+from fruition.api.middleware.webservice.authentication.basic import (
     BasicAuthenticationMiddleware,
 )
-from pibble.api.exceptions import AuthenticationError
+from fruition.api.exceptions import AuthenticationError
 
 # Server
-from pibble.api.server.webservice.base import WebServiceAPIServerBase
-from pibble.api.server.webservice.handler import WebServiceAPIHandlerRegistry
+from fruition.api.server.webservice.base import WebServiceAPIServerBase
+from fruition.api.server.webservice.handler import WebServiceAPIHandlerRegistry
 
 # Client
-from pibble.api.client.webservice.base import WebServiceAPIClientBase
+from fruition.api.client.webservice.base import WebServiceAPIClientBase
 
 
 def randomletters(n: int = 10) -> str:
@@ -73,7 +73,7 @@ def main() -> None:
     test_host = os.getenv("TEST_HOST", default=None)
     with DebugUnifiedLoggingContext():
         with TempfileContext() as tempgen:
-            username = "pibble"
+            username = "fruition"
             password = "password"
 
             passwordfile = next(tempgen)

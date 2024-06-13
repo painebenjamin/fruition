@@ -3,15 +3,15 @@ import tempfile
 import shutil
 import socket
 
-from pibble.util.helpers import expect_exception, ignore_exceptions, Assertion
-from pibble.util.log import DebugUnifiedLoggingContext
-from pibble.api.exceptions import NotFoundError
-from pibble.api.exceptions import PermissionError
-from pibble.api.server.webservice.template import (
+from fruition.util.helpers import expect_exception, ignore_exceptions, Assertion
+from fruition.util.log import DebugUnifiedLoggingContext
+from fruition.api.exceptions import NotFoundError
+from fruition.api.exceptions import PermissionError
+from fruition.api.server.webservice.template import (
     TemplateServer,
     TemplateServerHandlerRegistry,
 )
-from pibble.api.client.webservice.base import WebServiceAPIClientBase
+from fruition.api.client.webservice.base import WebServiceAPIClientBase
 
 
 class TestTemplateServer(TemplateServer):

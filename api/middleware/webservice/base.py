@@ -7,11 +7,11 @@ from webob import (
     Request as WebobRequest,
     Response as WebobResponse,
 )
-from pibble.api.helpers.wrappers import (
+from fruition.api.helpers.wrappers import (
     RequestWrapper,
     ResponseWrapper,
 )
-from pibble.api.middleware.base import APIMiddlewareBase
+from fruition.api.middleware.base import APIMiddlewareBase
 
 
 class WebServiceAPIMiddlewareBase(APIMiddlewareBase):

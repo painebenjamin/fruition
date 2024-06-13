@@ -1,16 +1,16 @@
 from typing import Optional
 
-from pibble.util.log import logger
-from pibble.api.exceptions import ConfigurationError
-from pibble.api.server.webservice.template import (
+from fruition.util.log import logger
+from fruition.api.exceptions import ConfigurationError
+from fruition.api.server.webservice.template import (
     TemplateServer,
     TemplateServerHandlerRegistry,
 )
-from pibble.api.middleware.database.orm import ORMMiddlewareBase
-from pibble.ext.dam.server.base import DAMServerBase
+from fruition.api.middleware.database.orm import ORMMiddlewareBase
+from fruition.ext.dam.server.base import DAMServerBase
 
-from pibble.ext.cms.middleware import CMSExtensionContextMiddleware
-from pibble.ext.cms.database import *
+from fruition.ext.cms.middleware import CMSExtensionContextMiddleware
+from fruition.ext.cms.database import *
 
 
 class CMSServerBase(

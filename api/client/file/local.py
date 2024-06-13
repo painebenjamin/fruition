@@ -14,20 +14,20 @@ from multiprocessing.connection import Connection
 
 from typing import Callable, Optional, Iterable, Any, cast
 
-from pibble.api.client.file.base import (
+from fruition.api.client.file.base import (
     FileTransferAPIClientBase,
     RemoteObject,
     ContentIterator,
 )
-from pibble.api.exceptions import (
+from fruition.api.exceptions import (
     NotFoundError,
     BadRequestError,
-    PermissionError as PibbleLibPermissionError,
+    PermissionError as FruitionLibPermissionError,
 )
-from pibble.util.strings import encode
-from pibble.util.log import logger
-from pibble.util.helpers import is_binary_file
-from pibble.util.numeric import r8d2o, o2r8d
+from fruition.util.strings import encode
+from fruition.util.log import logger
+from fruition.util.helpers import is_binary_file
+from fruition.util.numeric import r8d2o, o2r8d
 
 
 def UserContext(fn: Callable) -> Callable:
@@ -64,7 +64,7 @@ def UserContext(fn: Callable) -> Callable:
                     result = [r for r in result]
             except Exception as ex:
                 if isinstance(ex, PermissionError):
-                    ex = PibbleLibPermissionError(str(ex))
+                    ex = FruitionLibPermissionError(str(ex))
                 setattr(ex, "tb", traceback.format_exc())
                 result = ex
 
@@ -216,7 +216,7 @@ class LocalFileTransferAPIClient(FileTransferAPIClientBase):
 
         :param path str: The path of the file to read.
         :returns iterable: An iterator over the contents of the file.
-        :raises `pibble.api.exceptions.NotFoundError`: When the file does not exist.
+        :raises `fruition.api.exceptions.NotFoundError`: When the file does not exist.
         """
         fp = None
         if is_binary_file(path):
@@ -237,7 +237,7 @@ class LocalFileTransferAPIClient(FileTransferAPIClientBase):
 
         :param path str: The path to list. Defaults to `self.cwd`.
         :returns RemoteObject: The file or directory.
-        :raises `pibble.api.exceptions.NotFoundError`: When the path is not found.
+        :raises `fruition.api.exceptions.NotFoundError`: When the path is not found.
         """
         path = self.absPath(path)
         if not os.path.exists(path):
@@ -280,7 +280,7 @@ class LocalFileTransferAPIClient(FileTransferAPIClientBase):
         :param src str: The source path.
         :param dest str: The destination path.
         :returns RemoteObject: The newly moved file.
-        :raises `pibble.api.exceptions.NotFoundError`: When src is not found.
+        :raises `fruition.api.exceptions.NotFoundError`: When src is not found.
         """
         src = self.absPath(src)
         dest = self.absPath(dest)
@@ -316,7 +316,7 @@ class LocalFileTransferAPIClient(FileTransferAPIClientBase):
         :param path str: Either a file or directory path.
         :param permission: Any radix-8 permission integer.
         :returns RemoteObject: The updated path.
-        :raises `pibble.api.exceptions.NotFoundError`: When the path is not found.
+        :raises `fruition.api.exceptions.NotFoundError`: When the path is not found.
         """
         node = self.getPath(path)
         os.chmod(node.path, r8d2o(permission))
@@ -333,7 +333,7 @@ class LocalFileTransferAPIClient(FileTransferAPIClientBase):
         :param dest str: The path to the destination, either a file or directory.
         :param overwrite bool: Whether or not to overwrite when calling writeFile.
         :returns RemoteObject: The newly copied file.
-        :raises `pibble.api.exceptions.NotFoundError`: When src is not found.
+        :raises `fruition.api.exceptions.NotFoundError`: When src is not found.
         """
         dest = self.absPath(dest)
         if os.path.exists(dest) and not overwrite:
@@ -360,8 +360,8 @@ class LocalFileTransferAPIClient(FileTransferAPIClientBase):
         :param owner str: The owner name.
         :param group str: The group name.
         :returns RemoteObject: The updated path.
-        :raises `pibble.api.exceptions.NotFoundError`: When the path is not found.
-        :raises `pibble.api.exceptions.BadRequestError`: When both owner and group are None.
+        :raises `fruition.api.exceptions.NotFoundError`: When the path is not found.
+        :raises `fruition.api.exceptions.BadRequestError`: When both owner and group are None.
         """
         node = self.getPath(path)
 

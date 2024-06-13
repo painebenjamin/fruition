@@ -49,7 +49,7 @@ class RowProxy(dict):
 
     Notably, rows have the .keys() function that behaves exactly like a dictionary, but when iterating on a row, it gives you the **values**, not the keys as a dict would.
 
-    >>> from pibble.database.util import RowProxy
+    >>> from fruition.database.util import RowProxy
     >>> rp = RowProxy(foo = "bar", bar = "baz")
     >>> [r for r in rp]
     ['bar', 'baz']
@@ -63,9 +63,9 @@ class RowProxy(dict):
 
 def row_to_dict(row: Any) -> dict:
     """
-    Turns a row into a dictionary. See :class:pibble.database.util.RowProxy for why this is necessary.
+    Turns a row into a dictionary. See :class:fruition.database.util.RowProxy for why this is necessary.
 
-    >>> from pibble.database.util import RowProxy, row_to_dict
+    >>> from fruition.database.util import RowProxy, row_to_dict
     >>> row_to_dict(RowProxy(foo = "bar", bar = "baz"))
     {'foo': 'bar', 'bar': 'baz'}
 

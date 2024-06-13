@@ -10,9 +10,9 @@ from webob import Request, Response
 from selenium.webdriver.common.by import By
 from lxml.builder import E
 
-from pibble.web.scraper import WebScraper
-from pibble.util.helpers import Assertion
-from pibble.util.log import DebugUnifiedLoggingContext
+from fruition.web.scraper import WebScraper
+from fruition.util.helpers import Assertion
+from fruition.util.log import DebugUnifiedLoggingContext
 
 from typing import Iterable, TYPE_CHECKING
 

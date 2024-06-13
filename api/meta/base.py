@@ -15,9 +15,9 @@ from typing import (
     cast,
 )
 
-from pibble.api.base import APIBase
-from pibble.api.server.webservice.base import MethodBasedWebServiceAPIServerBase
-from pibble.util.helpers import resolve
+from fruition.api.base import APIBase
+from fruition.api.server.webservice.base import MethodBasedWebServiceAPIServerBase
+from fruition.util.helpers import resolve
 
 
 class MetaTestClass:
@@ -32,7 +32,7 @@ class MetaFunction:
     Permitted languages are presently javascript and python. Anything that exposes this interface
     SHOULD NOT allow for python MetaFunction definition, but javascript is easy enough to contextualize.
 
-    >>> from pibble.api.meta.base import MetaFunction
+    >>> from fruition.api.meta.base import MetaFunction
     >>> func = MetaFunction("python", "result = 1")
     >>> func()
     1
@@ -92,8 +92,8 @@ class MetaService:
 
     Services can be either clients or servers, and _most_ functions will be partially imported into this object. If the function overrides any functions provided by MetaService (i.e., `instance` and `__introspect`), you'll need to use the __call__ syntax.
 
-    >>> from pibble.api.meta.base import MetaService, MetaTestClass
-    >>> service = MetaService( "myclass", [ "pibble.api.base.APIBase", MetaTestClass ] )
+    >>> from fruition.api.meta.base import MetaService, MetaTestClass
+    >>> service = MetaService( "myclass", [ "fruition.api.base.APIBase", MetaTestClass ] )
     >>> service.add(1, 2)
     3
     >>> service("add", 1, 2)
@@ -212,7 +212,7 @@ class MetaServiceFactory:
     """
     The MetaServiceFactory simply stores and creates metaservices.
 
-    See :class:`pibble.api.meta.base.MetaService` for more information.
+    See :class:`fruition.api.meta.base.MetaService` for more information.
     """
 
     services: Dict[str, MetaService]
@@ -224,9 +224,9 @@ class MetaServiceFactory:
         """
         A helpful syntax for getting services.
 
-        >>> from pibble.api.meta.base import MetaServiceFactory
+        >>> from fruition.api.meta.base import MetaServiceFactory
         >>> factory = MetaServiceFactory()
-        >>> factory.define("myclass", ["pibble.api.base.APIBase"])
+        >>> factory.define("myclass", ["fruition.api.base.APIBase"])
         MetaService<Myclass>
         >>> factory.myclass
         MetaService<Myclass>
@@ -244,17 +244,17 @@ class MetaServiceFactory:
         """
         Defines a service.
 
-        >>> from pibble.api.meta.base import MetaServiceFactory
+        >>> from fruition.api.meta.base import MetaServiceFactory
         >>> factory = MetaServiceFactory()
-        >>> factory.define("myclass", ["pibble.api.base.APIBase", "pibble.api.meta.base.MetaTestClass"])
+        >>> factory.define("myclass", ["fruition.api.base.APIBase", "fruition.api.meta.base.MetaTestClass"])
         MetaService<Myclass>
         >>> factory.myclass("add", 1, 2)
         3
         >>> factory.myclass.add(2, 2)
         4
-        >>> from pibble.api.meta.base import MetaFunction
-        >>> from pibble.api.meta.base import MetaTestClass
-        >>> from pibble.api.base import APIBase
+        >>> from fruition.api.meta.base import MetaFunction
+        >>> from fruition.api.meta.base import MetaTestClass
+        >>> from fruition.api.base import APIBase
         >>> add3 = MetaFunction("python", "result = args[0] + service.add(args[1], args[2])")
         >>> factory = MetaServiceFactory()
         >>> factory.define("myclass", [APIBase, MetaTestClass], {}, { "add3": add3 })
@@ -267,7 +267,7 @@ class MetaServiceFactory:
         :param name str: The name of the class. Should be unique for each factory.
         :param classes list: The name of a class. Can be a string (which will be resolved), or a type.
         :param configuration dict: The configuration to pass into the .configure() function.
-        :param functions dict: A dictionary of MetaFunctions. See :class:`pibble.api.meta.base.MetaFunction` for more information.
+        :param functions dict: A dictionary of MetaFunctions. See :class:`fruition.api.meta.base.MetaFunction` for more information.
         """
         self.services[name] = MetaService(name, classes, configuration, functions)
         return self.services[name]

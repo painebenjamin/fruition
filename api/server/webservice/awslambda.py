@@ -2,12 +2,12 @@ from typing import TypedDict, Optional, Union, Dict, List, Any, cast
 from base64 import b64decode
 from urllib.parse import parse_qs
 
-from pibble.util.log import logger
-from pibble.util.strings import encode
+from fruition.util.log import logger
+from fruition.util.strings import encode
 
-from pibble.api.exceptions import ConfigurationError
-from pibble.api.server.webservice.base import WebServiceAPIServerBase
-from pibble.api.helpers.wrappers import RequestWrapper, ResponseWrapper
+from fruition.api.exceptions import ConfigurationError
+from fruition.api.server.webservice.base import WebServiceAPIServerBase
+from fruition.api.helpers.wrappers import RequestWrapper, ResponseWrapper
 
 # V1
 

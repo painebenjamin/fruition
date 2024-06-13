@@ -7,16 +7,16 @@ from webob import Request, Response
 from typing import Type, Iterable, Any, Optional
 
 from lxml.builder import E
-from pibble.api.server.webservice.rpc.base import RPCServerBase
-from pibble.api.exceptions import UnsupportedMethodError, BadRequestError
-from pibble.util.strings import decode
+from fruition.api.server.webservice.rpc.base import RPCServerBase
+from fruition.api.exceptions import UnsupportedMethodError, BadRequestError
+from fruition.util.strings import decode
 
 
 class XMLRPCServer(RPCServerBase):
     """
     An implementation of the RPC server for parsing and returning XMLRPC objects.
 
-    >>> from pibble.api.server.webservice.rpc.xmlrpc import XMLRPCServer
+    >>> from fruition.api.server.webservice.rpc.xmlrpc import XMLRPCServer
     >>> import lxml.etree as ET
     >>> from lxml.builder import E
     >>> add = lambda a, b: a + b
@@ -35,8 +35,8 @@ class XMLRPCServer(RPCServerBase):
         """
         Takes a python type and turns it into a string version of it.
 
-        >>> from pibble.api.server.webservice.rpc.xmlrpc import XMLRPCServer
-        >>> from pibble.util.helpers import expect_exception
+        >>> from fruition.api.server.webservice.rpc.xmlrpc import XMLRPCServer
+        >>> from fruition.util.helpers import expect_exception
         >>> XMLRPCServer.map_typename(int)
         'int'
         >>> XMLRPCServer.map_typename(list)
@@ -71,7 +71,7 @@ class XMLRPCServer(RPCServerBase):
 
         >>> import lxml.etree as ET
         >>> import datetime
-        >>> from pibble.api.server.webservice.rpc.xmlrpc import XMLRPCServer
+        >>> from fruition.api.server.webservice.rpc.xmlrpc import XMLRPCServer
         >>> ET.tostring(XMLRPCServer.format_parameter("foo"))
         b'<param><value><string>foo</string></value></param>'
         >>> ET.tostring(XMLRPCServer.format_parameter(5))
@@ -81,9 +81,9 @@ class XMLRPCServer(RPCServerBase):
         >>> ET.tostring(XMLRPCServer.format_parameter({"bar": False}))
         b'<param><value><struct><member><value><boolean>0</boolean></value><name>bar</name></member></struct></value></param>'
 
-        :param parameter object: Any value of the acceptable list of value types (see :class:pibble.api.server.webservice.rpc.xmlrpc.XMLRPCServer)
+        :param parameter object: Any value of the acceptable list of value types (see :class:fruition.api.server.webservice.rpc.xmlrpc.XMLRPCServer)
         :return lxml.etree._Element: The <parameter/> element.
-        :raises pibble.api.exceptions.BadRequestError: When the parameter is not a known RPC type.
+        :raises fruition.api.exceptions.BadRequestError: When the parameter is not a known RPC type.
         """
 
         def _format_parameter(
@@ -137,7 +137,7 @@ class XMLRPCServer(RPCServerBase):
         Formats an n-tuple of parameters into a single <params/> node.
 
         >>> import lxml.etree as ET
-        >>> from pibble.api.server.webservice.rpc.xmlrpc import XMLRPCServer
+        >>> from fruition.api.server.webservice.rpc.xmlrpc import XMLRPCServer
         >>> ET.tostring(XMLRPCServer.format_parameters())
         b'<params/>'
 
@@ -155,13 +155,13 @@ class XMLRPCServer(RPCServerBase):
 
         >>> import lxml.etree as ET
         >>> from lxml.builder import E
-        >>> from pibble.api.server.webservice.rpc.xmlrpc import XMLRPCServer
+        >>> from fruition.api.server.webservice.rpc.xmlrpc import XMLRPCServer
         >>> XMLRPCServer.parse_method_call(ET.tostring(E.methodCall(E.methodName("my_method"))))
         ('my_method', None, None)
 
         :param body str: The body of a request.
         :returns tuple: A three-tuple of (str, list, dict), the first of which is the method name, the second is a list of all parsed parameters. The third is returned as an empty dictionary, as XMLRPC does not support named parameters.
-        :raises pibble.api.exceptions.BadRequestError: When the methodName is not present, or the XML is not well-formed.
+        :raises fruition.api.exceptions.BadRequestError: When the methodName is not present, or the XML is not well-formed.
         :raises lxml.etree.XMLSyntaxError: When the XML is not well-formed.
         """
         root = ET.XML(body)
@@ -191,7 +191,7 @@ class XMLRPCServer(RPCServerBase):
 
         >>> import lxml.etree as ET
         >>> from lxml.builder import E
-        >>> from pibble.api.server.webservice.rpc.xmlrpc import XMLRPCServer
+        >>> from fruition.api.server.webservice.rpc.xmlrpc import XMLRPCServer
         >>> XMLRPCServer.parse_parameters(E.params(E.param(E.value(E.int("4")))))
         [4]
         >>> XMLRPCServer.parse_parameters(E.params(E.param(E.value(E.int("4"))), E.param(E.value(E.array(E.data(E.value(E.string("foo"))))))))
@@ -201,7 +201,7 @@ class XMLRPCServer(RPCServerBase):
 
         :param node lxml.etree._Element: The <params/> node from the request.
         :returns list: A list of all parameters in a request.
-        :raises pibble.api.exceptions.BadRequestError: When the type of the value is incorrect.
+        :raises fruition.api.exceptions.BadRequestError: When the type of the value is incorrect.
         """
 
         def parse_parameter(param_node: ET._Element) -> Any:

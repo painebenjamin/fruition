@@ -42,8 +42,8 @@ from difflib import unified_diff
 from time import sleep
 from datetime import date, datetime
 
-from pibble.util.log import logger
-from pibble.util.strings import truncate, decode, Serializer
+from fruition.util.log import logger
+from fruition.util.strings import truncate, decode, Serializer
 
 __all__ = [
     "url_join",
@@ -77,7 +77,7 @@ def url_join(*parts: str) -> str:
 
     Unlike `urllib.parse.urljoin`, this doesn't overwrite paths if they start with "/".
 
-    >>> from pibble.util.helpers import url_join
+    >>> from fruition.util.helpers import url_join
     >>> baseurl = "http://localhost:8080"
     >>> url_join(baseurl, "api")
     'http://localhost:8080/api'
@@ -116,9 +116,9 @@ def qualify(obj: Any) -> str:
 
     Will NOT instantiate types.
 
-    >>> from pibble.util.helpers import qualify
+    >>> from fruition.util.helpers import qualify
     >>> qualify(qualify)
-    'pibble.util.helpers.qualify'
+    'fruition.util.helpers.qualify'
     >>> from webob import Request
     >>> qualify(Request) # Request is passed through from webob.request to webob
     'webob.request.Request'
@@ -144,7 +144,7 @@ def resolve(qualified_name: Any, local: dict = {}) -> Any:
 
     Safer than calling eval().
 
-    >>> from pibble.util.helpers import resolve, expect_exception
+    >>> from fruition.util.helpers import resolve, expect_exception
     >>> resolve("requests.models.Request")
     <class 'requests.models.Request'>
     >>> expect_exception(ImportError)(lambda: resolve("MyClass"))
@@ -200,7 +200,7 @@ def expect_exception(exception_class: Type[Exception]) -> Callable[[Any], None]:
 
     Useful for debugging.
 
-    >>> from pibble.util.helpers import expect_exception
+    >>> from fruition.util.helpers import expect_exception
     >>> my_dict = {"foo": "bar"}
     >>> expect_exception(KeyError)(lambda: my_dict["baz"])
 
@@ -238,7 +238,7 @@ def ignore_exceptions(func: Callable, *args: Any, **kwargs: Any) -> Any:
     """
     A simple helper that ignores any exceptions that occur from a callable.
 
-    >>> from pibble.util.helpers import ignore_exceptions
+    >>> from fruition.util.helpers import ignore_exceptions
     >>> my_dict = {"a": 1}
     >>> ignore_exceptions(lambda: my_dict["a"])
     1
@@ -256,7 +256,7 @@ def is_binary(value: Any) -> bool:
 
     This can give both false positives and false negatives.
 
-    >>> from pibble.util.helpers import is_binary
+    >>> from fruition.util.helpers import is_binary
     >>> is_binary(bytearray([0x20, 0x10]))
     True
     >>> is_binary("string".encode("UTF-8"))
@@ -276,7 +276,7 @@ def is_binary_file(path: str, chunk_size: Optional[int] = 1024) -> bool:
     """
     Similar to `is_binary`, but instead reads a file.
 
-    >>> from pibble.util.helpers import is_binary_file
+    >>> from fruition.util.helpers import is_binary_file
     >>> import tempfile
     >>> import os
     >>> fd, tmp = tempfile.mkstemp()
@@ -309,7 +309,7 @@ def openpyxl_dataframe(
     try:
         from openpyxl import load_workbook
     except ImportError:
-        raise ImportError("Couldn't import openpyxl. Run `pip install pibble[excel]` to get it.")
+        raise ImportError("Couldn't import openpyxl. Run `pip install fruition[excel]` to get it.")
     wb = load_workbook(path)
     ws = wb.active
     data = ws.values
@@ -333,7 +333,7 @@ class Assertion:
     """
     A class that holds assertion types, and allows for AssertionErrors to indicate actual and expected values.
 
-    >>> from pibble.util.helpers import Assertion, expect_exception
+    >>> from fruition.util.helpers import Assertion, expect_exception
     >>> Assertion(Assertion.EQ)(1, 1)
     >>> Assertion(Assertion.IN)(1, [1])
     >>> expect_exception(AssertionError)(lambda: Assertion(Assertion.IN)(1, [1]))
@@ -577,7 +577,7 @@ class AttributeDictionary:
     """
     A small class to hold dictionary key/values as attribute.
 
-    >>> from pibble.util.helpers import AttributeDictionary
+    >>> from fruition.util.helpers import AttributeDictionary
     >>> attrDict = AttributeDictionary(foo = "bar")
     >>> attrDict.foo
     'bar'
@@ -625,7 +625,7 @@ class Pause:
     """
     A small class to allow sleeping until a certain time.
 
-    >>> from pibble.util.helpers import Pause
+    >>> from fruition.util.helpers import Pause
     >>> from datetime import datetime, timedelta
     >>> test_maximum_delta = 5e-2
     >>> start = datetime.now()
@@ -684,7 +684,7 @@ class OutputCatcher:
     """
     A context manager that allows easy capturing of stdout.
 
-    >>> from pibble.util.helpers import OutputCatcher
+    >>> from fruition.util.helpers import OutputCatcher
     >>> catcher = OutputCatcher()
     >>> catcher.__enter__()
     >>> print("stdout")
@@ -757,7 +757,7 @@ class ProcessRunner:
         The underlying 'call' method just gets the Subprocess.
 
         >>> import subprocess
-        >>> from pibble.util.helpers import ProcessRunner
+        >>> from fruition.util.helpers import ProcessRunner
         >>> p = ProcessRunner("echo").call("hello")
         >>> type(p)
         <class 'subprocess.Popen'>
@@ -825,7 +825,7 @@ class ProcessRunner:
         :param args str: Arguments to pass to the command.
         :param shell bool: Whether or not to run through the users' shell.
 
-        >>> from pibble.util.helpers import ProcessRunner, Assertion
+        >>> from fruition.util.helpers import ProcessRunner, Assertion
         >>> from datetime import datetime
         >>> start = datetime.now()
         >>> ProcessRunner("sleep").run("3")
@@ -860,7 +860,7 @@ class ProcessRunner:
         :param args str: Arguments to pass to the command.
         :param shell bool: Whether or not to run through the users' shell.
 
-        >>> from pibble.util.helpers import ProcessRunner, Assertion
+        >>> from fruition.util.helpers import ProcessRunner, Assertion
         >>> from datetime import datetime
         >>> start = datetime.now()
         >>> p = ProcessRunner("sleep")
@@ -941,7 +941,7 @@ class PythonRunner(ProcessRunner):
         """
         Executes a python module.
 
-        >>> from pibble.util.helpers import PythonRunner
+        >>> from fruition.util.helpers import PythonRunner
         >>> p = PythonRunner()
         >>> out, err = p.module("pip", "help")
         >>> out.splitlines()[0].strip()
@@ -963,7 +963,7 @@ class PythonRunner(ProcessRunner):
         """
         Executes a python script in a separate process.
 
-        >>> from pibble.util.helpers import PythonRunner
+        >>> from fruition.util.helpers import PythonRunner
         >>> p = PythonRunner()
         >>> p.script("import datetime; print(datetime.date(2020, 1, 1))")
         ('2020-01-01', '')
@@ -1072,7 +1072,7 @@ class FlexibleJSONDecoder(json.JSONDecoder):
 
         :param string str: The contents of the JSON to be decoded.
         :returns Any: The decoded value - see the flexible stringer for more details.
-        :see: class:`pibble.helpers.strings.Serializer`
+        :see: class:`fruition.helpers.strings.Serializer`
         """
         return Serializer.deserialize(string)  # type: ignore
 
@@ -1090,4 +1090,4 @@ class FlexibleJSONEncoder(json.JSONEncoder):
         :returns str: The stringified object.
         :see: class:`funllib.helpers.strings.Serializer`
         """
-        return Serializer.serialize(to_encode)
+        return str(Serializer.serialize(to_encode))

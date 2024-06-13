@@ -4,11 +4,11 @@ from thrift.transport import TTransport
 
 from typing import Any
 
-from pibble.api.server.webservice.base import WebServiceAPIServerBase
-from pibble.api.server.webservice.handler import WebServiceAPIHandlerRegistry
-from pibble.api.protocol.apachethrift import TJSONProtocol  # type: ignore
-from pibble.api.exceptions import ApacheThriftError
-from pibble.api.helpers.apachethrift import (
+from fruition.api.server.webservice.base import WebServiceAPIServerBase
+from fruition.api.server.webservice.handler import WebServiceAPIHandlerRegistry
+from fruition.api.protocol.apachethrift import TJSONProtocol  # type: ignore
+from fruition.api.exceptions import ApacheThriftError
+from fruition.api.helpers.apachethrift import (
     ApacheThriftService,
     ApacheThriftServerHandler,
 )

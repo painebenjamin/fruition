@@ -25,9 +25,9 @@ from google.protobuf.message import Message
 
 from grpc_tools import protoc
 
-from pibble.util.log import logger
-from pibble.api.exceptions import ConfigurationError, UnsupportedMethodError
-from pibble.api.configuration import APIConfiguration
+from fruition.util.log import logger
+from fruition.api.exceptions import ConfigurationError, UnsupportedMethodError
+from fruition.api.configuration import APIConfiguration
 
 
 class GRPCRequest:
@@ -81,7 +81,7 @@ class GRPCConfiguration:
       - grpc.namespace - The namespace of the service. If not provided, the first service matching the service name will be taken. This can increase import time.
       - grpc.proto - The name of the .proto file that defines the service. When used in conjunction with namespace, this can greatly reduce searching time.
 
-    :param configuration pibble.api.configuration.APIConfiguration: The API configuration.
+    :param configuration fruition.api.configuration.APIConfiguration: The API configuration.
     """
 
     def __init__(self, configuration: APIConfiguration) -> None:
@@ -195,7 +195,7 @@ class GRPCService:
             Finds by a qualified name. Unlike `_find_by_name`, this can only have one result.
 
             :param str qualifier_name: The fully qualified message to find.
-            :returns `pibble.api.helpers.googlerpc.GRPCService.GRPCMessages.GRPCMessage`: The message object.
+            :returns `fruition.api.helpers.googlerpc.GRPCService.GRPCMessages.GRPCMessage`: The message object.
             """
             for message in self.messages:
                 if message.qualified_name == qualified_name:
@@ -318,7 +318,7 @@ class GRPCServiceExplorer:
     i.e., a categorized and aliased list of the important services present
     within a gRPC module.
 
-    :param module `pibble.api.helpers.googlerpc.GRPCModuleExplorer`: the module to search through.
+    :param module `fruition.api.helpers.googlerpc.GRPCModuleExplorer`: the module to search through.
     """
 
     services: List[GRPCService]
@@ -339,7 +339,7 @@ class GRPCServiceExplorer:
         :param service_name str: The name of the service.
         :param namespace str: The namespace to search through. This can be empty, if it's not namespaced.
         :param proto_file str: The proto file, optional. If it is unknown, all proto files will be looked through.
-        :returns `pibble.api.helpers.googlerpc.GRPCService`: The final imported service.
+        :returns `fruition.api.helpers.googlerpc.GRPCService`: The final imported service.
         :raises KeyError: When the service name cannot be found.
         """
         if not service_name:
@@ -617,7 +617,7 @@ class GRPCCompiler:
 
     :param directory str: The directory which contains the .proto files for compilation.
     :param protobuf str: The directory for the google protobuf libraries. This should be in /usr/local/include, if installed correctly.
-    :returns `pibble.api.helpers.googlerpc.GRPCModule`: The compiled module.
+    :returns `fruition.api.helpers.googlerpc.GRPCModule`: The compiled module.
     """
 
     def __init__(self, directory: str, protobuf: str = "/usr/include"):

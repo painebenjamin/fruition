@@ -1,17 +1,17 @@
 Web Service API Server
 ======================
 
-.. autoclass:: pibble.api.server.webservice.base.WebServiceAPIServerBase
+.. autoclass:: fruition.api.server.webservice.base.WebServiceAPIServerBase
    :members:
 
 We defined a **Web Service** as one that communicates over TCP/IP.
 
-All web server APIs should be extended from :class:`pibble.api.server.webservice.base.WebServiceAPIServerBase`. For the most part, each implementation must only register some ``handlers`` using the :class:`pibble.api.server.webservice.base.WebServiceAPIHandlerRegistry`, which will handle all requests using a method and path. A class is **not** recommended to use the parent ``handler`` function, as this will provider handlers for **all** classes in this module that extend from :class:`pibble.api.webservice.base.WebServiceAPIServerBase`, instead defining their own. For example, if we simply wanted to serve files from a directory over HTTP, we could use something like this::
+All web server APIs should be extended from :class:`fruition.api.server.webservice.base.WebServiceAPIServerBase`. For the most part, each implementation must only register some ``handlers`` using the :class:`fruition.api.server.webservice.base.WebServiceAPIHandlerRegistry`, which will handle all requests using a method and path. A class is **not** recommended to use the parent ``handler`` function, as this will provider handlers for **all** classes in this module that extend from :class:`fruition.api.webservice.base.WebServiceAPIServerBase`, instead defining their own. For example, if we simply wanted to serve files from a directory over HTTP, we could use something like this::
 
   import os
-  from pibble.api.exceptions import NotFoundError
-  from pibble.api.server.webservice.base import WebServiceAPIServerBase
-  from pibble.api.server.webservice.base import WebServiceAPIHandlerRegistry
+  from fruition.api.exceptions import NotFoundError
+  from fruition.api.server.webservice.base import WebServiceAPIServerBase
+  from fruition.api.server.webservice.base import WebServiceAPIHandlerRegistry
 
   class SimpleFileServer(WebServiceAPIServerBase):
     base_directory = "/var/www/html"
@@ -26,7 +26,7 @@ All web server APIs should be extended from :class:`pibble.api.server.webservice
       :param request webob.Request: The request object.
       :param response webob.Response: The response object.
       :param file_path str: The file path, captured from the URI.
-      :throws: :class:`pibble.api.exceptions.NotFoundError`
+      :throws: :class:`fruition.api.exceptions.NotFoundError`
       """
 
       file_path = os.path.join(self.base_directory, file_path)

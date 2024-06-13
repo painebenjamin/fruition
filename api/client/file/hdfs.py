@@ -6,13 +6,13 @@ import math
 
 from typing import Optional, Iterable, Any
 
-from pibble.api.client.webservice.base import WebServiceAPIClientBase
-from pibble.api.client.file.base import (
+from fruition.api.client.webservice.base import WebServiceAPIClientBase
+from fruition.api.client.file.base import (
     FileTransferAPIClientBase,
     RemoteObject,
     ContentIterator,
 )
-from pibble.api.exceptions import BadRequestError
+from fruition.api.exceptions import BadRequestError
 
 __all__ = ["HDFSFileTransferAPIClient"]
 

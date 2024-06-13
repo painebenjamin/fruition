@@ -8,8 +8,8 @@ from jinja2.parser import Parser
 
 from typing import Callable, Any, Union, List
 
-from pibble.api.base import APIBase
-from pibble.api.configuration import APIConfiguration
+from fruition.api.base import APIBase
+from fruition.api.configuration import APIConfiguration
 
 
 class ExtensionBase:
@@ -30,7 +30,7 @@ class ContextExtensionBase(ExtensionBase, Extension):
 
     These can take any number of arguments, but take care to use valid jinja2 expressions.
 
-    >>> from pibble.api.server.webservice.template.extensions import ContextExtensionBase
+    >>> from fruition.api.server.webservice.template.extensions import ContextExtensionBase
     >>> import jinja2
     >>> environment = jinja2.Environment(extensions = [ContextExtensionBase])
     >>> environment.from_string("{% context_extension_base %}my context{% endcontext_extension_base %}").render()
@@ -77,7 +77,7 @@ class StatementExtensionBase(ExtensionBase, Extension):
 
     As before, extend to __call__ function.
 
-    >>> from pibble.api.server.webservice.template.extensions import StatementExtensionBase
+    >>> from fruition.api.server.webservice.template.extensions import StatementExtensionBase
     >>> import jinja2
     >>> environment = jinja2.Environment(extensions = [StatementExtensionBase])
     >>> environment.from_string("Add result here: {% statement_extension_base %}").render()
@@ -113,7 +113,7 @@ class TestExtensionBase(ExtensionBase):
 
     The __call__ function will always get at least one argument, the left-hand side of the "is" operator. You _can_ have other arguments passed.
 
-    >>> from pibble.api.server.webservice.template.extensions import TestExtensionBase
+    >>> from fruition.api.server.webservice.template.extensions import TestExtensionBase
     >>> import jinja2
     >>> environment = jinja2.Environment()
     >>> TestExtensionBase.assign(environment)
@@ -138,7 +138,7 @@ class FilterExtensionBase(ExtensionBase):
     Filters are executed using the pipe `|` syntax, and will always take one vargument - the
     previous variable in the filter chain.
 
-    >>> from pibble.api.server.webservice.template.extensions import FilterExtensionBase
+    >>> from fruition.api.server.webservice.template.extensions import FilterExtensionBase
     >>> import jinja2
     >>> environment = jinja2.Environment()
     >>> FilterExtensionBase.assign(environment)
@@ -164,7 +164,7 @@ class FunctionExtensionBase(ExtensionBase):
     These are completely open-ended, but are made always available using the
     global environment namespace.
 
-    >>> from pibble.api.server.webservice.template.extensions import FunctionExtensionBase
+    >>> from fruition.api.server.webservice.template.extensions import FunctionExtensionBase
     >>> import jinja2
     >>> environment = jinja2.Environment()
     >>> FunctionExtensionBase.assign(environment)
@@ -187,7 +187,7 @@ class FunctionExtensionBase(ExtensionBase):
 
 class ExampleFunctionExtension(FunctionExtensionBase):
     """
-    >>> from pibble.api.server.webservice.template.extensions import ExampleFunctionExtension
+    >>> from fruition.api.server.webservice.template.extensions import ExampleFunctionExtension
     >>> import jinja2
     >>> environment = jinja2.Environment()
     >>> ExampleFunctionExtension.assign(environment)
@@ -205,7 +205,7 @@ class ExampleFunctionExtension(FunctionExtensionBase):
 
 class ExampleFilterExtension(FilterExtensionBase):
     """
-    >>> from pibble.api.server.webservice.template.extensions import ExampleFilterExtension
+    >>> from fruition.api.server.webservice.template.extensions import ExampleFilterExtension
     >>> import jinja2
     >>> environment = jinja2.Environment()
     >>> ExampleFilterExtension.assign(environment)
@@ -223,7 +223,7 @@ class ExampleFilterExtension(FilterExtensionBase):
 
 class ExampleTestExtension(TestExtensionBase):
     """
-    >>> from pibble.api.server.webservice.template.extensions import ExampleTestExtension
+    >>> from fruition.api.server.webservice.template.extensions import ExampleTestExtension
     >>> import jinja2
     >>> environment = jinja2.Environment()
     >>> ExampleTestExtension.assign(environment)
@@ -248,7 +248,7 @@ class ExampleTestExtension(TestExtensionBase):
 
 class ExampleContextExtension(ContextExtensionBase):
     """
-    >>> from pibble.api.server.webservice.template.extensions import ExampleContextExtension
+    >>> from fruition.api.server.webservice.template.extensions import ExampleContextExtension
     >>> import jinja2
     >>> environment = jinja2.Environment(extensions = [ExampleContextExtension])
     >>> environment.from_string("{% example_context 'prefix' %}foo{% endexample_context %} bar {% example_context %}baz{% endexample_context %}").render()
@@ -268,7 +268,7 @@ class ExampleContextExtension(ContextExtensionBase):
 
 class ExampleStatementExtension(StatementExtensionBase):
     """
-    >>> from pibble.api.server.webservice.template.extensions import ExampleStatementExtension
+    >>> from fruition.api.server.webservice.template.extensions import ExampleStatementExtension
     >>> import jinja2
     >>> environment = jinja2.Environment(extensions = [ExampleStatementExtension])
     >>> environment.from_string("{% example_statement 5 %}{% example_statement 5 'n' %}").render()

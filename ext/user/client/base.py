@@ -1,6 +1,6 @@
 from typing import Any
-from pibble.util.log import logger
-from pibble.api.client.webservice.base import WebServiceAPIClientBase
+from fruition.util.log import logger
+from fruition.api.client.webservice.base import WebServiceAPIClientBase
 
 
 class UserExtensionClientBase(WebServiceAPIClientBase):

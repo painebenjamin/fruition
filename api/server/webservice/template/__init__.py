@@ -7,17 +7,17 @@ import traceback
 from typing import Optional, Callable, Any, List
 from webob import Request, Response
 
-from pibble.util.helpers import CompressedIterator
-from pibble.util.strings import truncate
-from pibble.util.log import logger
-from pibble.api.exceptions import ConfigurationError
-from pibble.api.server.base import APIServerBase
-from pibble.api.server.webservice.base import WebServiceAPIServerBase
-from pibble.api.server.webservice.handler import (
+from fruition.util.helpers import CompressedIterator
+from fruition.util.strings import truncate
+from fruition.util.log import logger
+from fruition.api.exceptions import ConfigurationError
+from fruition.api.server.base import APIServerBase
+from fruition.api.server.webservice.base import WebServiceAPIServerBase
+from fruition.api.server.webservice.handler import (
     WebServiceAPIHandler,
     WebServiceAPIHandlerRegistry,
 )
-from pibble.api.server.webservice.template.loader import TemplateLoader
+from fruition.api.server.webservice.template.loader import TemplateLoader
 
 
 class TemplateHandler(WebServiceAPIHandler):
@@ -139,7 +139,7 @@ class TemplateServer(WebServiceAPIServerBase):
         """
         Create the template loader.
 
-        This does not require any actual configuration, but see :class:pibble.api.server.webservice.html.server.TemplateServerTemplateLoader for optional keys.
+        This does not require any actual configuration, but see :class:fruition.api.server.webservice.html.server.TemplateServerTemplateLoader for optional keys.
         """
         if not hasattr(self, "templates"):
             logger.debug("Creating template loader.")

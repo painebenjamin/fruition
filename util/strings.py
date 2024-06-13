@@ -18,7 +18,7 @@ from urllib.parse import unquote
 from PIL import Image
 from PIL.PngImagePlugin import PngInfo
 
-from pibble.util.log import logger
+from fruition.util.log import logger
 
 EMPTY_CASE = compile(r"^$")
 LOWER_CASE = compile(r"^[a-z0-9]+$")
@@ -61,10 +61,10 @@ def serialize_image(image: Image.Image, **kwargs: Any) -> str:
     Serializes an image to a base64 Data URI.
     """
     image_byte_io = io.BytesIO()
-    image_png_info = PngInfo()
+    image_png_info = PngInfo() # type: ignore[no-untyped-call]
     image_text_metadata = getattr(image, "text", {})
     for key in image_text_metadata:
-        image_png_info.add_text(key, image_text_metadata[key])
+        image_png_info.add_text(key, image_text_metadata[key]) # type: ignore[no-untyped-call]
     image.save(image_byte_io, format="PNG", pnginfo=image_png_info)
     image_bytestring = base64.b64encode(image_byte_io.getvalue()).decode("utf-8")
     return f"data:image/png;base64,{image_bytestring}"
@@ -77,7 +77,7 @@ def deserialize_image(image_string: str, **kwargs: Any) -> Image.Image:
     image_bytestring = image_string.split(",")[1]
     image_bytes = base64.b64decode(image_bytestring)
     img = Image.open(io.BytesIO(image_bytes))
-    img.load()
+    img.load() # type: ignore[no-untyped-call]
     return img
 
 
@@ -86,7 +86,7 @@ class Serializer:
     A class that takes a string and attempts to parse it into an object by matching
     it with a regular expression, and vice-versa.
 
-    >>> from pibble.util.strings import Serializer
+    >>> from fruition.util.strings import Serializer
     >>> from datetime import datetime
     >>> Serializer.deserialize("4")
     4
@@ -214,12 +214,12 @@ class Serializer:
         # Strict pass
         for typename in cls.SERIALIZE_FORMATS:
             if type(parameter) is typename:
-                return cls.SERIALIZE_FORMATS[typename](parameter, **kwargs)  # type: ignore
+                return str(cls.SERIALIZE_FORMATS[typename](parameter, **kwargs)) # type: ignore[no-untyped-call]
         # Lenient pass
         for typename in cls.SERIALIZE_FORMATS:
             try:
-                if isinstance(parameter, typename):
-                    return cls.SERIALIZE_FORMATS[typename](parameter, **kwargs)  # type: ignore
+                if isinstance(parameter, typename): # type: ignore[arg-type]
+                    return str(cls.SERIALIZE_FORMATS[typename](parameter, **kwargs)) # type: ignore[no-untyped-call]
             except TypeError:
                 pass
         return str(parameter)
@@ -316,7 +316,7 @@ def get_seeded_uuid(seed: str) -> str:
     Generates a UUID with a seed, so it's always the same.
     """
     md5_hash = hashlib.md5()
-    md5_hash.update(f"pibble.{seed}".encode("utf-8"))
+    md5_hash.update(f"fruition.{seed}".encode("utf-8"))
     return UUID(md5_hash.hexdigest()).hex
 
 
@@ -347,7 +347,7 @@ def random_string(
     """
     Makes a random string.
 
-    >>> from pibble.util.strings import random_string
+    >>> from fruition.util.strings import random_string
     >>> from re import match
     >>> assert match(r"^[a-z]{32}$", random_string(use_uppercase = False, use_digits = False))
     >>> assert match(r"^[a-zA-Z]{32}$", random_string(use_digits = False))
@@ -380,7 +380,7 @@ def truncate(text: Union[str, bytes, bytearray], length: int = 20) -> str:
     Should be used for logging.
 
     >>> import string
-    >>> from pibble.util.strings import truncate
+    >>> from fruition.util.strings import truncate
     >>> truncate("12345")
     '12345'
     >>> truncate("12345xxxxx54321", 10)
@@ -406,7 +406,7 @@ def guess_case(string: str) -> str:
     """
     Guesses the case of a string.
 
-    >>> from pibble.util.strings import guess_case
+    >>> from fruition.util.strings import guess_case
     >>> guess_case('mystring')
     'LOWER'
     >>> guess_case('MYSTRING')
@@ -441,7 +441,7 @@ def guess_string_parts(string: str) -> List[str]:
     """
     Using guess_case, splits a string into it's constituent parts.
 
-    >>> from pibble.util.strings import guess_string_parts
+    >>> from fruition.util.strings import guess_string_parts
     >>> guess_string_parts('MyString')
     ['my', 'string']
     >>> guess_string_parts('myString')
@@ -485,7 +485,7 @@ def kebab_case(string: str, separator: str = "-") -> str:
     """
     Turns any string into kebab case.
 
-    >>> from pibble.util.strings import kebab_case
+    >>> from fruition.util.strings import kebab_case
     >>> kebab_case('my_string')
     'my-string'
     >>> kebab_case('my-string')
@@ -504,7 +504,7 @@ def snake_case(string: str, separator: str = "_") -> str:
     """
     Turns any string into snake case.
 
-    >>> from pibble.util.strings import snake_case
+    >>> from fruition.util.strings import snake_case
     >>> snake_case('my_string')
     'my_string'
     >>> snake_case('my-string')
@@ -523,7 +523,7 @@ def camel_case(string: str, separator: str = "") -> str:
     """
     Turns any string into camel case.
 
-    >>> from pibble.util.strings import camel_case
+    >>> from fruition.util.strings import camel_case
     >>> camel_case('my_string')
     'myString'
     >>> camel_case('my-string')
@@ -548,7 +548,7 @@ def pascal_case(string: str, separator: str = "") -> str:
     """
     Turns any string into pscal case.
 
-    >>> from pibble.util.strings import pascal_case
+    >>> from fruition.util.strings import pascal_case
     >>> pascal_case('my_string')
     'MyString'
     >>> pascal_case('my-string')
@@ -633,7 +633,7 @@ def decode(
     """
     Decodes a bytestring into a unicode string.
 
-    >>> from pibble.util.strings import decode
+    >>> from fruition.util.strings import decode
     >>> decode("my_string")
     'my_string'
     >>> decode(b"my_binary_string")
@@ -699,7 +699,7 @@ def encode(
     """
     Encodes a unicode string into a bytestring.
 
-    >>> from pibble.util.strings import encode
+    >>> from fruition.util.strings import encode
     >>> encode("my_string")
     b'my_string'
     >>> encode(b"my_binary_string")
@@ -763,7 +763,7 @@ def pretty_print(*args: Any, **kwargs: Any) -> str:
     """
     Pretty prints a list. Takes any number of arguments or keyword arguments.
 
-    >>> from pibble.util.strings import pretty_print
+    >>> from fruition.util.strings import pretty_print
     >>> print(pretty_print("foo", "bar"))
     foo, bar
     >>> print(pretty_print("foo", bar = "baz"))
@@ -781,7 +781,7 @@ def pretty_print_sentence(*args: Any, **kwargs: Any) -> str:
 
     No oxford comma.
 
-    >>> from pibble.util.strings import pretty_print_sentence
+    >>> from fruition.util.strings import pretty_print_sentence
     >>> print(pretty_print_sentence("foo", "bar"))
     foo and bar
     >>> print(pretty_print_sentence("foo", "bar", "baz"))

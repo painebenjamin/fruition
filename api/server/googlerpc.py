@@ -4,14 +4,14 @@ from concurrent.futures import ThreadPoolExecutor
 from functools import partial
 from typing import Optional, Any
 
-from pibble.api.server.base import APIServerBase
-from pibble.api.helpers.googlerpc import (
+from fruition.api.server.base import APIServerBase
+from fruition.api.helpers.googlerpc import (
     GRPCConfiguration,
     GRPCRequest,
     GRPCResponse,
 )
-from pibble.util.log import logger
-from pibble.util.helpers import resolve, Pause
+from fruition.util.log import logger
+from fruition.util.helpers import resolve, Pause
 
 
 class GRPCAPIServer(APIServerBase):
@@ -26,7 +26,7 @@ class GRPCAPIServer(APIServerBase):
     Optional configuration:
       1. ``server.threads`` The number of threads to run the server on. Defaults to 10.
 
-    See :class:`pibble.api.helpers.GRPC.GRPCService` for required arguments for the GRPC service.
+    See :class:`fruition.api.helpers.GRPC.GRPCService` for required arguments for the GRPC service.
     """
 
     def __init__(self) -> None:

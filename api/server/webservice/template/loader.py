@@ -4,14 +4,14 @@ import jinja2
 from jinja2.ext import Extension
 from typing import Optional, Callable, Any, Type, Union, Dict
 
-from pibble.api.exceptions import ConfigurationError
-from pibble.api.configuration import APIConfiguration
-from pibble.api.base import APIBase
+from fruition.api.exceptions import ConfigurationError
+from fruition.api.configuration import APIConfiguration
+from fruition.api.base import APIBase
 
-from pibble.util.log import logger
-from pibble.util.helpers import resolve
+from fruition.util.log import logger
+from fruition.util.helpers import resolve
 
-from pibble.api.server.webservice.template.extensions import (
+from fruition.api.server.webservice.template.extensions import (
     TestExtensionBase,
     FilterExtensionBase,
     FunctionExtensionBase,
@@ -25,8 +25,8 @@ class TemplateLoader:
 
     A simple example:
 
-    >>> from pibble.api.configuration import APIConfiguration
-    >>> from pibble.api.server.webservice.template.loader import TemplateLoader
+    >>> from fruition.api.configuration import APIConfiguration
+    >>> from fruition.api.server.webservice.template.loader import TemplateLoader
     >>> test_template = "{{ var }}"
     >>> configuration = APIConfiguration(**{"server": {"template": {"static": {"test": test_template}}}})
     >>> loader = TemplateLoader(configuration)
@@ -35,13 +35,13 @@ class TemplateLoader:
 
     A more complex one using example extensions:
 
-    >>> from pibble.api.configuration import APIConfiguration
-    >>> from pibble.api.server.webservice.template.loader import TemplateLoader
-    >>> from pibble.api.server.webservice.template.extensions import ExampleContextExtension
-    >>> from pibble.api.server.webservice.template.extensions import ExampleStatementExtension
-    >>> from pibble.api.server.webservice.template.extensions import ExampleTestExtension
-    >>> from pibble.api.server.webservice.template.extensions import ExampleFilterExtension
-    >>> from pibble.api.server.webservice.template.extensions import ExampleFunctionExtension
+    >>> from fruition.api.configuration import APIConfiguration
+    >>> from fruition.api.server.webservice.template.loader import TemplateLoader
+    >>> from fruition.api.server.webservice.template.extensions import ExampleContextExtension
+    >>> from fruition.api.server.webservice.template.extensions import ExampleStatementExtension
+    >>> from fruition.api.server.webservice.template.extensions import ExampleTestExtension
+    >>> from fruition.api.server.webservice.template.extensions import ExampleFilterExtension
+    >>> from fruition.api.server.webservice.template.extensions import ExampleFunctionExtension
     >>> test_template = "{% example_statement 5 %}{% example_context %}foo{% endexample_context %}{{ square(var)|square }}{% if var is prime %}prime{% endif %}"
     >>> test_extensions = [ExampleContextExtension, ExampleStatementExtension, ExampleTestExtension, ExampleFilterExtension, ExampleFunctionExtension]
     >>> configuration = APIConfiguration(**{"server": {"template": {"extensions": test_extensions, "static": {"test": test_template}}}})
@@ -52,7 +52,7 @@ class TemplateLoader:
     All configuration is optional.
     - `server.template.directories` Either a single or list of directories to look for template files in.
     - `server.template.static` A static dictionary of (template_name, template_string).
-    - `server.template.extensions` A list of string fully-qualified names or types. See `pibble.api.server.webservice.html.template.extensions`.
+    - `server.template.extensions` A list of string fully-qualified names or types. See `fruition.api.server.webservice.html.template.extensions`.
     """
 
     def __init__(

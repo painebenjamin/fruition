@@ -1,8 +1,8 @@
-from pibble.ext.user.database.base import UserExtensionObjectBase
-from pibble.ext.user.database.user import User
-from pibble.ext.user.database.authentication import AuthenticationToken
-from pibble.ext.user.database.notification import Notification
-from pibble.ext.user.database.permission import (
+from fruition.ext.user.database.base import UserExtensionObjectBase
+from fruition.ext.user.database.user import User
+from fruition.ext.user.database.authentication import AuthenticationToken
+from fruition.ext.user.database.notification import Notification
+from fruition.ext.user.database.permission import (
     Permission,
     PermissionGroup,
     UserPermission,

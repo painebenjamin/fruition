@@ -5,9 +5,9 @@ from typing import Type, Any, Optional
 
 from webob import Request, Response
 
-from pibble.api.server.webservice.rpc.base import RPCServerBase
-from pibble.api.exceptions import UnsupportedMethodError, BadRequestError
-from pibble.util.strings import Serializer, decode
+from fruition.api.server.webservice.rpc.base import RPCServerBase
+from fruition.api.exceptions import UnsupportedMethodError, BadRequestError
+from fruition.util.strings import Serializer, decode
 
 
 class JSONRPCSerializer(Serializer):
@@ -21,7 +21,7 @@ class JSONRPCServer(RPCServerBase):
     """
     An implementation of the RPC server for parsing and returning XMLRPC objects.
 
-    >>> from pibble.api.server.webservice.rpc.jsonrpc import JSONRPCServer
+    >>> from fruition.api.server.webservice.rpc.jsonrpc import JSONRPCServer
     >>> import json
     >>> from collections import namedtuple
     >>> Request = namedtuple("Request", ["body"])
@@ -49,8 +49,8 @@ class JSONRPCServer(RPCServerBase):
         """
         Takes a python type and turns it into a string version of it.
 
-        >>> from pibble.api.server.webservice.rpc.jsonrpc import JSONRPCServer
-        >>> from pibble.util.helpers import expect_exception
+        >>> from fruition.api.server.webservice.rpc.jsonrpc import JSONRPCServer
+        >>> from fruition.util.helpers import expect_exception
         >>> JSONRPCServer.map_typename(int)
         'int'
         >>> JSONRPCServer.map_typename(list)
@@ -85,7 +85,7 @@ class JSONRPCServer(RPCServerBase):
         Takes a string JSON body, and parses it to find the method name and parameters.
 
         >>> import json
-        >>> from pibble.api.server.webservice.rpc.jsonrpc import JSONRPCServer
+        >>> from fruition.api.server.webservice.rpc.jsonrpc import JSONRPCServer
         >>> JSONRPCServer.parse_method_call(json.dumps({"jsonrpc": "2.0", "method": "add", "params": [1, 2]}))
         ('add', [1, 2], {})
         >>> JSONRPCServer.parse_method_call(json.dumps({"jsonrpc": "2.0", "method": "pow", "params": {"base": 2, "exponent": 3}}))
@@ -93,7 +93,7 @@ class JSONRPCServer(RPCServerBase):
 
         :param body str: The body of a request.
         :returns tuple: A three-tuple of (str, list, dict), the first of which is the method name, the second is a list of all parsed parameters if positional parameters are sent, the third is a dict of all parsed parameters if named parameters are sent.
-        :raises pibble.api.exceptions.BadRequestError: When the method name is not present, or the json rpc specifier is not present.
+        :raises fruition.api.exceptions.BadRequestError: When the method name is not present, or the json rpc specifier is not present.
         :raises json.decoder.JSONDecodeError: When the JSON is not well-formed.
         """
         request = json.loads(body)

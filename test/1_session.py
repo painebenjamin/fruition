@@ -2,12 +2,12 @@ import os
 
 from typing import Any
 
-from pibble.api.helpers.store import APISessionStore
-from pibble.api.configuration import APIConfiguration
+from fruition.api.helpers.store import APISessionStore
+from fruition.api.configuration import APIConfiguration
 
-from pibble.util.helpers import Assertion, expect_exception
-from pibble.util.files import TempfileContext
-from pibble.util.log import DebugUnifiedLoggingContext
+from fruition.util.helpers import Assertion, expect_exception
+from fruition.util.files import TempfileContext
+from fruition.util.log import DebugUnifiedLoggingContext
 
 
 def main() -> None:

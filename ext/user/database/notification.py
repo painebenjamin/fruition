@@ -1,12 +1,12 @@
 import datetime
 from sqlalchemy import Column, Integer, String, DateTime, Enum
 
-from pibble.ext.user.database.base import UserExtensionObjectBase
-from pibble.ext.user.database.user import User
+from fruition.ext.user.database.base import UserExtensionObjectBase
+from fruition.ext.user.database.user import User
 
 
 class Notification(UserExtensionObjectBase):
-    __tablename__ = "pibble_user_notification"
+    __tablename__ = "fruition_user_notification"
 
     id = Column(Integer, autoincrement=True, primary_key=True)
     user_id = Column(

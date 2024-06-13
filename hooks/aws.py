@@ -7,11 +7,11 @@ import traceback
 
 from typing import Optional, Union, Any, cast
 
-from pibble.util.helpers import qualify, resolve, FlexibleJSONDecoder
-from pibble.resources.retriever import Retriever
-from pibble.database.orm import ORMBuilder
-from pibble.api.meta.helpers import MetaFactory, MetaService
-from pibble.api.server.webservice.awslambda import (
+from fruition.util.helpers import qualify, resolve, FlexibleJSONDecoder
+from fruition.resources.retriever import Retriever
+from fruition.database.orm import ORMBuilder
+from fruition.api.meta.helpers import MetaFactory, MetaService
+from fruition.api.server.webservice.awslambda import (
     LambdaRequestPayloadV1,
     LambdaRequestPayloadV2,
     LambdaResponseDict,
@@ -20,7 +20,7 @@ from pibble.api.server.webservice.awslambda import (
 )
 
 # Set default log handler and level
-logger = logging.getLogger("pibble-aws-hooks")
+logger = logging.getLogger("fruition-aws-hooks")
 lambda_log_handler = logging.StreamHandler(sys.stdout)
 lambda_log_handler.setFormatter(
     logging.Formatter(
@@ -37,7 +37,7 @@ def debug_mode() -> bool:
     """
     Checks if the debug environment variable is set.
     """
-    debug_str = os.environ.get("PIBBLEDEBUG", None)
+    debug_str = os.environ.get("FRUITION_DEBUG", None)
     return isinstance(debug_str, str) and debug_str.lower()[0] in ["t", "y", "1"]
 
 
@@ -65,7 +65,7 @@ def try_load_service() -> None:
     and instantiate the metaservice.
     """
     global service
-    config_file = os.environ.get("PIBBLECONFIG", None)
+    config_file = os.environ.get("FRUITION_CONFIG", None)
     if config_file is None:
         raise OSError("No configuration available.")
 
@@ -131,6 +131,7 @@ def lambda_api_handler(
             logger.debug("Service doesn't exist, attempting to load.")
             try_load_service()
     except Exception as ex:
+        logger.error(f"An unhandled exception occurred during service loading: {ex}")
         if debug_mode():
             return {
                 "statusCode": 500,
@@ -152,6 +153,7 @@ def lambda_api_handler(
                 LambdaResponseDict, service.handle_lambda_request(event, context)
             )
         except Exception as ex:
+            logger.error(f"An unhandled exception occurred during request handling: {ex}")
             if debug_mode():
                 return {
                     "statusCode": 500,
@@ -172,7 +174,7 @@ def lambda_api_handler(
                 "multiValueHeaders": {},
                 "body": "An unhandled exception occurred.",
             }
-    logger.error("Servier could not be created.")
+    logger.error("Service could not be created. See above for details.")
     return {
         "statusCode": 503,
         "headers": {},

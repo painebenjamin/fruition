@@ -2,12 +2,12 @@ import tempfile
 import shutil
 import os
 
-from pibble.util.log import DebugUnifiedLoggingContext, logger
+from fruition.util.log import DebugUnifiedLoggingContext, logger
 
-from pibble.api.client.googlerpc import GRPCAPIClient
-from pibble.api.server.googlerpc import GRPCAPIServer
+from fruition.api.client.googlerpc import GRPCAPIClient
+from fruition.api.server.googlerpc import GRPCAPIServer
 
-from pibble.api.helpers.googlerpc import GRPCCompiler
+from fruition.api.helpers.googlerpc import GRPCCompiler
 
 TEST_IMPORT = """
 syntax = "proto3";

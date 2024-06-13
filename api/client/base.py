@@ -2,8 +2,8 @@ from __future__ import annotations
 
 from typing import Any, List
 
-from pibble.util.log import logger
-from pibble.api.base import APIBase
+from fruition.util.log import logger
+from fruition.api.base import APIBase
 
 
 class APIClientBase(APIBase):

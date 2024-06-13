@@ -1,10 +1,10 @@
 from typing import TypedDict
 
-from pibble.api.client.webservice.wrapper import WebServiceAPIClientWrapper
-from pibble.api.client.webservice.soap import SOAPClient
-from pibble.api.server.webservice.soap import SOAPServer
-from pibble.util.helpers import Assertion, Pause
-from pibble.util.log import DebugUnifiedLoggingContext
+from fruition.api.client.webservice.wrapper import WebServiceAPIClientWrapper
+from fruition.api.client.webservice.soap import SOAPClient
+from fruition.api.server.webservice.soap import SOAPServer
+from fruition.util.helpers import Assertion, Pause
+from fruition.util.log import DebugUnifiedLoggingContext
 
 
 class SOAPClientWrapper(SOAPClient, WebServiceAPIClientWrapper):

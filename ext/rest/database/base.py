@@ -1,4 +1,4 @@
-from pibble.database.orm import ORMObjectBase
+from fruition.database.orm import ORMObjectBase
 
 
 class RESTObjectBase(ORMObjectBase):

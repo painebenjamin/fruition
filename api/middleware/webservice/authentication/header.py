@@ -3,8 +3,8 @@ import base64
 
 from webob import Request
 
-from pibble.util.strings import decode
-from pibble.api.exceptions import AuthenticationError
+from fruition.util.strings import decode
+from fruition.api.exceptions import AuthenticationError
 
 
 class AuthorizationHeader:
@@ -13,8 +13,8 @@ class AuthorizationHeader:
 
     :param header str: The "Authorization" header from a request.
 
-    >>> from pibble.api.middleware.webservice.authentication.header import AuthorizationHeader
-    >>> from pibble.util.helpers import AttributeDictionary
+    >>> from fruition.api.middleware.webservice.authentication.header import AuthorizationHeader
+    >>> from fruition.util.helpers import AttributeDictionary
     >>> import base64
     >>> header1 = AuthorizationHeader(AttributeDictionary(HTTP_AUTHORIZATION = "Basic {0}".format(base64.b64encode(b"myusername:mypassword").decode("UTF-8"))))
     >>> header1.method
@@ -32,7 +32,7 @@ class AuthorizationHeader:
     'mynonce'
     """
 
-    values_regex = re.compile('(\w+)[=] ?"?([^\s",]+)"?')
+    values_regex = re.compile(r'(\w+)[=] ?"?([^\s",]+)"?')
 
     def __init__(self, request: Request):
         if "Authorization" in getattr(request, "headers", {}):

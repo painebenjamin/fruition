@@ -3,10 +3,10 @@ from __future__ import annotations
 import cherrypy
 from typing import Optional, TYPE_CHECKING
 from multiprocessing import cpu_count
-from pibble.util.log import logger
+from fruition.util.log import logger
 
 if TYPE_CHECKING:
-    from pibble.api.server.webservice.base import WebServiceAPIServerBase
+    from fruition.api.server.webservice.base import WebServiceAPIServerBase
 
 
 def run_cherrypy(
