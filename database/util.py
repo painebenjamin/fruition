@@ -3,11 +3,9 @@ import sqlalchemy.types
 from sqlalchemy.sql.type_api import TypeEngine as SQLAlchemyType
 
 from typing import Type, Any, Iterator
-from pandas import Timestamp
 from numpy import int64, float64
 from datetime import datetime, date, time, timedelta
 from decimal import Decimal
-
 
 def sqlalchemy_type_from_python_type(python_type: Type) -> SQLAlchemyType:
     try:
@@ -31,6 +29,9 @@ def sqlalchemy_type_from_python_type(python_type: Type) -> SQLAlchemyType:
 
 
 def sqlalchemy_type_from_python_value(python_value: Any) -> SQLAlchemyType:
+    """
+    Given a Python value, returns the corresponding SQLAlchemy type.
+    """
     python_type = type(python_value)
     if python_type in [int, int64]:
         return (
@@ -38,10 +39,9 @@ def sqlalchemy_type_from_python_value(python_value: Any) -> SQLAlchemyType:
             if python_value >= 2**32
             else sqlalchemy.types.Integer
         )
-    elif python_type is Timestamp:
+    elif python_type.__name__ in ["DateTime", "Timestamp"]:
         return sqlalchemy.types.DateTime
     return sqlalchemy_type_from_python_type(python_type)
-
 
 class RowProxy(dict):
     """

@@ -4,7 +4,7 @@ from setuptools import setup, find_packages
 package_name = "fruition"
 version_major = "0"
 version_minor = "8"
-version_patch = "0"
+version_patch = "2"
 
 install_requires = [
     "bcrypt>=4.0,<4.1",

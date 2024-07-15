@@ -198,7 +198,6 @@ class UnconfiguredAPISessionStore(APISessionStore):
     def __init__(self) -> None:
         self.driver = MemoryAPISessionStore(None, None)
 
-
 class APISessionStoreDriver:
     """
     An extendable class for session stores.
