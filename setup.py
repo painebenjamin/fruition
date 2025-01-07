@@ -4,29 +4,29 @@ from setuptools import setup, find_packages
 package_name = "fruition"
 version_major = "0"
 version_minor = "9"
-version_patch = "0"
+version_patch = "1"
 
 install_requires = [
     "bcrypt>=4.0,<4.1",
-    "chardet>=5.1,<5.2",
+    "chardet>=5.0,<5.2",
     "click>=8.0,<9.0",
-    "configparser>=5.3,<5.4",
-    "jinja2>=3.1,<3.2",
+    "configparser>=5.2,<5.4",
+    "jinja2>=3.0,<3.2",
     "mimeparse>=0.1",
     "pandas>=2.0,<3.0",
     "pycryptodome>=3.17,<4.0",
     "pyopenssl>=23.1,<24.0",
     "pyyaml>=6.0,<7.0",
-    "requests>=2.28,<3.0",
+    "requests>=2.12,<3.0",
     "requests-oauthlib>=1.3,<2.0",
     "semantic-version>=2.10,<3.0",
-    "sqlalchemy>=1.4,<2.0",
+    "sqlalchemy>=1.1,<2.0",
     "sshpubkeys>=3.3,<4.0",
-    "termcolor>=2.2,<3.0",
+    "termcolor>=1.0,<3.0",
     "webob>=1.8,<2.0",
-    "wsgitypes>=0.0.4",
     "zeep>=4.2,<5.0",
-    "paramiko>=3.1,<4.0"
+    "paramiko>=3.1,<4.0",
+    "pillow>=9.0,<11.0",
 ]
 
 extras_require = {
