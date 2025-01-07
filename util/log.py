@@ -18,6 +18,8 @@ from logging import (
     DEBUG,
 )
 from typing import Any, List
+from typing_extensions import Self
+
 from logging.handlers import SysLogHandler, RotatingFileHandler
 from termcolor import colored
 
@@ -134,8 +136,9 @@ class UnifiedLoggingContext:
         self.handler = handler
         self.silenced = silenced
 
-    def __enter__(self) -> None:
+    def __enter__(self) -> Self:
         self.start()
+        return self
 
     def __exit__(self, *args: Any) -> None:
         self.stop()

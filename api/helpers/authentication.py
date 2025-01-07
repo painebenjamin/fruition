@@ -254,6 +254,23 @@ class APIDatabaseAuthenticationSourceDriver(APIAuthenticationSourceDriver):
         return str(row[self.password])
 
 
+class ConfigurationAuthenticationSourceDriver(APIAuthenticationSourceDriver):
+    """
+    A simple configuration-based authentication source.
+
+    Required configuration:
+    - `authentication.configuration.users` A dictionary of usernames to passwords.
+    """
+    AUTHENTICATION_DRIVERNAME = "configuration"
+
+    def __init__(self, encryption: str, configuration: APIConfiguration):
+        self.configuration = configuration
+        self.encryption = "plain"
+        self.users = self.configuration["authentication.users"]
+
+    def _getPassword(self, username: str) -> str:
+        return self.users[username]
+
 class RSAKeyAuthenticationSourceDriver(APIAuthenticationSourceDriver):
     """
     RSA key check authentication.
