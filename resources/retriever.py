@@ -174,6 +174,10 @@ class FileRetriever(Retriever):
             self.file_path = self.url.path
         else:
             raise IOError("No path found at URL {0}".format(self.url))
+
+        if self.file_path.startswith("~"):
+            self.file_path = os.path.expanduser(self.file_path)
+
         if not os.path.exists(self.file_path):
             raise NotFoundError("Could not find file at {0}".format(self.file_path))
 
